@@ -1,152 +1,2284 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema ERP Cloud | Arquitectura de Alta Disponibilidad</title>
-    <meta name="description" content="El sistema de facturación y ERP más rápido de Venezuela. Diseñado para escalar.">
-    
-    <script>
-        const cPri = localStorage.getItem('pyp_color_primario') || '#0f172a';
-        const cSec = localStorage.getItem('pyp_color_secundario') || '#4f46e5';
-        const fontFam = localStorage.getItem('pyp_fuente') || "'Inter', sans-serif";
-        
-        document.documentElement.style.setProperty('--color-primary', cPri);
-        document.documentElement.style.setProperty('--color-secondary', cSec);
-        document.documentElement.style.setProperty('--font-global', fontFam);
-    </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PyPCloud — Recuérdame · Asistente personal con IA</title>
+<meta name="description" content="Recuérdame es el asistente personal con inteligencia artificial de PyPCloud. Organiza agenda, finanzas, compras y recordatorios con tu voz. Una división tecnológica de PYP Soluciones.">
+<meta name="keywords" content="asistente IA, CRM PyME, agenda inteligente, control financiero, PyPCloud, PYP Soluciones, Recuérdame">
 
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<!-- Open Graph -->
+<meta property="og:title" content="PyPCloud — Software empresarial con inteligencia artificial">
+<meta property="og:description" content="Recuérdame: tu asistente personal con IA. Hablas, él organiza. Una división tecnológica de PYP Soluciones.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://pypcloud.com">
 
-    <style>
-        :root {
-            /* Mapeo de identidad visual a la arquitectura SaaS */
-            --brand-dark: var(--color-primary);
-            --brand-accent: var(--color-secondary);
-            --brand-success: #10b981;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 
-        body { 
-            font-family: var(--font-global); 
-        }
+<style>
+  :root {
+    --primary: #143B62;
+    --primary-dark: #0d2942;
+    --primary-light: #1f5189;
+    --secondary: #E67E22;
+    --secondary-dark: #c66818;
+    --tertiary: #64748b;
+    --ink: #0a1828;
+    --paper: #fafaf7;
+    --paper-warm: #f5f3ed;
+    --line: #d4cfc1;
+    --line-dark: #1a4470;
+    --success: #2d7a3e;
+    --app-bg: #080810;
+    --app-card: #10101c;
+    --app-card-2: #17172a;
+    --app-blue: #3B82F6;
+  }
 
-        /* Clases de utilidad para la Landing Page */
-        .bg-brand-dark { background-color: var(--brand-dark) !important; }
-        .text-brand-accent { color: var(--brand-accent) !important; }
-        .bg-brand-accent { background-color: var(--brand-accent) !important; }
-        .border-brand-accent { border-color: var(--brand-accent) !important; }
-        
-        .fade-in { animation: fadeIn 0.8s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    </style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Geist', -apple-system, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.5;
+    overflow-x: hidden;
+    font-feature-settings: 'ss01', 'ss02', 'cv11';
+  }
+
+  /* === GRANO Y TEXTURA === */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
+  }
+
+  .mono { font-family: 'Geist Mono', monospace; }
+  .serif { font-family: 'Instrument Serif', serif; font-weight: 400; }
+
+  /* === NAV === */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(250, 250, 247, 0.85);
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    border-bottom: 1px solid rgba(20, 59, 98, 0.08);
+  }
+  .nav-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 14px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none; color: var(--ink);
+  }
+  .nav-logo-mark {
+    width: 32px; height: 32px;
+    background: var(--primary);
+    color: #fff;
+    display: grid; place-items: center;
+    font-family: 'Geist Mono', monospace;
+    font-weight: 700;
+    font-size: 14px;
+    border-radius: 4px;
+    letter-spacing: -0.5px;
+  }
+  .nav-logo-text {
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: -0.02em;
+  }
+  .nav-logo-text span { color: var(--secondary); }
+  .nav-links {
+    display: flex; gap: 4px;
+    align-items: center;
+  }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+  .nav-links a:hover { background: rgba(20, 59, 98, 0.06); }
+  .nav-cta {
+    background: var(--primary);
+    color: #fff !important;
+    padding: 9px 16px !important;
+    font-weight: 600 !important;
+    transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--primary-dark) !important; }
+  .nav-burger {
+    display: none;
+    background: none; border: none;
+    cursor: pointer; padding: 8px;
+  }
+  .nav-burger span {
+    display: block; width: 22px; height: 2px;
+    background: var(--ink); margin: 4px 0;
+    transition: 0.3s;
+  }
+
+  /* === MAX WIDTH === */
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* === HERO === */
+  .hero {
+    padding: 140px 0 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(20, 59, 98, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(20, 59, 98, 0.04) 1px, transparent 1px);
+    background-size: 80px 80px;
+    background-position: -1px -1px;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse at center top, black 30%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse at center top, black 30%, transparent 70%);
+  }
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    position: relative;
+  }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 32px;
+    padding: 6px 14px;
+    border: 1px solid rgba(20, 59, 98, 0.2);
+    border-radius: 100px;
+    background: rgba(20, 59, 98, 0.03);
+  }
+  .hero-eyebrow::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--success);
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(45, 122, 62, 0.2);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  .hero h1 {
+    font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    margin-bottom: 28px;
+  }
+  .hero h1 .serif {
+    font-style: italic;
+    color: var(--primary);
+    font-weight: 400;
+  }
+  .hero h1 .accent {
+    color: var(--secondary);
+    font-style: italic;
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+  }
+  .hero-lead {
+    font-size: 18px;
+    color: var(--tertiary);
+    line-height: 1.6;
+    margin-bottom: 40px;
+    max-width: 540px;
+  }
+  .hero-cta-group {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    margin-bottom: 48px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .btn-primary {
+    background: var(--primary);
+    color: #fff;
+  }
+  .btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(20, 59, 98, 0.25);
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--ink);
+    border-color: rgba(20, 59, 98, 0.2);
+  }
+  .btn-secondary:hover {
+    background: rgba(20, 59, 98, 0.05);
+    border-color: var(--primary);
+  }
+  .btn-orange {
+    background: var(--secondary);
+    color: #fff;
+  }
+  .btn-orange:hover {
+    background: var(--secondary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(230, 126, 34, 0.3);
+  }
+  .hero-meta {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    padding-top: 24px;
+    border-top: 1px solid rgba(20, 59, 98, 0.1);
+  }
+  .hero-meta-item {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .hero-meta-item strong {
+    color: var(--ink);
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Geist', sans-serif;
+    letter-spacing: -0.02em;
+    text-transform: none;
+  }
+
+  /* === MOCKUP DEL PHONE === */
+  .hero-mockup {
+    position: relative;
+    perspective: 1500px;
+  }
+  .phone-frame {
+    width: 100%;
+    max-width: 380px;
+    margin: 0 auto;
+    background: #1a1a2e;
+    border-radius: 36px;
+    padding: 12px;
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.1),
+      0 30px 60px -20px rgba(20, 59, 98, 0.4),
+      0 18px 36px -18px rgba(0,0,0,0.3);
+    transform: rotate(-2deg);
+    transition: transform 0.5s;
+  }
+  .phone-frame:hover { transform: rotate(0deg) scale(1.02); }
+  .phone-screen {
+    background: var(--app-bg);
+    border-radius: 26px;
+    overflow: hidden;
+    aspect-ratio: 9/19;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Geist', sans-serif;
+    color: #eeedf8;
+    font-size: 11px;
+  }
+  .phone-notch {
+    height: 24px;
+    background: var(--app-bg);
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .phone-notch::before {
+    content: '';
+    width: 80px; height: 18px;
+    background: #000;
+    border-radius: 0 0 10px 10px;
+  }
+  .phone-status {
+    display: flex; justify-content: space-between;
+    padding: 6px 18px 4px;
+    font-size: 10px;
+    color: #eeedf8;
+    font-weight: 600;
+    font-family: 'Geist Mono', monospace;
+  }
+  .phone-header {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--app-card);
+  }
+  .phone-logo-mini {
+    font-size: 13px;
+    font-weight: 900;
+    font-style: italic;
+    letter-spacing: -0.02em;
+  }
+  .phone-logo-mini span { color: var(--app-blue); }
+  .phone-logo-sub {
+    font-size: 6px;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    text-align: right;
+  }
+  .phone-chat {
+    flex: 1;
+    overflow: hidden;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .chat-bubble {
+    max-width: 80%;
+    padding: 9px 12px;
+    border-radius: 14px;
+    font-size: 10px;
+    line-height: 1.45;
+    animation: bubbleIn 0.5s ease-out backwards;
+  }
+  @keyframes bubbleIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .chat-bubble.user {
+    background: var(--app-blue);
+    color: #fff;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+    animation-delay: 0.3s;
+  }
+  .chat-bubble.bot {
+    background: var(--app-card-2);
+    border: 1px solid rgba(255,255,255,0.05);
+    color: #eeedf8;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+    animation-delay: 0.6s;
+  }
+  .chat-bubble.user-2 {
+    animation-delay: 1.0s;
+  }
+  .chat-bubble.bot-2 {
+    animation-delay: 1.3s;
+  }
+  .chat-bubble strong { color: #fff; }
+  .chat-bubble .check { color: #4ade80; }
+  .phone-input-bar {
+    padding: 10px 14px;
+    background: var(--app-card);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .phone-mic {
+    width: 28px; height: 28px;
+    background: var(--app-card-2);
+    border-radius: 50%;
+    display: grid; place-items: center;
+    color: #9ca3af;
+  }
+  .phone-input-fake {
+    flex: 1;
+    background: var(--app-card-2);
+    border-radius: 100px;
+    padding: 7px 14px;
+    color: #6b7280;
+    font-size: 10px;
+  }
+  .phone-send {
+    width: 28px; height: 28px;
+    background: var(--app-blue);
+    border-radius: 50%;
+    display: grid; place-items: center;
+    color: #fff;
+  }
+
+  /* Indicador flotante junto al mockup */
+  .float-indicator {
+    position: absolute;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 18px;
+    box-shadow: 0 12px 30px -10px rgba(20, 59, 98, 0.25);
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    z-index: 2;
+  }
+  .float-indicator.top {
+    top: 20%; left: -10%;
+    animation: floatA 4s ease-in-out infinite;
+  }
+  .float-indicator.bottom {
+    bottom: 18%; right: -8%;
+    animation: floatB 5s ease-in-out infinite;
+  }
+  @keyframes floatA {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  @keyframes floatB {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  .float-indicator .label {
+    color: var(--tertiary);
+    text-transform: uppercase;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+  .float-indicator .value {
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 16px;
+    font-family: 'Geist', sans-serif;
+    letter-spacing: -0.02em;
+  }
+  .float-indicator.success .value { color: var(--success); }
+
+  /* === SECTION LABEL === */
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 24px;
+    font-weight: 500;
+  }
+  .section-label::before {
+    content: '';
+    width: 28px; height: 1px;
+    background: var(--secondary);
+  }
+  .section-title {
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    margin-bottom: 20px;
+    max-width: 800px;
+  }
+  .section-title .serif {
+    font-style: italic;
+    color: var(--primary);
+    font-weight: 400;
+  }
+  .section-lead {
+    font-size: 17px;
+    color: var(--tertiary);
+    max-width: 640px;
+    line-height: 1.6;
+  }
+
+  /* === PROBLEMA === */
+  .problem {
+    padding: 100px 0;
+    background: var(--paper-warm);
+    border-top: 1px solid rgba(20, 59, 98, 0.08);
+    border-bottom: 1px solid rgba(20, 59, 98, 0.08);
+  }
+  .problem-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    margin-top: 60px;
+  }
+  .problem-item {
+    border-left: 2px solid var(--secondary);
+    padding-left: 20px;
+  }
+  .problem-num {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--secondary);
+    margin-bottom: 12px;
+    letter-spacing: 0.1em;
+  }
+  .problem-text {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+  .problem-text span {
+    display: block;
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--tertiary);
+  }
+
+  /* === COMO FUNCIONA === */
+  .how {
+    padding: 120px 0;
+  }
+  .how-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin-top: 80px;
+    position: relative;
+  }
+  .how-step {
+    position: relative;
+    padding: 0 32px;
+  }
+  .how-step:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    right: -12px;
+    top: 30px;
+    font-size: 32px;
+    color: var(--secondary);
+    font-family: 'Instrument Serif', serif;
+  }
+  .how-num {
+    font-family: 'Instrument Serif', serif;
+    font-size: 72px;
+    line-height: 1;
+    color: var(--primary);
+    font-style: italic;
+    margin-bottom: 24px;
+    opacity: 0.4;
+  }
+  .how-step h3 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  .how-step p {
+    color: var(--tertiary);
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .how-example {
+    background: var(--ink);
+    color: #d4d4d8;
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .how-example .prompt { color: var(--secondary); }
+  .how-example .arrow { color: #6b7280; margin: 0 4px; }
+  .how-example .result { color: #86efac; }
+
+  /* === MODULOS === */
+  .modules {
+    padding: 120px 0;
+    background: var(--ink);
+    color: var(--paper);
+    position: relative;
+    overflow: hidden;
+  }
+  .modules::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+  .modules .section-title { color: var(--paper); }
+  .modules .section-title .serif { color: var(--secondary); }
+  .modules .section-lead { color: rgba(250, 250, 247, 0.6); }
+  .modules-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    margin-top: 60px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+  }
+  .module-card {
+    background: var(--ink);
+    padding: 32px 28px;
+    transition: background 0.3s;
+    position: relative;
+    min-height: 240px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .module-card:hover {
+    background: #0d1e30;
+  }
+  .module-icon {
+    width: 40px; height: 40px;
+    margin-bottom: 20px;
+    color: var(--secondary);
+  }
+  .module-card h3 {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+  }
+  .module-card p {
+    font-size: 13px;
+    color: rgba(250, 250, 247, 0.55);
+    line-height: 1.55;
+    margin-bottom: 20px;
+  }
+  .module-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: rgba(250, 250, 247, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .module-badge {
+    background: rgba(230, 126, 34, 0.15);
+    color: var(--secondary);
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(230, 126, 34, 0.3);
+  }
+  .module-badge.live {
+    background: rgba(45, 122, 62, 0.15);
+    color: #6ee7b7;
+    border-color: rgba(45, 122, 62, 0.3);
+  }
+
+  /* === DIFERENCIADORES === */
+  .why {
+    padding: 120px 0;
+  }
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 80px;
+    align-items: start;
+    margin-top: 60px;
+  }
+  .why-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .why-item {
+    padding: 28px 0;
+    border-top: 1px solid rgba(20, 59, 98, 0.1);
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  .why-item:last-child {
+    border-bottom: 1px solid rgba(20, 59, 98, 0.1);
+  }
+  .why-item-num {
+    font-family: 'Geist Mono', monospace;
+    color: var(--secondary);
+    font-size: 12px;
+    padding-top: 4px;
+  }
+  .why-item h4 {
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .why-item p {
+    color: var(--tertiary);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* === STACK TECNOLÓGICO === */
+  .stack-card {
+    background: var(--paper-warm);
+    border: 1px solid rgba(20, 59, 98, 0.1);
+    border-radius: 12px;
+    padding: 36px;
+    position: sticky;
+    top: 100px;
+  }
+  .stack-card h3 {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 24px;
+    font-weight: 500;
+  }
+  .stack-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .stack-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px dashed rgba(20, 59, 98, 0.1);
+  }
+  .stack-item:last-child { border-bottom: none; }
+  .stack-item-name {
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: -0.01em;
+  }
+  .stack-item-role {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .stack-footer {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(20, 59, 98, 0.1);
+    font-size: 12px;
+    color: var(--tertiary);
+    line-height: 1.6;
+  }
+
+  /* === ARQUITECTURA CORPORATIVA === */
+  .corporate {
+    padding: 120px 0;
+    background: var(--paper-warm);
+    border-top: 1px solid rgba(20, 59, 98, 0.08);
+    border-bottom: 1px solid rgba(20, 59, 98, 0.08);
+  }
+  .corp-diagram {
+    margin-top: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+  .corp-node {
+    border: 1.5px solid var(--primary);
+    border-radius: 8px;
+    padding: 18px 32px;
+    background: #fff;
+    text-align: center;
+    min-width: 280px;
+    position: relative;
+    transition: transform 0.3s;
+  }
+  .corp-node:hover { transform: translateY(-3px); }
+  .corp-node.matriz {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+  }
+  .corp-node.matriz .corp-label { color: rgba(255,255,255,0.6); }
+  .corp-node.division {
+    border-color: var(--secondary);
+    background: rgba(230, 126, 34, 0.04);
+  }
+  .corp-label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--tertiary);
+    margin-bottom: 6px;
+  }
+  .corp-name {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .corp-sublabel {
+    font-size: 11px;
+    color: var(--tertiary);
+    margin-top: 4px;
+  }
+  .corp-node.matriz .corp-sublabel {
+    color: rgba(255,255,255,0.7);
+  }
+  .corp-connector {
+    width: 1.5px;
+    height: 30px;
+    background: var(--primary);
+    opacity: 0.3;
+  }
+  .corp-branch {
+    display: flex;
+    align-items: flex-start;
+    gap: 40px;
+    position: relative;
+  }
+  .corp-branch::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    left: 25%;
+    right: 25%;
+    height: 1.5px;
+    background: var(--primary);
+    opacity: 0.3;
+  }
+  .corp-branch .corp-node-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .corp-products {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-top: 60px;
+    max-width: 720px;
+    width: 100%;
+  }
+  .corp-product {
+    border: 1px solid rgba(20, 59, 98, 0.15);
+    border-radius: 12px;
+    padding: 24px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .corp-product-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--success);
+    font-weight: 600;
+  }
+  .corp-product-status.soon { color: var(--secondary); }
+  .corp-product-status::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: currentColor;
+    border-radius: 50%;
+  }
+  .corp-product h4 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+  .corp-product p {
+    font-size: 13px;
+    color: var(--tertiary);
+    line-height: 1.6;
+    flex: 1;
+  }
+  .corp-product-version {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--tertiary);
+    padding-top: 12px;
+    border-top: 1px dashed rgba(20, 59, 98, 0.1);
+  }
+
+  /* === CASOS DE USO === */
+  .cases {
+    padding: 120px 0;
+  }
+  .cases-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    margin-top: 60px;
+    background: rgba(20, 59, 98, 0.1);
+    border: 1px solid rgba(20, 59, 98, 0.1);
+  }
+  .case-card {
+    background: var(--paper);
+    padding: 36px 32px;
+    transition: background 0.3s;
+  }
+  .case-card:hover { background: var(--paper-warm); }
+  .case-icon-wrap {
+    width: 48px; height: 48px;
+    background: rgba(20, 59, 98, 0.06);
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 20px;
+    color: var(--primary);
+  }
+  .case-card h4 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  .case-card p {
+    color: var(--tertiary);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .case-quote {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--primary);
+    line-height: 1.5;
+    padding-left: 14px;
+    border-left: 2px solid var(--secondary);
+  }
+
+  /* === PRECIOS === */
+  .pricing {
+    padding: 120px 0;
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .pricing .section-title { color: var(--paper); }
+  .pricing .section-title .serif { color: var(--secondary); }
+  .pricing .section-lead { color: rgba(250, 250, 247, 0.6); }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 60px;
+  }
+  .plan {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 36px 32px;
+    position: relative;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+  .plan:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255,255,255,0.15);
+  }
+  .plan.featured {
+    background: linear-gradient(180deg, rgba(230, 126, 34, 0.08), transparent);
+    border-color: var(--secondary);
+  }
+  .plan-tag {
+    position: absolute;
+    top: -10px;
+    left: 32px;
+    background: var(--secondary);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+  }
+  .plan-soon-tag {
+    position: absolute;
+    top: -10px;
+    left: 32px;
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.8);
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .plan-name {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(250, 250, 247, 0.5);
+    margin-bottom: 16px;
+  }
+  .plan-price {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .plan-price .amount {
+    font-size: 56px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .plan-price .period {
+    color: rgba(250, 250, 247, 0.5);
+    font-size: 14px;
+  }
+  .plan-price.placeholder .amount {
+    color: rgba(250, 250, 247, 0.4);
+    font-family: 'Geist Mono', monospace;
+    font-size: 36px;
+  }
+  .plan-tagline {
+    font-size: 13px;
+    color: rgba(250, 250, 247, 0.5);
+    margin-bottom: 28px;
+    line-height: 1.5;
+  }
+  .plan-features {
+    list-style: none;
+    margin-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .plan-features li {
+    font-size: 13px;
+    color: rgba(250, 250, 247, 0.85);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.5;
+  }
+  .plan-features li::before {
+    content: '';
+    width: 14px; height: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E67E22' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+  .plan .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .plan-cta-disabled {
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.4);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    cursor: not-allowed;
+    font-family: inherit;
+  }
+  .pricing-trial-note {
+    text-align: center;
+    margin-top: 40px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: rgba(250, 250, 247, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  /* === ROADMAP / ERP === */
+  .roadmap {
+    padding: 120px 0;
+  }
+  .roadmap-card {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: #fff;
+    border-radius: 20px;
+    padding: 64px;
+    margin-top: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .roadmap-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+  .roadmap-card::after {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(230, 126, 34, 0.15), transparent 70%);
+    pointer-events: none;
+  }
+  .roadmap-inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  .roadmap-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    background: rgba(255,255,255,0.1);
+    padding: 6px 14px;
+    border-radius: 100px;
+    border: 1px solid rgba(255,255,255,0.15);
+    margin-bottom: 24px;
+  }
+  .roadmap-label::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--secondary);
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.3);
+  }
+  .roadmap-card h3 {
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+  .roadmap-card h3 .serif {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--secondary);
+  }
+  .roadmap-card p {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+  .roadmap-features {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px 24px;
+    margin-bottom: 32px;
+  }
+  .roadmap-features div {
+    font-size: 13px;
+    color: rgba(255,255,255,0.85);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .roadmap-features div::before {
+    content: '○';
+    color: var(--secondary);
+    font-size: 14px;
+  }
+  .roadmap-visual {
+    position: relative;
+  }
+  .roadmap-screen {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 20px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.7);
+    backdrop-filter: blur(10px);
+  }
+  .roadmap-screen-header {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .roadmap-screen-header span {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+  }
+  .roadmap-screen-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .roadmap-screen-line .label-rs { color: rgba(255,255,255,0.5); }
+  .roadmap-screen-line .value-rs { color: var(--secondary); font-weight: 600; }
+  .roadmap-screen-total {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    font-size: 14px;
+    color: #fff;
+  }
+
+  /* === FAQ === */
+  .faq {
+    padding: 120px 0;
+    background: var(--paper-warm);
+    border-top: 1px solid rgba(20, 59, 98, 0.08);
+  }
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 80px;
+    margin-top: 40px;
+  }
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid rgba(20, 59, 98, 0.1);
+  }
+  .faq-item {
+    border-bottom: 1px solid rgba(20, 59, 98, 0.1);
+  }
+  .faq-question {
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 24px 0;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    font-family: inherit;
+    transition: color 0.2s;
+  }
+  .faq-question:hover { color: var(--primary); }
+  .faq-question::after {
+    content: '+';
+    font-family: 'Instrument Serif', serif;
+    font-size: 28px;
+    color: var(--secondary);
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+  .faq-item.open .faq-question::after {
+    transform: rotate(45deg);
+  }
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+    color: var(--tertiary);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .faq-item.open .faq-answer {
+    max-height: 400px;
+    padding-bottom: 24px;
+  }
+
+  /* === CTA FINAL === */
+  .cta-final {
+    padding: 100px 0;
+    text-align: center;
+  }
+  .cta-final-inner {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .cta-final h2 {
+    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 24px;
+  }
+  .cta-final h2 .serif {
+    font-style: italic;
+    color: var(--primary);
+    font-weight: 400;
+  }
+  .cta-final h2 .accent {
+    color: var(--secondary);
+    font-style: italic;
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+  }
+  .cta-final p {
+    font-size: 17px;
+    color: var(--tertiary);
+    margin-bottom: 36px;
+  }
+  .cta-final-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* === FOOTER === */
+  footer {
+    background: var(--ink);
+    color: rgba(250, 250, 247, 0.7);
+    padding: 80px 0 40px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 60px;
+    margin-bottom: 60px;
+  }
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .footer-logo-mark {
+    width: 40px; height: 40px;
+    background: var(--secondary);
+    color: #fff;
+    display: grid; place-items: center;
+    font-family: 'Geist Mono', monospace;
+    font-weight: 700;
+    font-size: 16px;
+    border-radius: 6px;
+  }
+  .footer-logo-text {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #fff;
+  }
+  .footer-logo-text span { color: var(--secondary); }
+  .footer-tagline {
+    font-size: 14px;
+    color: rgba(250, 250, 247, 0.5);
+    line-height: 1.6;
+    max-width: 320px;
+  }
+  .footer-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px;
+  }
+  .footer-contact a {
+    color: rgba(250, 250, 247, 0.7);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-contact a:hover { color: var(--secondary); }
+  .footer-col h5 {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(250, 250, 247, 0.5);
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+  .footer-col ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .footer-col a {
+    color: rgba(250, 250, 247, 0.85);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+  }
+  .footer-col a:hover { color: var(--secondary); }
+  .footer-bottom {
+    padding-top: 32px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: rgba(250, 250, 247, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .footer-bottom-meta {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 1024px) {
+    .hero-inner { grid-template-columns: 1fr; gap: 60px; }
+    .hero-mockup { max-width: 360px; margin: 0 auto; }
+    .float-indicator.top { left: 0; }
+    .float-indicator.bottom { right: 0; }
+    .problem-grid { grid-template-columns: repeat(2, 1fr); }
+    .how-steps { grid-template-columns: 1fr; gap: 60px; }
+    .how-step:not(:last-child)::after { display: none; }
+    .modules-grid { grid-template-columns: repeat(2, 1fr); }
+    .why-grid { grid-template-columns: 1fr; }
+    .stack-card { position: static; }
+    .corp-branch { flex-direction: column; gap: 30px; }
+    .corp-branch::before { display: none; }
+    .corp-products { grid-template-columns: 1fr; }
+    .cases-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .roadmap-inner { grid-template-columns: 1fr; gap: 40px; }
+    .roadmap-card { padding: 40px 28px; }
+    .faq-grid { grid-template-columns: 1fr; gap: 40px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+  }
+  @media (max-width: 640px) {
+    .container { padding: 0 20px; }
+    .nav-inner { padding: 12px 20px; }
+    .nav-links { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--paper); flex-direction: column; padding: 20px; border-bottom: 1px solid var(--line); gap: 0; }
+    .nav-links.open { display: flex; }
+    .nav-links a { padding: 12px 0; border-bottom: 1px solid rgba(20, 59, 98, 0.06); }
+    .nav-links a:last-child { border-bottom: none; }
+    .nav-burger { display: block; }
+    .hero { padding: 100px 0 60px; }
+    .problem-grid { grid-template-columns: 1fr; }
+    .modules-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .footer-bottom { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .hero-meta { flex-wrap: wrap; gap: 20px; }
+    .float-indicator { display: none; }
+  }
+
+  /* Iconos SVG inline */
+  .icon { width: 1em; height: 1em; display: inline-block; vertical-align: -0.125em; fill: currentColor; }
+</style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans antialiased selection:bg-brand-accent selection:text-white">
+<body>
 
-    <header class="fixed top-0 w-full bg-white/80 backdrop-blur-md border-b border-slate-200 z-50">
-        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <div class="text-2xl font-black text-brand-dark tracking-tighter">
-                [NOMBRE_ERP]<span class="text-brand-accent">.cloud</span>
-            </div>
-            <nav class="hidden md:flex gap-8 font-medium text-slate-600">
-                <a href="#arquitectura" class="hover:text-brand-accent transition-colors">Arquitectura</a>
-                <a href="#modulos" class="hover:text-brand-accent transition-colors">Módulos</a>
-                <a href="#precios" class="hover:text-brand-accent transition-colors">Planes</a>
-            </nav>
-            <a href="#contacto" class="bg-brand-accent text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-indigo-700 transition-all shadow-md shadow-indigo-200">
-                Solicitar Demo
-            </a>
-        </div>
-    </header>
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-mark">P</div>
+      <div class="nav-logo-text">PyP<span>Cloud</span></div>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#producto">Producto</a>
+      <a href="#modulos">Módulos</a>
+      <a href="#empresa">Empresa</a>
+      <a href="#precios">Precios</a>
+      <a href="#faq">Preguntas</a>
+      <a href="https://recuerdame.pypcloud.com" class="nav-cta" target="_blank" rel="noopener">Probar gratis →</a>
+    </div>
+    <button class="nav-burger" id="navBurger" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
 
-    <section class="pt-40 pb-20 px-6 max-w-7xl mx-auto text-center">
-        <h1 class="text-5xl md:text-7xl font-black tracking-tight leading-tight mb-6 text-brand-dark">
-            El Sistema de Facturación <br />
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-brand-success">
-                Más Rápido de Venezuela.
-            </span>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="container">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-eyebrow">PyPCloud · División Tecnológica</div>
+        <h1>
+          El asistente <span class="serif">personal</span> con inteligencia <span class="accent">artificial</span> para tu día a día.
         </h1>
-        <p class="text-lg md:text-xl text-slate-500 max-w-3xl mx-auto mb-10 leading-relaxed">
-            Olvida las bases de datos corruptas, instalaciones locales pesadas y mantenimientos costosos. 
-            [NOMBRE_ERP] es una plataforma 100% Cloud, diseñada para competir y superar a los estándares de la industria.
+        <p class="hero-lead">
+          <strong style="color: var(--ink);">Recuérdame</strong> organiza tu agenda, controla tus finanzas, gestiona compras y captura recordatorios — todo desde una conversación en español. Hablas, él se encarga.
         </p>
-        <div class="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="#precios" class="bg-brand-dark text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-slate-800 transition-all">
-                Ver Planes Corporativos
-            </a>
-            <a href="#contacto" class="bg-white text-brand-dark border border-slate-200 px-8 py-4 rounded-xl font-bold text-lg hover:bg-slate-50 transition-all shadow-sm">
-                Hablar con un Arquitecto
-            </a>
+        <div class="hero-cta-group">
+          <a href="https://recuerdame.pypcloud.com" class="btn btn-orange" target="_blank" rel="noopener">
+            Probar 30 días gratis
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#producto" class="btn btn-secondary">Ver cómo funciona</a>
         </div>
-    </section>
+        <div class="hero-meta">
+          <div class="hero-meta-item">
+            <strong>30 días</strong>
+            Prueba gratuita
+          </div>
+          <div class="hero-meta-item">
+            <strong>0₿</strong>
+            Sin tarjeta
+          </div>
+          <div class="hero-meta-item">
+            <strong>Español</strong>
+            Voz nativa
+          </div>
+        </div>
+      </div>
 
-    <section id="arquitectura" class="bg-white py-24 border-y border-slate-200">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl font-black text-brand-dark mb-4">Ingeniería de Clase Mundial</h2>
-                <p class="text-slate-500 text-lg">Estructuralmente superior a los sistemas tradicionales (Profit/Saint).</p>
+      <div class="hero-mockup">
+        <div class="float-indicator top success">
+          <div class="label">Deuda registrada</div>
+          <div class="value">+ $50.00</div>
+        </div>
+        <div class="float-indicator bottom">
+          <div class="label">Cita agendada</div>
+          <div class="value">Mañana, 3:00 PM</div>
+        </div>
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <div class="phone-notch"></div>
+            <div class="phone-status">
+              <span>9:41</span>
+              <span>●●●● ▮▮▮▮</span>
             </div>
-            
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-lg transition-shadow">
-                    <div class="w-14 h-14 bg-indigo-100 text-brand-accent rounded-xl flex items-center justify-center text-2xl mb-6">⚡</div>
-                    <h3 class="text-xl font-bold text-brand-dark mb-3">PostgreSQL Backend</h3>
-                    <p class="text-slate-600 leading-relaxed">
-                        Cálculos masivos de inventario procesados directamente en el motor de base de datos. Arranque en milisegundos, cero "pantallas de carga".
-                    </p>
-                </div>
-                
-                <div class="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-lg transition-shadow">
-                    <div class="w-14 h-14 bg-emerald-100 text-brand-success rounded-xl flex items-center justify-center text-2xl mb-6">👁️</div>
-                    <h3 class="text-xl font-bold text-brand-dark mb-3">Privacidad "Modo Bancario"</h3>
-                    <p class="text-slate-600 leading-relaxed">
-                        Protección contra Shoulder Surfing. Tus métricas financieras y dashboards se mantienen difuminados hasta que autorizas su visualización.
-                    </p>
-                </div>
-
-                <div class="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-lg transition-shadow">
-                    <div class="w-14 h-14 bg-slate-200 text-slate-700 rounded-xl flex items-center justify-center text-2xl mb-6">📱</div>
-                    <h3 class="text-xl font-bold text-brand-dark mb-3">Mobile-First Estricto</h3>
-                    <p class="text-slate-600 leading-relaxed">
-                        No es una versión adaptada, es una experiencia nativa. Audita ventas, aprueba facturas y revisa cierres directamente desde tu móvil con Bottom Navigation.
-                    </p>
-                </div>
+            <div class="phone-header">
+              <div>
+                <div class="phone-logo-mini">recuérda<span>me</span></div>
+                <div class="phone-logo-sub">by PyPCloud</div>
+              </div>
+              <div style="font-size: 9px; color: #6b7280;">●●●</div>
             </div>
+            <div class="phone-chat">
+              <div class="chat-bubble user">Pedro me debe 50 dólares por la asesoría</div>
+              <div class="chat-bubble bot"><span class="check">✓</span> Deuda de <strong>$50</strong> registrada a <strong>Pedro</strong>.</div>
+              <div class="chat-bubble user user-2">Agenda cita con María mañana 3pm</div>
+              <div class="chat-bubble bot bot-2">📅 Cita con <strong>María</strong> agendada para mañana de 3:00 PM a 4:00 PM.</div>
+            </div>
+            <div class="phone-input-bar">
+              <div class="phone-mic">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+              </div>
+              <div class="phone-input-fake">Pregunta a Recuérdame...</div>
+              <div class="phone-send">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </div>
+            </div>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <section id="contacto" class="bg-brand-dark py-24 text-center px-6">
-        <div class="max-w-3xl mx-auto">
-            <h2 class="text-4xl font-black text-white mb-6">Moderniza la infraestructura de tu empresa hoy.</h2>
-            <p class="text-slate-400 mb-10 text-lg">
-                Despliegue automatizado. Cero chapucerías. Soporte técnico directo sin intermediarios.
-            </p>
-            
-            <form class="bg-white p-8 rounded-2xl shadow-2xl text-left">
-                <div class="grid grid-cols-1 gap-6 mb-6">
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Nombre de la Empresa</label>
-                        <input type="text" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent focus:outline-none transition-all" placeholder="Ej. Inversiones P&P">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Correo Corporativo</label>
-                        <input type="email" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent focus:outline-none transition-all" placeholder="gerencia@empresa.com">
-                    </div>
-                </div>
-                <button type="button" class="w-full bg-brand-accent text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-indigo-600 transition-all shadow-lg">
-                    Solicitar Despliegue de Demo
-                </button>
-                <p class="text-xs text-slate-500 text-center mt-4">Tus datos están protegidos bajo protocolos de encriptación de nivel empresarial.</p>
-            </form>
-        </div>
-    </section>
+<!-- PROBLEMA -->
+<section class="problem">
+  <div class="container">
+    <div class="section-label">El problema</div>
+    <h2 class="section-title">Demasiadas apps, papeles y notas dispersas. <span class="serif">No es organización, es ruido.</span></h2>
+    <p class="section-lead">El profesional independiente y la PyME latinoamericana pierden tiempo cada día buscando información que ya tenían. Recuérdame nace para resolver eso.</p>
 
-    <footer class="bg-[#0a0f1c] py-12 border-t border-slate-800 text-center text-slate-500 px-6">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
-            <p class="font-bold mb-4 md:mb-0">© 2026 P&P Soluciones.</p>
-            <p class="text-sm">Arquitectura de Software de Alta Disponibilidad.</p>
+    <div class="problem-grid">
+      <div class="problem-item">
+        <div class="problem-num mono">01 / Olvidos</div>
+        <div class="problem-text">
+          Clientes que deben hace meses
+          <span>Sin sistema de seguimiento, las cuentas por cobrar se enfrían.</span>
         </div>
-    </footer>
+      </div>
+      <div class="problem-item">
+        <div class="problem-num mono">02 / Dispersión</div>
+        <div class="problem-text">
+          Cinco apps diferentes
+          <span>Calendario, notas, lista de mercado, recordatorios, contabilidad básica.</span>
+        </div>
+      </div>
+      <div class="problem-item">
+        <div class="problem-num mono">03 / Fricción</div>
+        <div class="problem-text">
+          Escribir cansa
+          <span>Anotar todo a mano o a teclado roba tiempo productivo cada día.</span>
+        </div>
+      </div>
+      <div class="problem-item">
+        <div class="problem-num mono">04 / Caos</div>
+        <div class="problem-text">
+          Sin visión del negocio
+          <span>No saber cuánto te deben, cuánto debes ni qué hay para hoy.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMO FUNCIONA -->
+<section class="how" id="producto">
+  <div class="container">
+    <div class="section-label">Cómo funciona</div>
+    <h2 class="section-title">Tres pasos. <span class="serif">Cero fricción.</span></h2>
+    <p class="section-lead">Hablar es más rápido que escribir. Por eso Recuérdame entiende español natural y captura todo en segundos.</p>
+
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="how-num">01</div>
+        <h3>Hablas o escribes</h3>
+        <p>Dictas con el micrófono o escribes en lenguaje natural. Sin formularios, sin menús complejos.</p>
+        <div class="how-example">
+          <span class="prompt">"Compra 2kg de azúcar para la casa"</span>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">02</div>
+        <h3>La IA entiende</h3>
+        <p>Recuérdame interpreta tu mensaje, identifica la acción correcta y clasifica todo automáticamente.</p>
+        <div class="how-example">
+          Categoría: <span class="result">Casa</span><br>
+          Producto: <span class="result">Azúcar 2kg</span>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">03</div>
+        <h3>Todo organizado</h3>
+        <p>Tu información queda guardada, sincronizada y accesible desde cualquier dispositivo, en tiempo real.</p>
+        <div class="how-example">
+          <span class="prompt">"¿Qué tengo pendiente hoy?"</span><br>
+          <span class="arrow">→</span> <span class="result">3 citas, 2 tareas</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULOS -->
+<section class="modules" id="modulos">
+  <div class="container">
+    <div class="section-label">Módulos integrados</div>
+    <h2 class="section-title">Una plataforma. <span class="serif">Todo tu día.</span></h2>
+    <p class="section-lead">Recuérdame reemplaza media docena de apps con una sola conversación. Disponible hoy y creciendo cada mes.</p>
+
+    <div class="modules-grid">
+
+      <div class="module-card">
+        <div>
+          <svg class="module-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <h3>Agenda inteligente</h3>
+          <p>Citas y reuniones con duración, recordatorios y confirmación. Reprograma con un comando de voz.</p>
+        </div>
+        <div class="module-meta">
+          <span>M.01</span>
+          <span class="module-badge live">Activo</span>
+        </div>
+      </div>
+
+      <div class="module-card">
+        <div>
+          <svg class="module-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <h3>Cuentas por cobrar</h3>
+          <p>Registra deudas de clientes en USD o Bs. Alerta de saldos antiguos y cobro directo por WhatsApp.</p>
+        </div>
+        <div class="module-meta">
+          <span>M.02</span>
+          <span class="module-badge live">Activo</span>
+        </div>
+      </div>
+
+      <div class="module-card">
+        <div>
+          <svg class="module-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <h3>Cuentas por pagar</h3>
+          <p>Servicios fijos, facturas y pagos recurrentes. Alertas de vencimiento por semana.</p>
+        </div>
+        <div class="module-meta">
+          <span>M.03</span>
+          <span class="module-badge live">Activo</span>
+        </div>
+      </div>
+
+      <div class="module-card">
+        <div>
+          <svg class="module-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          <h3>Ingresos y gastos</h3>
+          <p>Control financiero diario y mensual de tu negocio. Visualiza utilidad real en tiempo real.</p>
+        </div>
+        <div class="module-meta">
+          <span>M.04</span>
+          <span class="module-badge">En desarrollo</span>
+        </div>
+      </div>
+
+      <div class="module-card">
+        <div>
+          <svg class="module-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          <h3>Lista de compras</h3>
+          <p>Productos categorizados por Casa, Empresa y Proveedores. Mueve ítems entre listas sin esfuerzo.</p>
+        </div>
+        <div class="module-meta">
+          <span>M.05</span>
+          <span class="module-badge live">Activo</span>
+        </div>
+      </div>
+
+      <div class="module-card">
+        <div>
+          <svg class="module-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <h3>Recordatorios por voz</h3>
+          <p>Tareas con fecha o sin ella. Crea recordatorios complejos con una sola frase hablada.</p>
+        </div>
+        <div class="module-meta">
+          <span>M.06</span>
+          <span class="module-badge live">Activo</span>
+        </div>
+      </div>
+
+      <div class="module-card">
+        <div>
+          <svg class="module-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          <h3>Notas con memoria</h3>
+          <p>Búsqueda semántica con IA. Encuentra cualquier nota aunque no recuerdes las palabras exactas.</p>
+        </div>
+        <div class="module-meta">
+          <span>M.07</span>
+          <span class="module-badge live">Activo</span>
+        </div>
+      </div>
+
+      <div class="module-card">
+        <div>
+          <svg class="module-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <h3>Chat asistente</h3>
+          <p>Pregunta lo que sea sobre tu información. "¿Quién me debe más?" o "¿Qué pagué este mes?"</p>
+        </div>
+        <div class="module-meta">
+          <span>M.08</span>
+          <span class="module-badge live">Activo</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- POR QUÉ -->
+<section class="why">
+  <div class="container">
+    <div class="section-label">Diferenciadores</div>
+    <h2 class="section-title">Construido para <span class="serif">cómo trabajas tú,</span> no para cómo trabajan en Silicon Valley.</h2>
+
+    <div class="why-grid">
+      <div>
+        <div class="stack-card">
+          <h3>Stack tecnológico</h3>
+          <div class="stack-list">
+            <div class="stack-item">
+              <span class="stack-item-name">Google Gemini AI</span>
+              <span class="stack-item-role">Inteligencia</span>
+            </div>
+            <div class="stack-item">
+              <span class="stack-item-name">Supabase</span>
+              <span class="stack-item-role">Infraestructura</span>
+            </div>
+            <div class="stack-item">
+              <span class="stack-item-name">PostgreSQL</span>
+              <span class="stack-item-role">Base de datos</span>
+            </div>
+            <div class="stack-item">
+              <span class="stack-item-name">Vector RAG</span>
+              <span class="stack-item-role">Memoria semántica</span>
+            </div>
+            <div class="stack-item">
+              <span class="stack-item-name">React PWA</span>
+              <span class="stack-item-role">Aplicación</span>
+            </div>
+            <div class="stack-item">
+              <span class="stack-item-name">TLS / RLS</span>
+              <span class="stack-item-role">Seguridad</span>
+            </div>
+          </div>
+          <div class="stack-footer">
+            Tecnología empresarial de primer nivel para PyMEs latinoamericanas. Tus datos están encriptados y aislados por usuario.
+          </div>
+        </div>
+      </div>
+
+      <div class="why-list">
+        <div class="why-item">
+          <div class="why-item-num mono">01</div>
+          <div>
+            <h4>Voz natural en español</h4>
+            <p>Reconocimiento dialectal latino. Entiende "ahorita", "ya pasó", "mañana temprano" y referencias contextuales sin gramática perfecta.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-item-num mono">02</div>
+          <div>
+            <h4>Funciona sin internet</h4>
+            <p>Modo offline con cola de mensajes. Tus comandos se procesan en cuanto recuperas la conexión, sin perder nada.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-item-num mono">03</div>
+          <div>
+            <h4>USD y Bolívares</h4>
+            <p>Multimoneda nativa. Registra deudas, gastos e ingresos en dólares o bolívares — como realmente operas en tu negocio.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-item-num mono">04</div>
+          <div>
+            <h4>Integración con WhatsApp</h4>
+            <p>Cobra deudas con un clic. Recuérdame genera el mensaje de cobro listo para enviar al cliente con monto y nombre.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-item-num mono">05</div>
+          <div>
+            <h4>Tus datos son tuyos</h4>
+            <p>Exporta toda tu información a JSON cuando quieras. Sin lock-in, sin amenazas. Es tu negocio, es tu información.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-item-num mono">06</div>
+          <div>
+            <h4>Memoria contextual</h4>
+            <p>Tecnología RAG: Recuérdame busca semánticamente en tus notas. Aunque no recuerdes la frase exacta, te encuentra lo que escribiste.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARQUITECTURA CORPORATIVA -->
+<section class="corporate" id="empresa">
+  <div class="container">
+    <div class="section-label">Estructura corporativa</div>
+    <h2 class="section-title">Una visión. <span class="serif">Un ecosistema completo.</span></h2>
+    <p class="section-lead">PyPCloud es la división tecnológica de <strong>PYP Soluciones</strong>, dedicada a construir software empresarial con inteligencia artificial para el mercado latinoamericano.</p>
+
+    <div class="corp-diagram">
+      <div class="corp-node matriz">
+        <div class="corp-label">Empresa Matriz · Est. 2025</div>
+        <div class="corp-name">PYP Soluciones</div>
+        <div class="corp-sublabel">Holding empresarial</div>
+      </div>
+
+      <div class="corp-connector"></div>
+
+      <div class="corp-node division">
+        <div class="corp-label">División Tecnológica</div>
+        <div class="corp-name">PyPCloud</div>
+        <div class="corp-sublabel">Software empresarial con IA</div>
+      </div>
+
+      <div class="corp-products">
+        <div class="corp-product">
+          <div class="corp-product-status">Disponible</div>
+          <h4>Recuérdame</h4>
+          <p>Asistente personal con inteligencia artificial. Agenda, finanzas, compras y recordatorios — todo por voz, en español.</p>
+          <div class="corp-product-version">v.1.1 · Estable · recuerdame.pypcloud.com</div>
+        </div>
+        <div class="corp-product">
+          <div class="corp-product-status soon">Próximamente</div>
+          <h4>PyPCloud ERP</h4>
+          <p>Sistema integral de facturación electrónica, inventario y administración para PyMEs. Una continuación natural del ecosistema.</p>
+          <div class="corp-product-version">v.0.1 · En desarrollo · 2026</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CASOS DE USO -->
+<section class="cases">
+  <div class="container">
+    <div class="section-label">Para quién</div>
+    <h2 class="section-title">Diseñado para profesionales <span class="serif">que llevan su negocio en la cabeza.</span></h2>
+
+    <div class="cases-grid">
+      <div class="case-card">
+        <div class="case-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <h4>Comerciantes y bodegueros</h4>
+        <p>Control de inventario por proveedor, fiados de clientes en dólares o bolívares, y agenda de pagos a distribuidores.</p>
+        <div class="case-quote">"Pedro de la bodega me dejó 3 cajas, le debo 200 dólares para el viernes."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 7h-3V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v3H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/></svg>
+        </div>
+        <h4>Profesionales independientes</h4>
+        <p>Agenda de clientes, control de honorarios cobrados y pendientes, recordatorios de seguimiento post-servicio.</p>
+        <div class="case-quote">"Cita con María mañana 3pm, consulta nutricional inicial."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h4>Freelancers y consultores</h4>
+        <p>Múltiples proyectos, múltiples clientes. Notas de reuniones recuperables al instante con búsqueda semántica.</p>
+        <div class="case-quote">"Guarda: el cliente Acme prefiere reuniones cortas los martes."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg>
+        </div>
+        <h4>Dueños de PyMEs</h4>
+        <p>Visión 360° del negocio. Cuentas por cobrar, por pagar, gastos del mes, ingresos — todo en una conversación.</p>
+        <div class="case-quote">"¿Cuánto me deben este mes? ¿Qué tengo por pagar esta semana?"</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP / ERP -->
+<section class="roadmap">
+  <div class="container">
+    <div class="section-label">Roadmap</div>
+    <h2 class="section-title">Lo que viene. <span class="serif">Más que una app.</span></h2>
+    <p class="section-lead">Recuérdame es solo el primer producto. PyPCloud está construyendo una plataforma empresarial integrada para PyMEs latinoamericanas.</p>
+
+    <div class="roadmap-card">
+      <div class="roadmap-inner">
+        <div>
+          <div class="roadmap-label">Próximamente · 2026</div>
+          <h3>PyPCloud <span class="serif">ERP</span><br>Facturación electrónica + inventario.</h3>
+          <p>Una solución integral para administrar tu PyME: facturación electrónica conforme a normativa, control de inventario en tiempo real, reportes financieros automatizados y todo el ecosistema fiscal en un solo lugar.</p>
+          <div class="roadmap-features">
+            <div>Facturación electrónica</div>
+            <div>Inventario y stock</div>
+            <div>Reportes fiscales</div>
+            <div>Multi-empresa</div>
+            <div>Multi-usuario</div>
+            <div>Integración Recuérdame</div>
+          </div>
+          <a href="mailto:soporte@pypcloud.com?subject=Interesado%20en%20PyPCloud%20ERP" class="btn btn-orange">
+            Notificarme cuando esté listo
+          </a>
+        </div>
+
+        <div class="roadmap-visual">
+          <div class="roadmap-screen">
+            <div class="roadmap-screen-header">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="roadmap-screen-line">
+              <span class="label-rs">FACTURA #00284</span>
+              <span class="value-rs">EMITIDA</span>
+            </div>
+            <div class="roadmap-screen-line">
+              <span class="label-rs">Cliente</span>
+              <span>Distribuidora ACME</span>
+            </div>
+            <div class="roadmap-screen-line">
+              <span class="label-rs">Subtotal</span>
+              <span>$ 1,250.00</span>
+            </div>
+            <div class="roadmap-screen-line">
+              <span class="label-rs">IVA 16%</span>
+              <span>$ 200.00</span>
+            </div>
+            <div class="roadmap-screen-line">
+              <span class="label-rs">Retención</span>
+              <span>$ -25.00</span>
+            </div>
+            <div class="roadmap-screen-total">
+              <strong>TOTAL: $ 1,425.00</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRECIOS -->
+<section class="pricing" id="precios">
+  <div class="container">
+    <div class="section-label">Planes</div>
+    <h2 class="section-title">Una inversión, <span class="serif">no un gasto.</span></h2>
+    <p class="section-lead">Empieza con 30 días gratis. Sin tarjeta de crédito, sin compromiso. Cancela cuando quieras y exporta toda tu información.</p>
+
+    <div class="pricing-grid">
+
+      <div class="plan featured">
+        <div class="plan-tag">Disponible</div>
+        <div class="plan-name">Plan Mensual</div>
+        <div class="plan-price placeholder">
+          <span class="amount">$ XX.XX</span>
+          <span class="period">/mes</span>
+        </div>
+        <p class="plan-tagline">Facturación mensual. Renovación automática. Cancela cuando quieras.</p>
+        <ul class="plan-features">
+          <li>Todos los módulos disponibles</li>
+          <li>Asistente IA con voz en español</li>
+          <li>Almacenamiento ilimitado</li>
+          <li>Sincronización en tiempo real</li>
+          <li>Soporte por email y WhatsApp</li>
+          <li>Exportación de datos sin restricciones</li>
+        </ul>
+        <a href="https://recuerdame.pypcloud.com" class="btn btn-orange" target="_blank" rel="noopener">
+          Empezar prueba gratis
+        </a>
+      </div>
+
+      <div class="plan">
+        <div class="plan-soon-tag">Próximamente</div>
+        <div class="plan-name">Plan Trimestral</div>
+        <div class="plan-price placeholder">
+          <span class="amount">$ XX.XX</span>
+          <span class="period">/3 meses</span>
+        </div>
+        <p class="plan-tagline">Ahorra pagando trimestral. Mejor inversión para profesionales constantes.</p>
+        <ul class="plan-features">
+          <li>Todo lo del plan mensual</li>
+          <li>Descuento sobre el precio mensual</li>
+          <li>Soporte prioritario</li>
+          <li>Acceso anticipado a nuevos módulos</li>
+        </ul>
+        <button class="plan-cta-disabled" disabled>Disponible pronto</button>
+      </div>
+
+      <div class="plan">
+        <div class="plan-soon-tag">Próximamente</div>
+        <div class="plan-name">Plan Anual</div>
+        <div class="plan-price placeholder">
+          <span class="amount">$ XX.XX</span>
+          <span class="period">/año</span>
+        </div>
+        <p class="plan-tagline">Máximo descuento. Para quienes ya saben que Recuérdame es parte de su rutina.</p>
+        <ul class="plan-features">
+          <li>Todo lo del plan trimestral</li>
+          <li>Mejor descuento del catálogo</li>
+          <li>Soporte VIP por WhatsApp directo</li>
+          <li>Acceso temprano a PyPCloud ERP</li>
+        </ul>
+        <button class="plan-cta-disabled" disabled>Disponible pronto</button>
+      </div>
+
+    </div>
+
+    <p class="pricing-trial-note">+ 30 días de prueba gratuita en cualquier plan · Sin tarjeta de crédito</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="section-label">Preguntas frecuentes</div>
+    <h2 class="section-title">Lo que <span class="serif">probablemente te preguntas.</span></h2>
+
+    <div class="faq-grid">
+      <div>
+        <p style="color: var(--tertiary); font-size: 15px; line-height: 1.7;">
+          Si tu duda no está aquí, escríbenos directamente a <strong style="color: var(--primary);">soporte@pypcloud.com</strong> o por WhatsApp al <strong style="color: var(--primary);">+58 414-028-5806</strong>. Te respondemos en menos de 24 horas hábiles.
+        </p>
+      </div>
+
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question">¿Mis datos están seguros?</button>
+          <div class="faq-answer" style="padding-top: 0;">
+            Sí. Toda la información se almacena en Supabase con encriptación TLS en tránsito y Row-Level Security en la base de datos. Solo tú accedes a tus datos. Además, puedes exportar todo a un archivo JSON cuando quieras — sin lock-in.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">¿Funciona sin internet?</button>
+          <div class="faq-answer" style="padding-top: 0;">
+            Sí. Recuérdame tiene modo offline con cola de mensajes. Si pierdes conexión, tus comandos quedan en espera y se procesan automáticamente cuando vuelves a estar en línea. Nada se pierde.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">¿Necesito instalar algo?</button>
+          <div class="faq-answer" style="padding-top: 0;">
+            No. Recuérdame es una aplicación web progresiva (PWA): se ejecuta en tu navegador (Chrome, Safari, Edge, Firefox) y opcionalmente puedes "instalarla" en la pantalla de inicio de tu teléfono como cualquier app nativa.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">¿En qué dispositivos funciona?</button>
+          <div class="faq-answer" style="padding-top: 0;">
+            En cualquiera con un navegador moderno: Android, iPhone, iPad, PC con Windows, Mac, Linux. La misma cuenta sincroniza tu información en todos tus dispositivos en tiempo real.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">¿Puedo dictar con la voz?</button>
+          <div class="faq-answer" style="padding-top: 0;">
+            Sí, es uno de los pilares de Recuérdame. Usa el micrófono con un toque corto (para revisar antes de enviar) o un toque largo (graba y envía directo al soltar). Reconoce español latino con acentos regionales.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">¿Qué pasa cuando acaban los 30 días de prueba?</button>
+          <div class="faq-answer" style="padding-top: 0;">
+            Si decides no suscribirte, conservas el acceso para descargar todos tus datos en formato JSON. Nunca eliminamos tu información sin avisarte. Si te suscribes, todo continúa sin interrupción.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">¿La IA me espía o entrena con mis datos?</button>
+          <div class="faq-answer" style="padding-top: 0;">
+            No. Recuérdame usa Google Gemini AI únicamente para procesar tus comandos en tiempo real. Tus datos personales, deudas, citas y notas no se usan para entrenar modelos. Son tuyos, punto.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">¿Hay soporte humano o solo IA?</button>
+          <div class="faq-answer" style="padding-top: 0;">
+            Hay soporte humano real. Escríbenos a soporte@pypcloud.com o por WhatsApp y un miembro de nuestro equipo te responde personalmente en 24-48 horas hábiles.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">¿Aceptan pagos en bolívares o solo dólares?</button>
+          <div class="faq-answer" style="padding-top: 0;">
+            Aceptamos ambas opciones. Los métodos de pago y precios exactos se confirman al activar tu suscripción. Contáctanos para coordinar el método que mejor te funcione.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <div class="container">
+    <div class="cta-final-inner">
+      <h2>Tu negocio en una <span class="serif">conversación.</span><br>Empieza <span class="accent">hoy.</span></h2>
+      <p>30 días gratis. Sin tarjeta de crédito. Sin compromiso. Solo el tiempo que necesitas para descubrir cómo se siente trabajar con un asistente que de verdad te entiende.</p>
+      <div class="cta-final-buttons">
+        <a href="https://recuerdame.pypcloud.com" class="btn btn-primary" target="_blank" rel="noopener">
+          Crear mi cuenta gratis
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+        <a href="https://wa.me/584140285806?text=Hola,%20quiero%20más%20información%20sobre%20Recuérdame" class="btn btn-secondary" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/></svg>
+          Hablar por WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="footer-logo-mark">P</div>
+          <div class="footer-logo-text">PyP<span>Cloud</span></div>
+        </div>
+        <p class="footer-tagline">División tecnológica de PYP Soluciones. Construimos software empresarial con inteligencia artificial para el mercado latinoamericano.</p>
+        <div class="footer-contact">
+          <a href="mailto:soporte@pypcloud.com">soporte@pypcloud.com</a>
+          <a href="https://wa.me/584140285806" target="_blank" rel="noopener">+58 414-028-5806</a>
+          <a href="https://recuerdame.pypcloud.com" target="_blank" rel="noopener">recuerdame.pypcloud.com</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h5>Producto</h5>
+        <ul>
+          <li><a href="#producto">Cómo funciona</a></li>
+          <li><a href="#modulos">Módulos</a></li>
+          <li><a href="#precios">Precios</a></li>
+          <li><a href="https://recuerdame.pypcloud.com" target="_blank" rel="noopener">Probar gratis</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Empresa</h5>
+        <ul>
+          <li><a href="#empresa">PYP Soluciones</a></li>
+          <li><a href="#empresa">División PyPCloud</a></li>
+          <li><a href="#empresa">Roadmap</a></li>
+          <li><a href="mailto:soporte@pypcloud.com">Contacto</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Soporte</h5>
+        <ul>
+          <li><a href="#faq">Preguntas frecuentes</a></li>
+          <li><a href="mailto:soporte@pypcloud.com">Email de soporte</a></li>
+          <li><a href="https://wa.me/584140285806" target="_blank" rel="noopener">WhatsApp directo</a></li>
+          <li><a href="https://recuerdame.pypcloud.com" target="_blank" rel="noopener">Acceder a Recuérdame</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div>© 2025–<span id="currentYear">2026</span> PYP Soluciones · Todos los derechos reservados</div>
+      <div class="footer-bottom-meta">
+        <span>PyPCloud v.2026.1</span>
+        <span>Hecho en Latinoamérica</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Año actual
+  document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+  // Menú móvil
+  const burger = document.getElementById('navBurger');
+  const navLinks = document.getElementById('navLinks');
+  burger?.addEventListener('click', () => navLinks.classList.toggle('open'));
+  navLinks?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+  // FAQ acordeón
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const btn = item.querySelector('.faq-question');
+    btn.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+</script>
 
 </body>
 </html>
