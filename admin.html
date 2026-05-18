@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración · Recuérdame</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .fade-in { animation: fadeIn 0.2s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .badge { padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+        .badge-active { background: #d1fae5; color: #065f46; }
+        .badge-trial { background: #fef3c7; color: #92400e; }
+        .badge-expired { background: #fee2e2; color: #991b1b; }
+        .badge-cancelled { background: #f3f4f6; color: #4b5563; }
+        .badge-admin { background: #ede9fe; color: #5b21b6; }
+        .skeleton { background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+    <!-- LOGIN GATE (oculto si ya autenticado y admin) -->
+    <div id="login-gate" class="fixed inset-0 bg-slate-900 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm fade-in">
+            <div class="text-center mb-4">
+                <div class="inline-block bg-slate-900 text-white p-3 rounded-xl mb-3">
+                    <i class="fa-solid fa-shield-halved text-2xl"></i>
+                </div>
+                <h2 class="text-lg font-black text-slate-900">Panel de Administración</h2>
+                <p class="text-xs text-slate-500 mt-1">Solo usuarios autorizados</p>
+            </div>
+            <div id="login-error" class="hidden bg-red-50 border border-red-200 text-red-700 text-xs p-2 rounded mb-3 font-semibold"></div>
+            <input id="login-email" type="email" placeholder="Email" class="w-full border border-slate-200 rounded px-3 py-2 text-sm mb-2 outline-none focus:border-slate-900" autocomplete="email">
+            <input id="login-pass" type="password" placeholder="Contraseña" class="w-full border border-slate-200 rounded px-3 py-2 text-sm mb-3 outline-none focus:border-slate-900" autocomplete="current-password">
+            <button onclick="iniciarSesion()" id="btn-login" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 rounded text-sm uppercase tracking-wide transition">Ingresar</button>
+            <div class="text-center mt-3">
+                <a href="index.html" class="text-[10px] text-slate-400 hover:text-slate-600 uppercase">Volver a la app</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="admin-panel" class="hidden">
+        <!-- Header -->
+        <header class="bg-slate-900 text-white px-6 py-3 flex justify-between items-center shadow-lg">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-shield-halved text-purple-400 text-xl"></i>
+                <div>
+                    <h1 class="font-black text-sm tracking-wide">PANEL DE ADMINISTRACIÓN</h1>
+                    <p class="text-[10px] text-slate-400 uppercase tracking-widest" id="admin-greeting">Recuérdame</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="text-[11px] text-slate-300 hover:text-white uppercase tracking-wide transition"><i class="fa-solid fa-arrow-left mr-1"></i> Volver a la app</a>
+                <button onclick="cerrarSesion()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded text-[11px] font-bold uppercase tracking-wide transition"><i class="fa-solid fa-right-from-bracket mr-1"></i> Salir</button>
+            </div>
+        </header>
+
+        <main class="p-6">
+            <!-- KPIs -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+                <div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200">
+                    <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Total Usuarios</div>
+                    <div class="text-2xl font-black text-slate-900 mt-1" id="kpi-total">—</div>
+                </div>
+                <div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200 border-l-4 border-l-green-500">
+                    <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Activos</div>
+                    <div class="text-2xl font-black text-green-600 mt-1" id="kpi-activos">—</div>
+                </div>
+                <div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200 border-l-4 border-l-amber-500">
+                    <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">En Trial</div>
+                    <div class="text-2xl font-black text-amber-600 mt-1" id="kpi-trial">—</div>
+                </div>
+                <div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200 border-l-4 border-l-red-500">
+                    <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Expirados</div>
+                    <div class="text-2xl font-black text-red-600 mt-1" id="kpi-expirados">—</div>
+                </div>
+                <div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200 border-l-4 border-l-slate-400">
+                    <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Cancelados</div>
+                    <div class="text-2xl font-black text-slate-500 mt-1" id="kpi-cancelados">—</div>
+                </div>
+                <div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200 border-l-4 border-l-purple-500">
+                    <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Nuevos (30d)</div>
+                    <div class="text-2xl font-black text-purple-600 mt-1" id="kpi-nuevos">—</div>
+                </div>
+            </div>
+
+            <!-- Filtros + Buscador -->
+            <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-3 mb-3 flex flex-wrap items-center gap-2">
+                <div class="flex-1 min-w-[200px] relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                    <input type="text" id="search-input" oninput="filtrar()" placeholder="Buscar por nombre, email o empresa..." class="w-full border border-slate-200 rounded pl-9 pr-3 py-2 text-sm outline-none focus:border-slate-900">
+                </div>
+                <select id="filter-status" onchange="filtrar()" class="border border-slate-200 rounded px-3 py-2 text-xs font-bold uppercase tracking-wide outline-none focus:border-slate-900">
+                    <option value="TODOS">Todos los estados</option>
+                    <option value="activo">Solo activos</option>
+                    <option value="trial">Solo en trial</option>
+                    <option value="trial_expirado">Trial expirado</option>
+                    <option value="expirado">Suscripción expirada</option>
+                    <option value="cancelado">Cancelados</option>
+                    <option value="admin">Administradores</option>
+                </select>
+                <button onclick="cargarUsuarios()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded text-xs font-bold uppercase tracking-wide transition"><i class="fa-solid fa-rotate"></i> Refrescar</button>
+            </div>
+
+            <!-- Tabla -->
+            <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                <div class="overflow-x-auto custom-scroll">
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-50 border-b border-slate-200">
+                            <tr class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                                <th class="px-4 py-3 text-left">Usuario</th>
+                                <th class="px-4 py-3 text-left">Email</th>
+                                <th class="px-4 py-3 text-left">Empresa</th>
+                                <th class="px-4 py-3 text-center">Estado</th>
+                                <th class="px-4 py-3 text-right">Vence en</th>
+                                <th class="px-4 py-3 text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-usuarios" class="divide-y divide-slate-100">
+                            <tr><td colspan="6" class="p-10 text-center text-slate-400">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="px-4 py-2 bg-slate-50 border-t border-slate-200 text-[10px] text-slate-500 font-semibold uppercase tracking-wide">
+                    <span id="contador-resultados">0 usuarios</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL DETALLE USUARIO -->
+    <div id="modal-detalle" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-40 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[95vh] overflow-hidden flex flex-col fade-in">
+            <div class="bg-slate-900 text-white px-5 py-3 flex justify-between items-center">
+                <h3 class="font-black text-sm tracking-wide"><i class="fa-solid fa-user mr-2"></i> <span id="md-titulo">Detalle de usuario</span></h3>
+                <button onclick="cerrarModalDetalle()" class="text-white hover:text-slate-300 transition"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="p-5 overflow-y-auto custom-scroll space-y-4">
+
+                <!-- Info -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                        <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Nombre</div>
+                        <div id="md-nombre" class="text-sm font-bold text-slate-900 mt-1">—</div>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                        <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Email</div>
+                        <div id="md-email" class="text-sm font-mono text-slate-900 mt-1 break-all">—</div>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                        <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Empresa</div>
+                        <div id="md-empresa" class="text-sm font-bold text-slate-900 mt-1">—</div>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                        <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Estado actual</div>
+                        <div id="md-estado" class="mt-1">—</div>
+                    </div>
+                </div>
+
+                <!-- Suscripción -->
+                <div class="bg-blue-50 border border-blue-200 rounded p-3">
+                    <div class="text-[10px] font-black text-blue-900 uppercase tracking-widest mb-2"><i class="fa-solid fa-credit-card mr-1"></i> Suscripción</div>
+                    <div id="md-suscripcion" class="text-xs text-slate-700">Cargando...</div>
+                </div>
+
+                <!-- Actividad -->
+                <div class="bg-purple-50 border border-purple-200 rounded p-3">
+                    <div class="text-[10px] font-black text-purple-900 uppercase tracking-widest mb-2"><i class="fa-solid fa-chart-line mr-1"></i> Actividad</div>
+                    <div id="md-actividad" class="grid grid-cols-3 gap-2 text-xs">Cargando...</div>
+                </div>
+
+                <!-- Acciones -->
+                <div class="border-t border-slate-200 pt-4">
+                    <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Acciones rápidas</div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="accionActivar(1)" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded text-xs uppercase tracking-wide transition"><i class="fa-solid fa-check mr-1"></i> Activar 1 mes</button>
+                        <button onclick="accionActivar(3)" class="bg-green-700 hover:bg-green-800 text-white font-bold py-2 rounded text-xs uppercase tracking-wide transition"><i class="fa-solid fa-check mr-1"></i> Activar 3 meses</button>
+                        <button onclick="accionActivar(12)" class="bg-green-800 hover:bg-green-900 text-white font-bold py-2 rounded text-xs uppercase tracking-wide transition"><i class="fa-solid fa-star mr-1"></i> Activar 1 año</button>
+                        <button onclick="accionExtenderTrial(7)" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 rounded text-xs uppercase tracking-wide transition"><i class="fa-solid fa-clock-rotate-left mr-1"></i> +7 días trial</button>
+                        <button onclick="accionExtenderTrial(15)" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded text-xs uppercase tracking-wide transition"><i class="fa-solid fa-clock-rotate-left mr-1"></i> +15 días trial</button>
+                        <button onclick="accionCancelar()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded text-xs uppercase tracking-wide transition"><i class="fa-solid fa-ban mr-1"></i> Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST de notificación -->
+    <div id="toast" class="fixed top-4 right-4 z-50 hidden">
+        <div id="toast-content" class="bg-slate-900 text-white px-4 py-2 rounded shadow-lg text-sm font-bold">—</div>
+    </div>
+
+
+<script>
+// =============================================================================
+// CONFIGURACIÓN — ajusta estos valores al de TU proyecto Supabase
+// =============================================================================
+const SUPABASE_URL = 'https://TU-PROYECTO.supabase.co';   // ⚠️ CAMBIAR
+const SUPABASE_KEY = 'TU-ANON-KEY-AQUI';                  // ⚠️ CAMBIAR
+
+let TOKEN_JWT = null;
+let USUARIOS = [];
+let USUARIO_ACTUAL_MODAL = null;
+
+// =============================================================================
+// LOGIN
+// =============================================================================
+async function iniciarSesion() {
+    const email = document.getElementById('login-email').value.trim();
+    const pass = document.getElementById('login-pass').value;
+    const errBox = document.getElementById('login-error');
+    const btn = document.getElementById('btn-login');
+    errBox.classList.add('hidden');
+    if (!email || !pass) { errBox.textContent = 'Completa email y contraseña'; errBox.classList.remove('hidden'); return; }
+    btn.disabled = true; btn.textContent = 'Ingresando...';
+
+    try {
+        const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+            method: 'POST',
+            headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password: pass })
+        });
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.error_description || err.message || 'Credenciales inválidas');
+        }
+        const data = await res.json();
+        TOKEN_JWT = data.access_token;
+        localStorage.setItem('admin_jwt', TOKEN_JWT);
+
+        // Verificar que sea admin
+        const esAdmin = await verificarAdmin();
+        if (!esAdmin) {
+            localStorage.removeItem('admin_jwt');
+            TOKEN_JWT = null;
+            throw new Error('Tu usuario no tiene permisos de administrador');
+        }
+
+        document.getElementById('login-gate').classList.add('hidden');
+        document.getElementById('admin-panel').classList.remove('hidden');
+        document.getElementById('admin-greeting').textContent = `Bienvenido · ${email}`;
+        await cargarTodo();
+    } catch (e) {
+        errBox.textContent = e.message;
+        errBox.classList.remove('hidden');
+    } finally {
+        btn.disabled = false; btn.textContent = 'Ingresar';
+    }
+}
+
+async function verificarAdmin() {
+    try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/es_admin`, {
+            method: 'POST',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${TOKEN_JWT}`, 'Content-Type': 'application/json' },
+            body: '{}'
+        });
+        if (!res.ok) return false;
+        const result = await res.json();
+        return result === true;
+    } catch { return false; }
+}
+
+function cerrarSesion() {
+    localStorage.removeItem('admin_jwt');
+    TOKEN_JWT = null;
+    location.reload();
+}
+
+// =============================================================================
+// CARGA DE DATOS
+// =============================================================================
+async function cargarTodo() {
+    await Promise.all([cargarStats(), cargarUsuarios()]);
+}
+
+async function cargarStats() {
+    try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/admin_stats`, {
+            method: 'POST',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${TOKEN_JWT}`, 'Content-Type': 'application/json' },
+            body: '{}'
+        });
+        if (!res.ok) throw new Error('No se pudo cargar stats');
+        const s = await res.json();
+        document.getElementById('kpi-total').textContent = s.total_usuarios || 0;
+        document.getElementById('kpi-activos').textContent = s.sub_activos || 0;
+        document.getElementById('kpi-trial').textContent = s.sub_trial || 0;
+        document.getElementById('kpi-expirados').textContent = s.sub_expirados || 0;
+        document.getElementById('kpi-cancelados').textContent = s.sub_cancelados || 0;
+        document.getElementById('kpi-nuevos').textContent = s.nuevos_mes || 0;
+    } catch (e) { console.error(e); }
+}
+
+async function cargarUsuarios() {
+    try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/admin_usuarios_view?select=*&order=updated_at.desc.nullslast`, {
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${TOKEN_JWT}` }
+        });
+        if (!res.ok) throw new Error('No se pudo cargar usuarios');
+        USUARIOS = await res.json();
+        filtrar();
+    } catch (e) {
+        document.getElementById('tabla-usuarios').innerHTML = `<tr><td colspan="6" class="p-10 text-center text-red-500 text-xs font-bold">${e.message}</td></tr>`;
+    }
+}
+
+// =============================================================================
+// FILTROS Y RENDER
+// =============================================================================
+function filtrar() {
+    const q = document.getElementById('search-input').value.trim().toLowerCase();
+    const f = document.getElementById('filter-status').value;
+    let datos = USUARIOS;
+    if (q) {
+        datos = datos.filter(u =>
+            (u.email||'').toLowerCase().includes(q) ||
+            (u.full_name||'').toLowerCase().includes(q) ||
+            (u.display_name||'').toLowerCase().includes(q) ||
+            (u.company_name||'').toLowerCase().includes(q)
+        );
+    }
+    if (f !== 'TODOS') {
+        if (f === 'admin') datos = datos.filter(u => u.is_admin === true);
+        else datos = datos.filter(u => u.estado_calculado === f);
+    }
+    renderTabla(datos);
+    document.getElementById('contador-resultados').textContent = `${datos.length} usuario${datos.length !== 1 ? 's' : ''}`;
+}
+
+function renderTabla(datos) {
+    const tbody = document.getElementById('tabla-usuarios');
+    if (datos.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="p-10 text-center text-slate-400 text-xs font-bold uppercase">No se encontraron usuarios</td></tr>`;
+        return;
+    }
+    tbody.innerHTML = datos.map(u => {
+        const nombre = u.full_name || u.display_name || '(sin nombre)';
+        const inicial = (nombre[0] || '?').toUpperCase();
+        const badgeEstado = renderBadge(u);
+        const diasTxt = u.dias_restantes !== null
+            ? (u.dias_restantes > 0 ? `<span class="text-green-700 font-bold">${u.dias_restantes} días</span>` : `<span class="text-red-600 font-bold">Expirado</span>`)
+            : '<span class="text-slate-400">—</span>';
+        return `<tr class="hover:bg-slate-50 transition">
+            <td class="px-4 py-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-black text-xs">${inicial}</div>
+                    <div>
+                        <div class="font-bold text-slate-900 text-sm">${escapeHtml(nombre)}</div>
+                        ${u.is_admin ? '<span class="badge badge-admin">Admin</span>' : ''}
+                    </div>
+                </div>
+            </td>
+            <td class="px-4 py-3 text-xs text-slate-600 font-mono">${escapeHtml(u.email || '—')}</td>
+            <td class="px-4 py-3 text-xs text-slate-700">${escapeHtml(u.company_name || '—')}</td>
+            <td class="px-4 py-3 text-center">${badgeEstado}</td>
+            <td class="px-4 py-3 text-right text-xs">${diasTxt}</td>
+            <td class="px-4 py-3 text-center">
+                <button onclick="verDetalle('${u.id}')" class="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1 rounded text-[10px] font-bold uppercase tracking-wide transition"><i class="fa-solid fa-eye mr-1"></i> Ver</button>
+            </td>
+        </tr>`;
+    }).join('');
+}
+
+function renderBadge(u) {
+    const e = u.estado_calculado;
+    const labels = {
+        'activo': ['badge-active', 'Activo'],
+        'trial': ['badge-trial', 'Trial'],
+        'trial_expirado': ['badge-expired', 'Trial Exp.'],
+        'expirado': ['badge-expired', 'Expirado'],
+        'cancelado': ['badge-cancelled', 'Cancelado'],
+        'admin': ['badge-admin', 'Admin'],
+        'sin_suscripcion': ['badge-cancelled', 'Sin Sub.']
+    };
+    const [clase, txt] = labels[e] || ['badge-cancelled', e];
+    return `<span class="badge ${clase}">${txt}</span>`;
+}
+
+// =============================================================================
+// MODAL DETALLE
+// =============================================================================
+async function verDetalle(userId) {
+    USUARIO_ACTUAL_MODAL = USUARIOS.find(u => u.id === userId);
+    if (!USUARIO_ACTUAL_MODAL) return;
+    const u = USUARIO_ACTUAL_MODAL;
+
+    document.getElementById('md-titulo').textContent = u.full_name || u.email || 'Usuario';
+    document.getElementById('md-nombre').textContent = u.full_name || u.display_name || '(sin nombre)';
+    document.getElementById('md-email').textContent = u.email || '—';
+    document.getElementById('md-empresa').textContent = u.company_name || '—';
+    document.getElementById('md-estado').innerHTML = renderBadge(u);
+
+    // Suscripción
+    const subInfo = [];
+    if (u.sub_status) subInfo.push(`<div><b>Estado:</b> ${u.sub_status}</div>`);
+    if (u.trial_ends_at) subInfo.push(`<div><b>Trial vence:</b> ${new Date(u.trial_ends_at).toLocaleDateString('es-ES')}</div>`);
+    if (u.current_period_ends_at) subInfo.push(`<div><b>Período vence:</b> ${new Date(u.current_period_ends_at).toLocaleDateString('es-ES')}</div>`);
+    if (u.dias_restantes !== null) subInfo.push(`<div><b>Días restantes:</b> ${u.dias_restantes}</div>`);
+    if (subInfo.length === 0) subInfo.push('<div class="text-slate-400 italic">Sin suscripción registrada</div>');
+    document.getElementById('md-suscripcion').innerHTML = subInfo.join('');
+
+    document.getElementById('md-actividad').innerHTML = '<div class="col-span-3 text-slate-400">Cargando actividad...</div>';
+    document.getElementById('modal-detalle').classList.remove('hidden');
+    document.getElementById('modal-detalle').classList.add('flex');
+
+    // Cargar actividad async
+    try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/admin_user_activity`, {
+            method: 'POST',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${TOKEN_JWT}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ p_user_id: userId })
+        });
+        if (!res.ok) throw new Error('No se pudo cargar actividad');
+        const a = await res.json();
+        document.getElementById('md-actividad').innerHTML = `
+            <div class="bg-white p-2 rounded border border-purple-200">
+                <div class="text-[9px] font-bold text-purple-500 uppercase">Citas</div>
+                <div class="text-xl font-black text-purple-900">${a.appointments || 0}</div>
+            </div>
+            <div class="bg-white p-2 rounded border border-purple-200">
+                <div class="text-[9px] font-bold text-purple-500 uppercase">Recordatorios</div>
+                <div class="text-xl font-black text-purple-900">${a.reminders || 0}</div>
+                <div class="text-[9px] text-purple-600">${a.reminders_pendientes||0} pendientes</div>
+            </div>
+            <div class="bg-white p-2 rounded border border-purple-200">
+                <div class="text-[9px] font-bold text-purple-500 uppercase">Deudas</div>
+                <div class="text-xl font-black text-purple-900">${a.debts || 0}</div>
+                <div class="text-[9px] text-purple-600">${a.debts_pendientes||0} pendientes</div>
+            </div>
+            <div class="bg-white p-2 rounded border border-purple-200">
+                <div class="text-[9px] font-bold text-purple-500 uppercase">Contactos</div>
+                <div class="text-xl font-black text-purple-900">${a.contacts || 0}</div>
+            </div>
+            <div class="bg-white p-2 rounded border border-purple-200">
+                <div class="text-[9px] font-bold text-purple-500 uppercase">Notas</div>
+                <div class="text-xl font-black text-purple-900">${a.notes || 0}</div>
+            </div>
+            <div class="bg-white p-2 rounded border border-purple-200">
+                <div class="text-[9px] font-bold text-purple-500 uppercase">Compras</div>
+                <div class="text-xl font-black text-purple-900">${a.shopping_items || 0}</div>
+            </div>`;
+    } catch (e) {
+        document.getElementById('md-actividad').innerHTML = `<div class="col-span-3 text-red-500 text-xs">${e.message}</div>`;
+    }
+}
+
+function cerrarModalDetalle() {
+    document.getElementById('modal-detalle').classList.add('hidden');
+    document.getElementById('modal-detalle').classList.remove('flex');
+    USUARIO_ACTUAL_MODAL = null;
+}
+
+// =============================================================================
+// ACCIONES
+// =============================================================================
+async function accionActivar(meses) {
+    if (!USUARIO_ACTUAL_MODAL) return;
+    if (!confirm(`¿Activar licencia de ${meses} mes${meses>1?'es':''} para ${USUARIO_ACTUAL_MODAL.email}?`)) return;
+    await llamarRPC('admin_activar_licencia', { p_user_id: USUARIO_ACTUAL_MODAL.id, p_meses: meses }, `✅ Licencia activada por ${meses} mes${meses>1?'es':''}`);
+}
+
+async function accionExtenderTrial(dias) {
+    if (!USUARIO_ACTUAL_MODAL) return;
+    if (!confirm(`¿Extender trial por ${dias} días a ${USUARIO_ACTUAL_MODAL.email}?`)) return;
+    await llamarRPC('admin_extender_trial', { p_user_id: USUARIO_ACTUAL_MODAL.id, p_dias: dias }, `✅ Trial extendido ${dias} días`);
+}
+
+async function accionCancelar() {
+    if (!USUARIO_ACTUAL_MODAL) return;
+    if (!confirm(`⚠️ ¿Cancelar suscripción de ${USUARIO_ACTUAL_MODAL.email}?`)) return;
+    await llamarRPC('admin_cancelar_suscripcion', { p_user_id: USUARIO_ACTUAL_MODAL.id }, `🚫 Suscripción cancelada`);
+}
+
+async function llamarRPC(funcion, params, mensajeOk) {
+    try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${funcion}`, {
+            method: 'POST',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${TOKEN_JWT}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify(params)
+        });
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.message || err.hint || 'Error desconocido');
+        }
+        toast(mensajeOk, 'ok');
+        cerrarModalDetalle();
+        await cargarTodo();
+    } catch (e) {
+        toast(`❌ ${e.message}`, 'err');
+    }
+}
+
+// =============================================================================
+// UTILIDADES
+// =============================================================================
+function escapeHtml(s) { return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+
+function toast(msg, tipo) {
+    const t = document.getElementById('toast');
+    const c = document.getElementById('toast-content');
+    c.textContent = msg;
+    c.className = tipo === 'err' ? 'bg-red-600 text-white px-4 py-2 rounded shadow-lg text-sm font-bold' : 'bg-green-600 text-white px-4 py-2 rounded shadow-lg text-sm font-bold';
+    t.classList.remove('hidden');
+    setTimeout(() => t.classList.add('hidden'), 3500);
+}
+
+// =============================================================================
+// INIT: si hay JWT guardado, intentar usar
+// =============================================================================
+(async function init() {
+    const t = localStorage.getItem('admin_jwt');
+    if (t) {
+        TOKEN_JWT = t;
+        const esAdmin = await verificarAdmin();
+        if (esAdmin) {
+            document.getElementById('login-gate').classList.add('hidden');
+            document.getElementById('admin-panel').classList.remove('hidden');
+            await cargarTodo();
+        } else {
+            localStorage.removeItem('admin_jwt');
+            TOKEN_JWT = null;
+        }
+    }
+})();
+</script>
+
+</body>
+</html>
