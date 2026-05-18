@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iniciar sesión · PyPCloud</title>
+<meta name="description" content="Accede a tu cuenta de PyPCloud. Software empresarial con IA seguro y confiable.">
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --primary: #143B62;
+    --primary-dark: #0d2942;
+    --primary-light: #1f5189;
+    --secondary: #E67E22;
+    --secondary-dark: #c66818;
+    --tertiary: #64748b;
+    --ink: #0a1828;
+    --paper: #fafaf7;
+    --paper-warm: #f5f3ed;
+    --line: #d4cfc1;
+    --success: #2d7a3e;
+    --error: #dc2626;
+    --error-bg: #fef2f2;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-font-smoothing: antialiased; height: 100%; }
+  body {
+    font-family: 'Geist', -apple-system, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.5;
+    min-height: 100%;
+    font-feature-settings: 'ss01', 'ss02', 'cv11';
+  }
+
+  /* Grano sutil */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
+  }
+
+  .mono { font-family: 'Geist Mono', monospace; }
+  .serif { font-family: 'Instrument Serif', serif; font-weight: 400; }
+
+  /* ========== LAYOUT SPLIT ========== */
+  .login-shell {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* ========== PANEL IZQUIERDO (BRANDING) ========== */
+  .brand-panel {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: #fff;
+    padding: 48px 56px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Grid técnico de fondo */
+  .brand-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+  
+  /* Glow naranja decorativo */
+  .brand-panel::after {
+    content: '';
+    position: absolute;
+    top: -150px;
+    right: -150px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(230, 126, 34, 0.18) 0%, rgba(230, 126, 34, 0.05) 30%, transparent 65%);
+    pointer-events: none;
+    animation: orbitGlow 20s ease-in-out infinite;
+  }
+  @keyframes orbitGlow {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(-40px, 30px) scale(1.1); }
+    66% { transform: translate(30px, -20px) scale(0.95); }
+  }
+
+  .brand-header {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 48px;
+  }
+  .brand-logo {
+    width: 56px;
+    height: 56px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .brand-logo::before {
+    content: '';
+    position: absolute;
+    inset: -10px;
+    background: radial-gradient(circle, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.12) 35%, transparent 65%);
+    border-radius: 50%;
+    filter: blur(3px);
+  }
+  .brand-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
+  }
+  .brand-name {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .brand-name span { color: var(--secondary); }
+  .brand-sub {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .brand-body {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 480px;
+  }
+  
+  .brand-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 28px;
+  }
+  .brand-eyebrow::before {
+    content: '';
+    width: 28px; height: 1px;
+    background: var(--secondary);
+  }
+  
+  .brand-headline {
+    font-size: clamp(2rem, 3.2vw, 2.75rem);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+    margin-bottom: 24px;
+  }
+  .brand-headline .serif {
+    font-style: italic;
+    color: var(--secondary);
+    font-weight: 400;
+  }
+  
+  .brand-lead {
+    font-size: 15px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.65;
+    margin-bottom: 40px;
+  }
+
+  /* Indicadores de seguridad */
+  .security-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px 20px;
+    padding-top: 28px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .security-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .security-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--secondary);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .security-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .security-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.95);
+    letter-spacing: -0.005em;
+  }
+  .security-meta {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .brand-footer {
+    position: relative;
+    z-index: 2;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .brand-footer a {
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .brand-footer a:hover { color: var(--secondary); }
+
+  /* ========== PANEL DERECHO (FORM) ========== */
+  .form-panel {
+    background: var(--paper);
+    padding: 48px 56px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+  }
+  
+  .form-top {
+    position: absolute;
+    top: 24px;
+    right: 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .form-top-text {
+    font-size: 13px;
+    color: var(--tertiary);
+  }
+  .form-top-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid rgba(20, 59, 98, 0.2);
+    transition: all 0.2s;
+  }
+  .form-top-link:hover {
+    background: rgba(20, 59, 98, 0.05);
+    border-color: var(--primary);
+  }
+
+  .form-container {
+    max-width: 420px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .form-eyebrow {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 500;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .form-eyebrow::before {
+    content: '';
+    width: 28px; height: 1px;
+    background: var(--secondary);
+  }
+
+  .form-title {
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+    margin-bottom: 12px;
+    color: var(--ink);
+  }
+  .form-title .serif {
+    font-style: italic;
+    color: var(--primary);
+    font-weight: 400;
+  }
+  
+  .form-subtitle {
+    font-size: 15px;
+    color: var(--tertiary);
+    margin-bottom: 36px;
+    line-height: 1.6;
+  }
+
+  /* ===== FORMULARIO ===== */
+  form { display: flex; flex-direction: column; gap: 18px; }
+  
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .field-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .field-label a {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--secondary);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .field-label a:hover { color: var(--secondary-dark); }
+  
+  .input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .input-icon {
+    position: absolute;
+    left: 16px;
+    width: 16px;
+    height: 16px;
+    color: var(--tertiary);
+    pointer-events: none;
+    z-index: 1;
+    transition: color 0.2s;
+  }
+  input[type="email"],
+  input[type="password"],
+  input[type="text"] {
+    width: 100%;
+    padding: 14px 16px 14px 44px;
+    font-size: 14px;
+    font-family: inherit;
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    color: var(--ink);
+    transition: all 0.2s;
+    letter-spacing: -0.005em;
+  }
+  input::placeholder { color: #a8a39a; }
+  input:hover { border-color: rgba(20, 59, 98, 0.3); }
+  input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(20, 59, 98, 0.08);
+  }
+  .input-wrap:focus-within .input-icon { color: var(--primary); }
+  
+  .toggle-pwd {
+    position: absolute;
+    right: 14px;
+    background: none;
+    border: none;
+    color: var(--tertiary);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+  }
+  .toggle-pwd:hover { color: var(--primary); }
+  .toggle-pwd svg { width: 16px; height: 16px; }
+
+  .field.error input {
+    border-color: var(--error);
+    background: var(--error-bg);
+  }
+  .field-error {
+    display: none;
+    font-size: 12px;
+    color: var(--error);
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+  }
+  .field.error .field-error { display: flex; }
+
+  .form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 2px;
+  }
+  .remember {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .remember input { display: none; }
+  .remember-box {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--line);
+    border-radius: 4px;
+    background: #fff;
+    display: grid;
+    place-items: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .remember-box::after {
+    content: '';
+    width: 9px;
+    height: 5px;
+    border-left: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transform: rotate(-45deg) translate(1px, -1px);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .remember input:checked + .remember-box {
+    background: var(--primary);
+    border-color: var(--primary);
+  }
+  .remember input:checked + .remember-box::after { opacity: 1; }
+  .remember-label {
+    font-size: 13px;
+    color: var(--ink);
+  }
+
+  /* Botón submit */
+  .btn-submit {
+    width: 100%;
+    background: var(--primary);
+    color: #fff;
+    padding: 15px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    margin-top: 8px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    letter-spacing: -0.005em;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-submit:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px -4px rgba(20, 59, 98, 0.3);
+  }
+  .btn-submit:active { transform: translateY(0); }
+  .btn-submit:disabled {
+    background: var(--tertiary);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+  .btn-submit .icon {
+    width: 16px; height: 16px;
+    transition: transform 0.2s;
+  }
+  .btn-submit:hover .icon { transform: translateX(2px); }
+  .btn-submit.loading {
+    background: var(--primary-dark);
+    cursor: progress;
+    color: transparent;
+  }
+  .btn-submit.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px; height: 20px;
+    border: 2.5px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Mensaje de error global */
+  .form-alert {
+    display: none;
+    background: var(--error-bg);
+    border: 1px solid rgba(220, 38, 38, 0.2);
+    border-left: 3px solid var(--error);
+    color: var(--error);
+    padding: 12px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 0;
+  }
+  .form-alert.show { display: flex; }
+  .form-alert svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
+
+  /* Divider */
+  .form-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 24px 0 18px;
+  }
+  .form-divider::before,
+  .form-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+  .form-divider span {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  /* Soporte / ayuda */
+  .form-help {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    text-align: center;
+  }
+  .form-help-text {
+    font-size: 13px;
+    color: var(--tertiary);
+    margin-bottom: 12px;
+  }
+  .form-help-links {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .form-help-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .form-help-link:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    transform: translateY(-1px);
+  }
+  .form-help-link svg { width: 13px; height: 13px; }
+
+  /* Versión y trust */
+  .form-bottom {
+    margin-top: 32px;
+    text-align: center;
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    color: var(--tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .form-bottom span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .form-bottom span::before {
+    content: '●';
+    color: var(--success);
+    font-size: 8px;
+  }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 1024px) {
+    .login-shell { grid-template-columns: 1fr; }
+    .brand-panel {
+      padding: 32px 28px;
+      min-height: auto;
+      order: 2;
+    }
+    .brand-body {
+      padding: 20px 0;
+    }
+    .brand-headline { font-size: 28px; }
+    .brand-lead { font-size: 14px; margin-bottom: 28px; }
+    .form-panel { padding: 32px 28px; order: 1; }
+    .form-top { position: static; justify-content: center; margin-bottom: 24px; }
+    .form-title { font-size: 28px; }
+    .security-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+  }
+  @media (max-width: 640px) {
+    .brand-panel { padding: 24px 20px; }
+    .form-panel { padding: 24px 20px; }
+    .brand-headline { font-size: 24px; }
+    .form-title { font-size: 24px; }
+    .brand-eyebrow, .form-eyebrow { font-size: 10px; margin-bottom: 16px; }
+    .form-subtitle { font-size: 14px; margin-bottom: 24px; }
+    .security-grid { grid-template-columns: 1fr; }
+    .form-top { flex-direction: column; gap: 8px; align-items: center; }
+    .form-bottom { flex-direction: column; gap: 6px; }
+    .form-help-links { flex-direction: column; align-items: stretch; }
+    .form-help-link { justify-content: center; }
+  }
+
+  /* === BOTÓN BIOMÉTRICO (estilo Apple Pay) === */
+  .biometric-section {
+    margin-bottom: 22px;
+    display: none; /* JS lo muestra si hay soporte */
+  }
+  .biometric-section.available { display: block; }
+
+  .biometric-btn {
+    width: 100%;
+    background: var(--ink);
+    color: #fff;
+    padding: 16px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px solid var(--ink);
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+    letter-spacing: -0.005em;
+  }
+  .biometric-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(230, 126, 34, 0.15), transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .biometric-btn:hover::before { opacity: 1; }
+  .biometric-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 25px -8px rgba(10, 24, 40, 0.5);
+    border-color: var(--secondary);
+  }
+  .biometric-btn:active { transform: translateY(0); }
+  .biometric-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    transform: none;
+  }
+  .biometric-icon {
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    color: var(--secondary);
+    position: relative;
+    z-index: 1;
+  }
+  .biometric-text {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.1;
+  }
+  .biometric-text .main {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .biometric-text .sub {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-top: 3px;
+  }
+  .biometric-btn.scanning {
+    background: var(--primary);
+    border-color: var(--primary);
+    cursor: progress;
+  }
+  .biometric-btn.scanning .biometric-icon {
+    animation: pulseScan 1.2s ease-in-out infinite;
+  }
+  @keyframes pulseScan {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: 0.7; }
+  }
+
+  /* Divisor "o continúa con email" */
+  .biometric-divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 0 0 22px;
+  }
+  .biometric-divider::before,
+  .biometric-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+  .biometric-divider span {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  /* === BOTÓN MOSTRAR CONTRASEÑA MÁS VISIBLE === */
+  .toggle-pwd {
+    position: absolute;
+    right: 8px;
+    background: rgba(20, 59, 98, 0.06);
+    border: 1px solid transparent;
+    color: var(--tertiary);
+    cursor: pointer;
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 6px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: all 0.2s;
+  }
+  .toggle-pwd:hover {
+    background: rgba(20, 59, 98, 0.1);
+    color: var(--primary);
+  }
+  .toggle-pwd.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+  }
+  .toggle-pwd svg { width: 14px; height: 14px; }
+  .toggle-pwd .pwd-label { font-size: 10px; }
+  input[type="password"], input[type="text"]#password {
+    padding-right: 96px !important;
+  }
+
+  /* === MODAL RECUPERAR CONTRASEÑA === */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 24, 40, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    animation: fadeIn 0.25s ease-out;
+  }
+  .modal-overlay.show { display: flex; }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .modal {
+    background: #fff;
+    border-radius: 16px;
+    max-width: 460px;
+    width: 100%;
+    padding: 32px;
+    position: relative;
+    box-shadow: 0 30px 80px -15px rgba(0,0,0,0.4);
+    animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(20, 59, 98, 0.06);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    color: var(--tertiary);
+    transition: all 0.2s;
+  }
+  .modal-close:hover {
+    background: rgba(220, 38, 38, 0.1);
+    color: var(--error);
+  }
+  .modal-close svg { width: 16px; height: 16px; }
+  
+  .modal-icon {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 18px;
+    color: #fff;
+    box-shadow: 0 8px 20px -6px rgba(20, 59, 98, 0.4);
+  }
+  .modal-icon svg { width: 28px; height: 28px; }
+  
+  .modal-eyebrow {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  .modal-title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+  .modal-title .serif {
+    font-style: italic;
+    color: var(--primary);
+    font-weight: 400;
+  }
+  .modal-text {
+    font-size: 14px;
+    color: var(--tertiary);
+    line-height: 1.55;
+    margin-bottom: 22px;
+  }
+  
+  .modal-field { margin-bottom: 16px; }
+  .modal-field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+  
+  .modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .modal-btn {
+    flex: 1;
+    padding: 13px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    border: 1px solid;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .modal-btn-secondary {
+    background: #fff;
+    border-color: var(--line);
+    color: var(--ink);
+  }
+  .modal-btn-secondary:hover {
+    background: var(--paper-warm);
+    border-color: var(--tertiary);
+  }
+  .modal-btn-primary {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+  }
+  .modal-btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px -4px rgba(20, 59, 98, 0.3);
+  }
+  .modal-btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .modal-btn.loading { color: transparent; position: relative; }
+  .modal-btn.loading::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  
+  .modal-success {
+    text-align: center;
+    padding: 12px 0;
+  }
+  .modal-success-icon {
+    width: 64px;
+    height: 64px;
+    background: rgba(45, 122, 62, 0.1);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 18px;
+    color: var(--success);
+  }
+  .modal-success-icon svg { width: 32px; height: 32px; }
+  
+  .modal-help-link {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--tertiary);
+    text-align: center;
+  }
+  .modal-help-link a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .modal-help-link a:hover { color: var(--secondary); }
+
+</style>
+</head>
+<body>
+
+<div class="login-shell">
+
+  <!-- ============ PANEL IZQUIERDO ============ -->
+  <aside class="brand-panel">
+    <div class="brand-header">
+      <div class="brand-logo">
+        <img src="data:image/png;base64,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" alt="PyPCloud">
+      </div>
+      <div>
+        <div class="brand-name">PyP<span>Cloud</span></div>
+        <div class="brand-sub">by PYP Soluciones</div>
+      </div>
+    </div>
+
+    <div class="brand-body">
+      <div class="brand-eyebrow">Panel de Administración</div>
+      <h1 class="brand-headline">
+        Tu negocio. <span class="serif">Bajo control.</span>
+      </h1>
+      <p class="brand-lead">
+        Accede a tu panel para gestionar Recuérdame y todos los servicios de PyPCloud. Tu información protegida con tecnología de nivel empresarial.
+      </p>
+
+      <div class="security-grid">
+        <div class="security-item">
+          <svg class="security-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <ellipse cx="12" cy="5" rx="9" ry="3"/>
+            <path d="M3 5v14a9 3 0 0 0 18 0V5"/>
+            <path d="M3 12a9 3 0 0 0 18 0"/>
+          </svg>
+          <div class="security-text">
+            <div class="security-name">PostgreSQL</div>
+            <div class="security-meta">Base SQL empresarial</div>
+          </div>
+        </div>
+        <div class="security-item">
+          <svg class="security-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <div class="security-text">
+            <div class="security-name">TLS 1.3 + RLS</div>
+            <div class="security-meta">Encriptación bancaria</div>
+          </div>
+        </div>
+        <div class="security-item">
+          <svg class="security-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1 4 1 10 7 10"/>
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+          </svg>
+          <div class="security-text">
+            <div class="security-name">Backup diario</div>
+            <div class="security-meta">Sin riesgo de pérdida</div>
+          </div>
+        </div>
+        <div class="security-item">
+          <svg class="security-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <div class="security-text">
+            <div class="security-name">Aislamiento</div>
+            <div class="security-meta">Tus datos solo tuyos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="brand-footer">
+      <div>© 2025–2026 PYP Soluciones</div>
+      <a href="https://pypcloud.com">← Volver al sitio</a>
+    </div>
+  </aside>
+
+  <!-- ============ PANEL DERECHO ============ -->
+  <main class="form-panel">
+    <div class="form-top">
+      <span class="form-top-text">¿No tienes cuenta?</span>
+      <a href="https://recuerdame.pypcloud.com" class="form-top-link" target="_blank" rel="noopener">Empezar gratis →</a>
+    </div>
+
+    <div class="form-container">
+      <div class="form-eyebrow">Iniciar Sesión</div>
+      <h2 class="form-title">Bienvenido <span class="serif">de vuelta.</span></h2>
+      <p class="form-subtitle">Ingresa con tu correo y contraseña para acceder a tu panel de administración.</p>
+
+      <!-- BIOMETRIC SECTION -->
+      <div class="biometric-section" id="biometricSection">
+        <button type="button" class="biometric-btn" id="biometricBtn">
+          <svg class="biometric-icon" id="biometricIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Huella por defecto - JS la cambia según el dispositivo -->
+            <path d="M12 11a3 3 0 0 0-3 3v2a7 7 0 0 0 .25 1.78"/>
+            <path d="M12 11a3 3 0 0 1 3 3v3a3 3 0 0 1-.85 2.1"/>
+            <path d="M9 14a3 3 0 0 1 3-3"/>
+            <path d="M15 14v3a6 6 0 0 1-.45 2.3"/>
+            <path d="M19 13a7 7 0 0 0-14 0v3a8 8 0 0 0 .5 2.8"/>
+            <path d="M19 13v3a4 4 0 0 1-.4 1.74"/>
+            <path d="M8 5.06a8 8 0 0 1 8.4 1.94"/>
+            <path d="M5 8a8 8 0 0 1 1.42-1.95"/>
+          </svg>
+          <div class="biometric-text">
+            <span class="main" id="biometricLabel">Acceder con biometría</span>
+            <span class="sub" id="biometricSub">Más rápido y seguro</span>
+          </div>
+        </button>
+      </div>
+
+      <div class="biometric-divider" id="biometricDivider" style="display: none;">
+        <span>o continúa con email</span>
+      </div>
+
+      <div class="form-alert" id="formAlert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="alertText">Credenciales incorrectas. Verifica tu correo y contraseña.</span>
+      </div>
+
+      <form id="loginForm" novalidate>
+        <div class="field" id="emailField">
+          <label class="field-label" for="email">Correo electrónico</label>
+          <div class="input-wrap">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            <input type="email" id="email" name="email" placeholder="tu@correo.com" autocomplete="email" required>
+          </div>
+          <div class="field-error">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>Ingresa un correo válido</span>
+          </div>
+        </div>
+
+        <div class="field" id="pwdField">
+          <label class="field-label" for="password">
+            Contraseña
+            <a href="#" id="forgotLink">¿Olvidaste tu contraseña?</a>
+          </label>
+          <div class="input-wrap">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <input type="password" id="password" name="password" placeholder="••••••••" autocomplete="current-password" required minlength="6">
+            <button type="button" class="toggle-pwd" id="togglePwd" aria-label="Mostrar contraseña">
+              <svg id="eyeOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg id="eyeClosed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              <span class="pwd-label" id="pwdLabel">Mostrar</span>
+            </button>
+          </div>
+          <div class="field-error">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>La contraseña debe tener al menos 6 caracteres</span>
+          </div>
+        </div>
+
+        <div class="form-options">
+          <label class="remember">
+            <input type="checkbox" id="remember">
+            <span class="remember-box"></span>
+            <span class="remember-label">Mantener sesión iniciada</span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <span>Iniciar sesión</span>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </button>
+      </form>
+
+      <div class="form-help">
+        <p class="form-help-text">¿Necesitas ayuda para acceder?</p>
+        <div class="form-help-links">
+          <a href="mailto:soporte@pypcloud.com" class="form-help-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Soporte por email
+          </a>
+          <a href="https://wa.me/584140285806?text=Hola,%20necesito%20ayuda%20para%20acceder%20a%20mi%20cuenta" class="form-help-link" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/></svg>
+            WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <div class="form-bottom">
+        <span>Conexión segura</span>
+        <span>SSL/TLS 1.3</span>
+        <span>v.2026.1</span>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<script>
+  const form = document.getElementById('loginForm');
+  const emailInput = document.getElementById('email');
+  const pwdInput = document.getElementById('password');
+  const emailField = document.getElementById('emailField');
+  const pwdField = document.getElementById('pwdField');
+  const submitBtn = document.getElementById('submitBtn');
+  const formAlert = document.getElementById('formAlert');
+  const alertText = document.getElementById('alertText');
+  const togglePwd = document.getElementById('togglePwd');
+  const eyeOpen = document.getElementById('eyeOpen');
+  const eyeClosed = document.getElementById('eyeClosed');
+  const forgotLink = document.getElementById('forgotLink');
+
+  const pwdLabel = document.getElementById('pwdLabel');
+
+  // Mostrar/ocultar contraseña con texto visible
+  togglePwd.addEventListener('click', () => {
+    const isPwd = pwdInput.type === 'password';
+    pwdInput.type = isPwd ? 'text' : 'password';
+    eyeOpen.style.display = isPwd ? 'none' : 'block';
+    eyeClosed.style.display = isPwd ? 'block' : 'none';
+    pwdLabel.textContent = isPwd ? 'Ocultar' : 'Mostrar';
+    togglePwd.classList.toggle('active', isPwd);
+  });
+
+  // Limpiar errores al escribir
+  emailInput.addEventListener('input', () => emailField.classList.remove('error'));
+  pwdInput.addEventListener('input', () => pwdField.classList.remove('error'));
+  emailInput.addEventListener('input', () => formAlert.classList.remove('show'));
+  pwdInput.addEventListener('input', () => formAlert.classList.remove('show'));
+
+  // Validación email
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  // Submit handler
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    formAlert.classList.remove('show');
+    
+    let hasError = false;
+    if (!isValidEmail(emailInput.value.trim())) {
+      emailField.classList.add('error');
+      hasError = true;
+    }
+    if (pwdInput.value.length < 6) {
+      pwdField.classList.add('error');
+      hasError = true;
+    }
+    if (hasError) return;
+
+    // Loading state
+    submitBtn.classList.add('loading');
+    submitBtn.disabled = true;
+
+    try {
+      // === AQUÍ VA TU LÓGICA DE LOGIN REAL ===
+      // Por ahora simulo un delay
+      await new Promise(resolve => setTimeout(resolve, 1200));
+      
+      // Ejemplo: en producción harás algo como:
+      // const response = await fetch('/api/login', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ email: emailInput.value, password: pwdInput.value, remember: document.getElementById('remember').checked })
+      // });
+      // if (response.ok) window.location.href = '/admin/dashboard';
+      // else throw new Error('Credenciales incorrectas');
+
+      // Demo: mostrar error de credenciales
+      throw new Error('Credenciales incorrectas. Verifica tu correo y contraseña.');
+      
+    } catch (err) {
+      alertText.textContent = err.message || 'Ocurrió un error. Intenta nuevamente.';
+      formAlert.classList.add('show');
+      submitBtn.classList.remove('loading');
+      submitBtn.disabled = false;
+      // Shake del alert
+      formAlert.style.animation = 'none';
+      setTimeout(() => formAlert.style.animation = '', 10);
+    }
+  });
+
+  // Forgot password → abrir modal
+  const recoverModal = document.getElementById('recoverModal');
+  const recoverView1 = document.getElementById('recoverView1');
+  const recoverView2 = document.getElementById('recoverView2');
+  const recoverEmail = document.getElementById('recoverEmail');
+  const recoverEmailShown = document.getElementById('recoverEmailShown');
+  const recoverSubmit = document.getElementById('recoverSubmit');
+  const recoverCancel = document.getElementById('recoverCancel');
+  const recoverDone = document.getElementById('recoverDone');
+  const recoverRetry = document.getElementById('recoverRetry');
+  const modalClose = document.getElementById('modalClose');
+
+  function openRecover() {
+    // Pre-rellenar con el email del login si existe
+    if (emailInput.value.trim()) recoverEmail.value = emailInput.value.trim();
+    recoverView1.style.display = 'block';
+    recoverView2.style.display = 'none';
+    recoverModal.classList.add('show');
+    setTimeout(() => recoverEmail.focus(), 100);
+    // Push state para que el botón atrás cierre el modal
+    history.pushState({ modalOpen: true }, '');
+  }
+  function closeRecover() {
+    recoverModal.classList.remove('show');
+  }
+
+  forgotLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    openRecover();
+  });
+  modalClose.addEventListener('click', closeRecover);
+  recoverCancel.addEventListener('click', closeRecover);
+  recoverDone.addEventListener('click', closeRecover);
+  recoverModal.addEventListener('click', (e) => {
+    if (e.target === recoverModal) closeRecover();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && recoverModal.classList.contains('show')) closeRecover();
+  });
+  window.addEventListener('popstate', () => {
+    if (recoverModal.classList.contains('show')) closeRecover();
+  });
+
+  async function sendRecoverEmail() {
+    const email = recoverEmail.value.trim();
+    if (!isValidEmail(email)) {
+      recoverEmail.style.borderColor = 'var(--error)';
+      recoverEmail.focus();
+      return;
+    }
+    recoverEmail.style.borderColor = '';
+    recoverSubmit.classList.add('loading');
+    recoverSubmit.disabled = true;
+    
+    try {
+      // === AQUÍ VA TU LÓGICA DE RECUPERACIÓN REAL ===
+      // En producción harás algo como:
+      // const response = await fetch('/api/auth/recover', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ email })
+      // });
+      // if (!response.ok) throw new Error('Error al enviar enlace');
+      
+      // Si usas Supabase Auth:
+      // const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      //   redirectTo: 'https://pypcloud.com/admin/reset-password'
+      // });
+      
+      // Demo: simular envío
+      await new Promise(r => setTimeout(r, 1200));
+      
+      // Mostrar vista de éxito
+      recoverEmailShown.textContent = email;
+      recoverView1.style.display = 'none';
+      recoverView2.style.display = 'block';
+    } catch (err) {
+      alert('Error al enviar enlace. Intenta de nuevo.');
+    }
+    recoverSubmit.classList.remove('loading');
+    recoverSubmit.disabled = false;
+  }
+  
+  recoverSubmit.addEventListener('click', sendRecoverEmail);
+  recoverEmail.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') sendRecoverEmail();
+  });
+  recoverEmail.addEventListener('input', () => recoverEmail.style.borderColor = '');
+  recoverRetry.addEventListener('click', (e) => {
+    e.preventDefault();
+    recoverView2.style.display = 'none';
+    recoverView1.style.display = 'block';
+    sendRecoverEmail();
+  });
+
+  // ============================================
+  // === BIOMETRÍA / WebAuthn ===
+  // ============================================
+  const biometricSection = document.getElementById('biometricSection');
+  const biometricDivider = document.getElementById('biometricDivider');
+  const biometricBtn = document.getElementById('biometricBtn');
+  const biometricIcon = document.getElementById('biometricIcon');
+  const biometricLabel = document.getElementById('biometricLabel');
+  const biometricSub = document.getElementById('biometricSub');
+
+  // Detectar dispositivo y mostrar icono/texto apropiado
+  function detectBiometricType() {
+    const ua = navigator.userAgent;
+    const platform = navigator.platform || '';
+    
+    // iOS - Face ID o Touch ID
+    if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) {
+      // iPhone X+ tiene Face ID (iPhone 13+ todos tienen Face ID excepto SE)
+      const isFaceID = /iPhone(1[3-9]|[2-9]\d)/.test(ua) || /iPad(8|9|1\d|2\d)/.test(ua);
+      return {
+        type: isFaceID ? 'face' : 'touch',
+        label: isFaceID ? 'Acceder con Face ID' : 'Acceder con Touch ID',
+        sub: isFaceID ? 'Reconocimiento facial' : 'Huella digital'
+      };
+    }
+    // Mac
+    if (/Mac/.test(platform)) {
+      return {
+        type: 'touch',
+        label: 'Acceder con Touch ID',
+        sub: 'Apple Mac'
+      };
+    }
+    // Android
+    if (/Android/.test(ua)) {
+      return {
+        type: 'fingerprint',
+        label: 'Acceder con huella',
+        sub: 'Sensor biométrico'
+      };
+    }
+    // Windows
+    if (/Windows/.test(ua)) {
+      return {
+        type: 'windows',
+        label: 'Acceder con Windows Hello',
+        sub: 'Reconocimiento facial o PIN'
+      };
+    }
+    // Genérico
+    return {
+      type: 'fingerprint',
+      label: 'Acceder con biometría',
+      sub: 'Autenticación segura'
+    };
+  }
+
+  // SVG icons por tipo
+  const biometricIcons = {
+    face: `<circle cx="12" cy="12" r="10"/><circle cx="9" cy="10" r="0.5" fill="currentColor"/><circle cx="15" cy="10" r="0.5" fill="currentColor"/><path d="M9 15s1.5 1.5 3 1.5 3-1.5 3-1.5"/>`,
+    touch: `<path d="M12 11a3 3 0 0 0-3 3v2a7 7 0 0 0 .25 1.78"/><path d="M12 11a3 3 0 0 1 3 3v3a3 3 0 0 1-.85 2.1"/><path d="M9 14a3 3 0 0 1 3-3"/><path d="M15 14v3a6 6 0 0 1-.45 2.3"/><path d="M19 13a7 7 0 0 0-14 0v3a8 8 0 0 0 .5 2.8"/><path d="M19 13v3a4 4 0 0 1-.4 1.74"/><path d="M8 5.06a8 8 0 0 1 8.4 1.94"/><path d="M5 8a8 8 0 0 1 1.42-1.95"/>`,
+    fingerprint: `<path d="M12 11a3 3 0 0 0-3 3v2a7 7 0 0 0 .25 1.78"/><path d="M12 11a3 3 0 0 1 3 3v3a3 3 0 0 1-.85 2.1"/><path d="M9 14a3 3 0 0 1 3-3"/><path d="M15 14v3a6 6 0 0 1-.45 2.3"/><path d="M19 13a7 7 0 0 0-14 0v3a8 8 0 0 0 .5 2.8"/><path d="M19 13v3a4 4 0 0 1-.4 1.74"/><path d="M8 5.06a8 8 0 0 1 8.4 1.94"/><path d="M5 8a8 8 0 0 1 1.42-1.95"/>`,
+    windows: `<rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/><rect x="3" y="13" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/>`
+  };
+
+  // Verificar soporte WebAuthn / biometría
+  async function checkBiometricSupport() {
+    if (!window.PublicKeyCredential) return false;
+    try {
+      const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+      return available;
+    } catch {
+      return false;
+    }
+  }
+
+  // Inicializar botón biométrico
+  (async () => {
+    const supported = await checkBiometricSupport();
+    if (!supported) {
+      // Si no hay soporte, no mostrar el botón
+      biometricSection.style.display = 'none';
+      return;
+    }
+    
+    // Mostrar el botón y el divisor
+    biometricSection.classList.add('available');
+    biometricDivider.style.display = 'flex';
+    
+    // Configurar según el dispositivo
+    const info = detectBiometricType();
+    biometricLabel.textContent = info.label;
+    biometricSub.textContent = info.sub;
+    biometricIcon.innerHTML = biometricIcons[info.type];
+  })();
+
+  // Click en botón biométrico
+  biometricBtn.addEventListener('click', async () => {
+    // Verificar si el usuario tiene credencial biométrica registrada
+    const hasCredential = localStorage.getItem('pypcloud_biometric_registered');
+    
+    if (!hasCredential) {
+      // Usuario nunca registró biometría - modal educativo
+      showBiometricSetupInfo();
+      return;
+    }
+    
+    // Hay credencial registrada - intentar autenticación
+    biometricBtn.classList.add('scanning');
+    const originalLabel = biometricLabel.textContent;
+    biometricLabel.textContent = 'Verificando...';
+    biometricSub.textContent = 'No te muevas';
+    
+    try {
+      // === AQUÍ VA TU LÓGICA WEBAUTHN REAL ===
+      // 1. Obtener challenge del backend:
+      // const challengeRes = await fetch('/api/auth/webauthn/login-options', { method: 'POST' });
+      // const options = await challengeRes.json();
+      // 
+      // 2. Convertir challenge a Uint8Array:
+      // options.challenge = Uint8Array.from(atob(options.challenge), c => c.charCodeAt(0));
+      // 
+      // 3. Solicitar credencial al navegador (esto dispara Face ID / Touch ID / huella):
+      // const credential = await navigator.credentials.get({ publicKey: options });
+      // 
+      // 4. Enviar credencial al backend para verificar:
+      // const verifyRes = await fetch('/api/auth/webauthn/login-verify', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ credential })
+      // });
+      // if (verifyRes.ok) window.location.href = '/admin/dashboard';
+      // else throw new Error('Verificación biométrica fallida');
+      
+      // Demo: simular autenticación
+      await new Promise(r => setTimeout(r, 1800));
+      throw new Error('Configura tu backend WebAuthn para activar esta función');
+      
+    } catch (err) {
+      biometricBtn.classList.remove('scanning');
+      biometricLabel.textContent = originalLabel;
+      biometricSub.textContent = detectBiometricType().sub;
+      alertText.textContent = err.message || 'No se pudo autenticar con biometría. Usa tu contraseña.';
+      formAlert.classList.add('show');
+    }
+  });
+
+  function showBiometricSetupInfo() {
+    alertText.innerHTML = '🔐 <strong>Primera vez:</strong> Inicia sesión con tu contraseña una vez. Después podrás activar el acceso biométrico desde tu panel.';
+    formAlert.classList.add('show');
+    formAlert.style.background = 'rgba(20, 59, 98, 0.06)';
+    formAlert.style.borderLeftColor = 'var(--primary)';
+    formAlert.style.color = 'var(--primary)';
+    formAlert.querySelector('svg').style.color = 'var(--primary)';
+    emailInput.focus();
+  }
+
+  // Reset color del alert si se cierra
+  emailInput.addEventListener('input', () => {
+    formAlert.style.background = '';
+    formAlert.style.borderLeftColor = '';
+    formAlert.style.color = '';
+    formAlert.querySelector('svg').style.color = '';
+  });
+
+  // Animación shake del alert
+  const style = document.createElement('style');
+  style.textContent = `
+    .form-alert.show {
+      animation: shake 0.4s ease-in-out;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Focus inicial en email
+  setTimeout(() => emailInput.focus(), 300);
+</script>
+
+
+<!-- MODAL RECUPERAR CONTRASEÑA -->
+<div class="modal-overlay" id="recoverModal">
+  <div class="modal">
+    <button type="button" class="modal-close" id="modalClose" aria-label="Cerrar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    
+    <!-- Vista 1: Solicitar email -->
+    <div class="modal-view" id="recoverView1">
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
+        </svg>
+      </div>
+      <div class="modal-eyebrow">Recuperación segura</div>
+      <h3 class="modal-title">Recupera tu <span class="serif">contraseña.</span></h3>
+      <p class="modal-text">Te enviaremos un enlace de recuperación a tu correo electrónico. El enlace expira en 1 hora por seguridad.</p>
+      
+      <div class="modal-field">
+        <label for="recoverEmail">Correo electrónico</label>
+        <div class="input-wrap">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+          <input type="email" id="recoverEmail" placeholder="tu@correo.com" autocomplete="email" required>
+        </div>
+      </div>
+      
+      <div class="modal-buttons">
+        <button type="button" class="modal-btn modal-btn-secondary" id="recoverCancel">Cancelar</button>
+        <button type="button" class="modal-btn modal-btn-primary" id="recoverSubmit">
+          Enviar enlace
+        </button>
+      </div>
+      
+      <div class="modal-help-link">
+        ¿Sigues con problemas? <a href="mailto:soporte@pypcloud.com">Contactar soporte</a>
+      </div>
+    </div>
+    
+    <!-- Vista 2: Éxito -->
+    <div class="modal-view" id="recoverView2" style="display: none;">
+      <div class="modal-success">
+        <div class="modal-success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div class="modal-eyebrow">Enviado correctamente</div>
+        <h3 class="modal-title">Revisa tu <span class="serif">correo.</span></h3>
+        <p class="modal-text">Hemos enviado un enlace de recuperación a <strong id="recoverEmailShown" style="color: var(--primary);"></strong>. Revisa también tu carpeta de spam.</p>
+      </div>
+      <div class="modal-buttons">
+        <button type="button" class="modal-btn modal-btn-primary" id="recoverDone">Entendido</button>
+      </div>
+      <div class="modal-help-link">
+        ¿No te llegó? <a href="#" id="recoverRetry">Reenviar enlace</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
