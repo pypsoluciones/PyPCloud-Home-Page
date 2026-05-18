@@ -1,533 +1,2495 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administración · Recuérdame</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <style>
-        body { font-family: 'Inter', system-ui, sans-serif; }
-        .fade-in { animation: fadeIn 0.2s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
-        .custom-scroll::-webkit-scrollbar { width: 6px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-        .badge { padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
-        .badge-active { background: #d1fae5; color: #065f46; }
-        .badge-trial { background: #fef3c7; color: #92400e; }
-        .badge-expired { background: #fee2e2; color: #991b1b; }
-        .badge-cancelled { background: #f3f4f6; color: #4b5563; }
-        .badge-admin { background: #ede9fe; color: #5b21b6; }
-        .skeleton { background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
-        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Admin · PyPCloud</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --primary: #143B62;
+    --primary-dark: #0d2942;
+    --primary-light: #1f5189;
+    --secondary: #E67E22;
+    --secondary-dark: #c66818;
+    --tertiary: #64748b;
+    --ink: #0a1828;
+    --paper: #fafaf7;
+    --paper-warm: #f5f3ed;
+    --line: #d4cfc1;
+    --line-soft: #e8e3d4;
+    --success: #2d7a3e;
+    --success-bg: #f0fdf4;
+    --error: #dc2626;
+    --error-bg: #fef2f2;
+    --warning: #d97706;
+    --warning-bg: #fffbeb;
+    --sidebar-w: 260px;
+    --topbar-h: 60px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-font-smoothing: antialiased; height: 100%; }
+  body {
+    font-family: 'Geist', -apple-system, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.5;
+    min-height: 100%;
+    font-feature-settings: 'ss01', 'ss02', 'cv11';
+    overflow: hidden;
+  }
+  .mono { font-family: 'Geist Mono', monospace; }
+  .serif { font-family: 'Instrument Serif', serif; font-weight: 400; }
+
+  /* ============== AUTH GATE (verifica sesión) ============== */
+  .auth-gate {
+    position: fixed;
+    inset: 0;
+    background: var(--paper);
+    display: grid;
+    place-items: center;
+    z-index: 9999;
+  }
+  .auth-gate.hidden { display: none; }
+  .auth-gate-content {
+    text-align: center;
+    max-width: 380px;
+  }
+  .auth-spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid rgba(20, 59, 98, 0.1);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ============== LAYOUT ============== */
+  .admin-shell {
+    display: grid;
+    grid-template-columns: var(--sidebar-w) 1fr;
+    grid-template-rows: var(--topbar-h) 1fr;
+    grid-template-areas:
+      "sidebar topbar"
+      "sidebar main";
+    height: 100vh;
+  }
+
+  /* ============== SIDEBAR ============== */
+  .sidebar {
+    grid-area: sidebar;
+    background: var(--ink);
+    color: rgba(250, 250, 247, 0.7);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    border-right: 1px solid rgba(255,255,255,0.05);
+  }
+  .sidebar-header {
+    padding: 16px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sidebar-logo {
+    width: 36px;
+    height: 36px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .sidebar-logo::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    background: radial-gradient(circle, rgba(255,255,255,0.2), transparent 65%);
+    border-radius: 50%;
+    filter: blur(2px);
+  }
+  .sidebar-logo img {
+    width: 100%; height: 100%;
+    position: relative;
+    z-index: 1;
+    object-fit: contain;
+  }
+  .sidebar-brand {
+    line-height: 1.1;
+  }
+  .sidebar-brand-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+  .sidebar-brand-name span { color: var(--secondary); }
+  .sidebar-brand-sub {
+    font-family: 'Geist Mono', monospace;
+    font-size: 8px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .sidebar-section {
+    padding: 16px 12px 6px;
+  }
+  .sidebar-section-label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    color: rgba(255,255,255,0.35);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding: 6px 10px;
+    margin-bottom: 4px;
+  }
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 9px 10px;
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 7px;
+    transition: all 0.15s;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: inherit;
+    width: 100%;
+    text-align: left;
+    position: relative;
+  }
+  .sidebar-link:hover {
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+  }
+  .sidebar-link.active {
+    background: rgba(230, 126, 34, 0.15);
+    color: #fff;
+  }
+  .sidebar-link.active::before {
+    content: '';
+    position: absolute;
+    left: -12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 18px;
+    background: var(--secondary);
+    border-radius: 0 3px 3px 0;
+  }
+  .sidebar-link.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .sidebar-link svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+  .sidebar-link .badge {
+    margin-left: auto;
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.5);
+    font-family: 'Geist Mono', monospace;
+    font-size: 8px;
+    padding: 2px 6px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+  }
+  .sidebar-link.active .badge {
+    background: var(--secondary);
+    color: #fff;
+  }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 14px 12px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .sidebar-user {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--secondary), #f59e0b);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .user-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .user-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .user-role {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .sidebar-logout {
+    width: 100%;
+    background: none;
+    border: 1px solid rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.65);
+    padding: 8px;
+    border-radius: 7px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+  .sidebar-logout:hover {
+    background: rgba(220, 38, 38, 0.1);
+    border-color: rgba(220, 38, 38, 0.3);
+    color: #fca5a5;
+  }
+  .sidebar-logout svg { width: 12px; height: 12px; }
+
+  /* ============== TOPBAR ============== */
+  .topbar {
+    grid-area: topbar;
+    background: #fff;
+    border-bottom: 1px solid var(--line-soft);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 16px;
+  }
+  .topbar-burger {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+  }
+  .topbar-burger span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--ink);
+    margin: 4px 0;
+  }
+  .topbar-title {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .breadcrumb {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .breadcrumb a {
+    color: var(--tertiary);
+    text-decoration: none;
+  }
+  .breadcrumb a:hover { color: var(--primary); }
+  .breadcrumb-sep { color: var(--line); margin: 0 6px; }
+  .topbar-page-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .topbar-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .topbar-btn {
+    background: #fff;
+    border: 1px solid var(--line-soft);
+    padding: 7px 12px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s;
+    text-decoration: none;
+  }
+  .topbar-btn:hover {
+    background: var(--paper-warm);
+    border-color: var(--tertiary);
+  }
+  .topbar-btn svg { width: 13px; height: 13px; }
+  .topbar-btn-primary {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+  }
+  .topbar-btn-primary:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+  }
+  .topbar-btn-orange {
+    background: var(--secondary);
+    border-color: var(--secondary);
+    color: #fff;
+  }
+  .topbar-btn-orange:hover {
+    background: var(--secondary-dark);
+    border-color: var(--secondary-dark);
+  }
+
+  .save-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0 8px;
+  }
+  .save-indicator-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--success);
+  }
+  .save-indicator.saving .save-indicator-dot {
+    background: var(--warning);
+    animation: pulseSave 1s ease-in-out infinite;
+  }
+  .save-indicator.unsaved .save-indicator-dot {
+    background: var(--warning);
+  }
+  @keyframes pulseSave {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ============== MAIN ============== */
+  .main {
+    grid-area: main;
+    overflow-y: auto;
+    background: var(--paper);
+    position: relative;
+  }
+  .main-inner {
+    padding: 28px 32px 60px;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+
+  /* ============== CONFIG LAYOUT ============== */
+  .config-layout {
+    display: grid;
+    grid-template-columns: 1fr 480px;
+    gap: 28px;
+    align-items: start;
+  }
+  .config-form {
+    min-width: 0;
+  }
+  .config-preview {
+    position: sticky;
+    top: 28px;
+    max-height: calc(100vh - var(--topbar-h) - 56px);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* ============== CONFIG SECTIONS ============== */
+  .config-section {
+    background: #fff;
+    border: 1px solid var(--line-soft);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .config-section:hover {
+    border-color: var(--line);
+  }
+  .config-section-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line-soft);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .config-section-header:hover {
+    background: var(--paper-warm);
+  }
+  .config-section.collapsed .config-section-header {
+    border-bottom-color: transparent;
+  }
+  .section-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-icon {
+    width: 32px;
+    height: 32px;
+    background: rgba(20, 59, 98, 0.08);
+    border-radius: 7px;
+    display: grid;
+    place-items: center;
+    color: var(--primary);
+    flex-shrink: 0;
+  }
+  .section-icon svg { width: 16px; height: 16px; }
+  .section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .section-meta {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 2px;
+  }
+  .section-chevron {
+    transition: transform 0.2s;
+    color: var(--tertiary);
+  }
+  .section-chevron svg { width: 16px; height: 16px; }
+  .config-section.collapsed .section-chevron {
+    transform: rotate(-90deg);
+  }
+  .config-section-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    max-height: 4000px;
+    transition: max-height 0.3s, padding 0.3s;
+    overflow: hidden;
+  }
+  .config-section.collapsed .config-section-body {
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  /* ============== FORM ELEMENTS ============== */
+  .field-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .field-row.row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .field-row.row-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .field-row .field-row {
+    gap: 6px;
+  }
+  .field-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .field-label .required {
+    color: var(--error);
+    font-weight: 700;
+    margin-left: 2px;
+  }
+  .field-label .optional {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    color: var(--tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+  }
+  .field-hint {
+    font-size: 11px;
+    color: var(--tertiary);
+    line-height: 1.4;
+    margin-top: 2px;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="url"],
+  input[type="tel"],
+  input[type="number"],
+  textarea,
+  select {
+    width: 100%;
+    padding: 9px 12px;
+    font-size: 13px;
+    font-family: inherit;
+    background: #fff;
+    border: 1.5px solid var(--line-soft);
+    border-radius: 7px;
+    color: var(--ink);
+    transition: all 0.15s;
+    letter-spacing: -0.005em;
+  }
+  input:hover, textarea:hover, select:hover {
+    border-color: var(--line);
+  }
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(20, 59, 98, 0.08);
+  }
+  input::placeholder, textarea::placeholder { color: #b8b3a4; }
+  textarea { resize: vertical; min-height: 70px; font-family: inherit; }
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 32px;
+  }
+
+  /* Toggle switch */
+  .field-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: var(--paper-warm);
+    border: 1px solid var(--line-soft);
+    border-radius: 8px;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.15s;
+  }
+  .field-toggle:hover {
+    border-color: var(--line);
+  }
+  .field-toggle-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .field-toggle-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .field-toggle-hint {
+    font-size: 10px;
+    color: var(--tertiary);
+  }
+  .toggle-switch {
+    width: 36px;
+    height: 20px;
+    background: var(--line);
+    border-radius: 100px;
+    position: relative;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .field-toggle input { display: none; }
+  .field-toggle input:checked ~ .toggle-switch {
+    background: var(--success);
+  }
+  .field-toggle input:checked ~ .toggle-switch::after {
+    transform: translateX(16px);
+  }
+
+  /* Image upload */
+  .field-image {
+    border: 2px dashed var(--line);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+    transition: all 0.2s;
+    cursor: pointer;
+    background: var(--paper-warm);
+    position: relative;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .field-image:hover {
+    border-color: var(--primary);
+    background: rgba(20, 59, 98, 0.03);
+  }
+  .field-image.has-image {
+    padding: 8px;
+  }
+  .field-image input { display: none; }
+  .field-image-preview {
+    max-width: 100%;
+    max-height: 80px;
+    object-fit: contain;
+    display: block;
+  }
+  .field-image-text {
+    font-size: 11px;
+    color: var(--tertiary);
+  }
+  .field-image-text strong { color: var(--primary); }
+  .field-image-remove {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: var(--error);
+    border: none;
+    color: #fff;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+  .field-image-remove svg { width: 11px; height: 11px; }
+
+  /* Social repeater */
+  .social-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .social-row {
+    display: grid;
+    grid-template-columns: 130px 1fr auto;
+    gap: 8px;
+    align-items: center;
+  }
+  .social-row-btn-remove {
+    background: var(--paper-warm);
+    border: 1px solid var(--line-soft);
+    color: var(--error);
+    width: 32px;
+    height: 32px;
+    border-radius: 7px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: all 0.15s;
+  }
+  .social-row-btn-remove:hover {
+    background: var(--error-bg);
+    border-color: var(--error);
+  }
+  .social-row-btn-remove svg { width: 13px; height: 13px; }
+  .btn-add-social {
+    background: var(--paper-warm);
+    border: 1.5px dashed var(--line);
+    color: var(--primary);
+    padding: 9px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .btn-add-social:hover {
+    background: rgba(20, 59, 98, 0.05);
+    border-color: var(--primary);
+  }
+  .btn-add-social svg { width: 13px; height: 13px; }
+
+  /* Color picker */
+  .color-field {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 8px;
+    align-items: center;
+  }
+  .color-field input[type="color"] {
+    width: 40px;
+    height: 38px;
+    padding: 0;
+    border: 1.5px solid var(--line-soft);
+    border-radius: 7px;
+    cursor: pointer;
+    background: none;
+  }
+
+  /* Alert / banner */
+  .config-banner {
+    background: var(--warning-bg);
+    border: 1px solid rgba(217, 119, 6, 0.3);
+    border-left: 3px solid var(--warning);
+    color: #92400e;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 16px;
+    line-height: 1.55;
+  }
+  .config-banner svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; color: var(--warning); }
+  .config-banner strong { color: #78350f; }
+  .config-banner a { color: var(--primary); font-weight: 600; }
+
+  /* ============== PREVIEW ============== */
+  .preview-card {
+    background: #fff;
+    border: 1px solid var(--line-soft);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px -15px rgba(20, 59, 98, 0.15);
+  }
+  .preview-header {
+    background: var(--paper-warm);
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line-soft);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .preview-tabs {
+    display: flex;
+    gap: 2px;
+    background: rgba(20, 59, 98, 0.06);
+    padding: 3px;
+    border-radius: 6px;
+  }
+  .preview-tab {
+    background: none;
+    border: none;
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--tertiary);
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .preview-tab svg { width: 11px; height: 11px; }
+  .preview-tab.active {
+    background: #fff;
+    color: var(--primary);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .preview-title {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .preview-live-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--success);
+    border-radius: 50%;
+    animation: pulseSave 2s ease-in-out infinite;
+  }
+  .preview-frame-wrap {
+    background: var(--paper-warm);
+    padding: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .preview-frame {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 100%;
+    transition: all 0.3s;
+    box-shadow: 0 8px 24px -10px rgba(0,0,0,0.15);
+    border: 1px solid var(--line-soft);
+  }
+  .preview-frame.mobile {
+    max-width: 280px;
+    border-radius: 24px;
+  }
+
+  /* Preview content (mini sitio) */
+  .pv-nav {
+    background: var(--primary);
+    padding: 8px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+  }
+  .pv-nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .pv-nav-mark {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .pv-nav-mark::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    background: radial-gradient(circle, rgba(255,255,255,0.25), transparent 65%);
+    border-radius: 50%;
+    filter: blur(2px);
+  }
+  .pv-nav-mark img {
+    width: 100%; height: 100%;
+    position: relative;
+    z-index: 1;
+    object-fit: contain;
+  }
+  .pv-nav-name {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .pv-nav-name span { color: var(--secondary); }
+  .pv-nav-sub {
+    font-family: 'Geist Mono', monospace;
+    font-size: 6px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+  .pv-burger {
+    color: rgba(255,255,255,0.7);
+    font-size: 14px;
+  }
+  .pv-cta {
+    background: var(--secondary);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 600;
+  }
+  .pv-hero {
+    padding: 24px 16px 18px;
+    text-align: center;
+    background: var(--paper);
+  }
+  .pv-h1 {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+  .pv-h1 .accent {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    color: var(--secondary);
+    font-weight: 400;
+  }
+  .pv-lead {
+    font-size: 9px;
+    color: var(--tertiary);
+    line-height: 1.5;
+    margin-bottom: 10px;
+    padding: 0 6px;
+  }
+  .pv-cta-main {
+    display: inline-block;
+    background: var(--secondary);
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 600;
+  }
+  .pv-pricing {
+    padding: 16px;
+    background: var(--ink);
+    color: #fff;
+  }
+  .pv-pricing-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .pv-plans {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .pv-plan {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 8px;
+    text-align: center;
+  }
+  .pv-plan.featured {
+    border-color: var(--secondary);
+    background: linear-gradient(180deg, rgba(230,126,34,0.08), transparent);
+  }
+  .pv-plan-name {
+    font-family: 'Geist Mono', monospace;
+    font-size: 7px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+  .pv-plan-price {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .pv-plan-period {
+    font-size: 8px;
+    color: rgba(255,255,255,0.5);
+  }
+  .pv-footer {
+    padding: 12px 14px;
+    background: var(--ink);
+    color: rgba(255,255,255,0.6);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    font-size: 8px;
+    line-height: 1.5;
+  }
+  .pv-footer-contact {
+    font-family: 'Geist Mono', monospace;
+    font-size: 7px;
+    margin-top: 4px;
+  }
+  .pv-footer-socials {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .pv-social {
+    width: 16px;
+    height: 16px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: rgba(255,255,255,0.7);
+  }
+  .pv-social svg { width: 9px; height: 9px; }
+
+  /* Open in new tab button */
+  .preview-open-btn {
+    margin-top: 8px;
+    width: 100%;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+  .preview-open-btn:hover {
+    background: var(--primary);
+    transform: translateY(-1px);
+  }
+  .preview-open-btn svg { width: 13px; height: 13px; }
+
+  /* Toast notifications */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--ink);
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 13px;
+    box-shadow: 0 12px 30px -10px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 1000;
+    transform: translateY(120%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .toast.show { transform: translateY(0); }
+  .toast.success { background: var(--success); }
+  .toast.error { background: var(--error); }
+  .toast svg { width: 16px; height: 16px; }
+
+  /* Empty state for non-config tabs */
+  .empty-state {
+    background: #fff;
+    border: 1px solid var(--line-soft);
+    border-radius: 12px;
+    padding: 60px 40px;
+    text-align: center;
+  }
+  .empty-icon {
+    width: 64px;
+    height: 64px;
+    background: var(--paper-warm);
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 20px;
+    color: var(--tertiary);
+  }
+  .empty-icon svg { width: 32px; height: 32px; }
+  .empty-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .empty-text {
+    font-size: 14px;
+    color: var(--tertiary);
+    max-width: 380px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  .empty-badge {
+    display: inline-block;
+    margin-top: 16px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 4px 10px;
+    background: rgba(230, 126, 34, 0.1);
+    border: 1px solid rgba(230, 126, 34, 0.3);
+    border-radius: 100px;
+  }
+
+  /* ============== RESPONSIVE ============== */
+  @media (max-width: 1280px) {
+    .config-layout { grid-template-columns: 1fr 400px; }
+  }
+  @media (max-width: 1024px) {
+    :root { --sidebar-w: 0px; }
+    .sidebar {
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      width: 260px;
+      z-index: 100;
+      transform: translateX(-100%);
+      transition: transform 0.25s;
+    }
+    .sidebar.open { transform: translateX(0); }
+    .topbar-burger { display: block; }
+    .config-layout { grid-template-columns: 1fr; }
+    .config-preview { position: static; max-height: none; }
+    .preview-frame.desktop { max-width: 100%; }
+  }
+  @media (max-width: 640px) {
+    .topbar { padding: 0 16px; }
+    .main-inner { padding: 18px 16px 40px; }
+    .topbar-page-title { font-size: 14px; }
+    .breadcrumb { font-size: 9px; }
+    .topbar-btn span { display: none; }
+    .save-indicator span { display: none; }
+    .field-row.row-2, .field-row.row-3 {
+      grid-template-columns: 1fr;
+    }
+    .social-row {
+      grid-template-columns: 1fr auto;
+      gap: 6px;
+    }
+    .social-row select { grid-column: 1 / -1; }
+  }
+</style>
 </head>
-<body class="bg-slate-50 min-h-screen">
+<body>
 
-    <!-- LOGIN GATE (oculto si ya autenticado y admin) -->
-    <div id="login-gate" class="fixed inset-0 bg-slate-900 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm fade-in">
-            <div class="text-center mb-4">
-                <div class="inline-block bg-slate-900 text-white p-3 rounded-xl mb-3">
-                    <i class="fa-solid fa-shield-halved text-2xl"></i>
-                </div>
-                <h2 class="text-lg font-black text-slate-900">Panel de Administración</h2>
-                <p class="text-xs text-slate-500 mt-1">Solo usuarios autorizados</p>
-            </div>
-            <div id="login-error" class="hidden bg-red-50 border border-red-200 text-red-700 text-xs p-2 rounded mb-3 font-semibold"></div>
-            <input id="login-email" type="email" placeholder="Email" class="w-full border border-slate-200 rounded px-3 py-2 text-sm mb-2 outline-none focus:border-slate-900" autocomplete="email">
-            <input id="login-pass" type="password" placeholder="Contraseña" class="w-full border border-slate-200 rounded px-3 py-2 text-sm mb-3 outline-none focus:border-slate-900" autocomplete="current-password">
-            <button onclick="iniciarSesion()" id="btn-login" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 rounded text-sm uppercase tracking-wide transition">Ingresar</button>
-            <div class="text-center mt-3">
-                <a href="index.html" class="text-[10px] text-slate-400 hover:text-slate-600 uppercase">Volver a la app</a>
-            </div>
+<!-- ===== AUTH GATE ===== -->
+<div class="auth-gate" id="authGate">
+  <div class="auth-gate-content">
+    <div class="auth-spinner"></div>
+    <p style="font-size: 13px; color: var(--tertiary);">Verificando sesión...</p>
+  </div>
+</div>
+
+<!-- ===== ADMIN SHELL ===== -->
+<div class="admin-shell" id="adminShell" style="display: none;">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <img src="" id="sidebarLogo" alt="PyP">
+      </div>
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-name" id="sidebarBrandName">PyP<span>Cloud</span></div>
+        <div class="sidebar-brand-sub">Admin Panel</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">General</div>
+      <nav class="sidebar-nav">
+        <button class="sidebar-link" data-view="dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          Dashboard
+          <span class="badge">Pronto</span>
+        </button>
+        <button class="sidebar-link active" data-view="configuracion">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Configuración del sitio
+        </button>
+      </nav>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Gestión</div>
+      <nav class="sidebar-nav">
+        <button class="sidebar-link disabled">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Usuarios
+          <span class="badge">Pronto</span>
+        </button>
+        <button class="sidebar-link disabled">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          Suscripciones
+          <span class="badge">Pronto</span>
+        </button>
+        <button class="sidebar-link disabled">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          Soporte
+          <span class="badge">Pronto</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Analítica</div>
+      <nav class="sidebar-nav">
+        <button class="sidebar-link disabled">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Reportes
+          <span class="badge">Pronto</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="userAvatar">A</div>
+        <div class="user-info">
+          <div class="user-name" id="userName">Administrador</div>
+          <div class="user-role">Admin · PyPCloud</div>
         </div>
+      </div>
+      <button class="sidebar-logout" id="logoutBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Cerrar sesión
+      </button>
     </div>
+  </aside>
 
-    <!-- DASHBOARD -->
-    <div id="admin-panel" class="hidden">
-        <!-- Header -->
-        <header class="bg-slate-900 text-white px-6 py-3 flex justify-between items-center shadow-lg">
-            <div class="flex items-center gap-3">
-                <i class="fa-solid fa-shield-halved text-purple-400 text-xl"></i>
-                <div>
-                    <h1 class="font-black text-sm tracking-wide">PANEL DE ADMINISTRACIÓN</h1>
-                    <p class="text-[10px] text-slate-400 uppercase tracking-widest" id="admin-greeting">Recuérdame</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-3">
-                <a href="index.html" class="text-[11px] text-slate-300 hover:text-white uppercase tracking-wide transition"><i class="fa-solid fa-arrow-left mr-1"></i> Volver a la app</a>
-                <button onclick="cerrarSesion()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded text-[11px] font-bold uppercase tracking-wide transition"><i class="fa-solid fa-right-from-bracket mr-1"></i> Salir</button>
-            </div>
-        </header>
-
-        <main class="p-6">
-            <!-- KPIs -->
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
-                <div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200">
-                    <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Total Usuarios</div>
-                    <div class="text-2xl font-black text-slate-900 mt-1" id="kpi-total">—</div>
-                </div>
-                <div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200 border-l-4 border-l-green-500">
-                    <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Activos</div>
-                    <div class="text-2xl font-black text-green-600 mt-1" id="kpi-activos">—</div>
-                </div>
-                <div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200 border-l-4 border-l-amber-500">
-                    <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">En Trial</div>
-                    <div class="text-2xl font-black text-amber-600 mt-1" id="kpi-trial">—</div>
-                </div>
-                <div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200 border-l-4 border-l-red-500">
-                    <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Expirados</div>
-                    <div class="text-2xl font-black text-red-600 mt-1" id="kpi-expirados">—</div>
-                </div>
-                <div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200 border-l-4 border-l-slate-400">
-                    <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Cancelados</div>
-                    <div class="text-2xl font-black text-slate-500 mt-1" id="kpi-cancelados">—</div>
-                </div>
-                <div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200 border-l-4 border-l-purple-500">
-                    <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Nuevos (30d)</div>
-                    <div class="text-2xl font-black text-purple-600 mt-1" id="kpi-nuevos">—</div>
-                </div>
-            </div>
-
-            <!-- Filtros + Buscador -->
-            <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-3 mb-3 flex flex-wrap items-center gap-2">
-                <div class="flex-1 min-w-[200px] relative">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                    <input type="text" id="search-input" oninput="filtrar()" placeholder="Buscar por nombre, email o empresa..." class="w-full border border-slate-200 rounded pl-9 pr-3 py-2 text-sm outline-none focus:border-slate-900">
-                </div>
-                <select id="filter-status" onchange="filtrar()" class="border border-slate-200 rounded px-3 py-2 text-xs font-bold uppercase tracking-wide outline-none focus:border-slate-900">
-                    <option value="TODOS">Todos los estados</option>
-                    <option value="activo">Solo activos</option>
-                    <option value="trial">Solo en trial</option>
-                    <option value="trial_expirado">Trial expirado</option>
-                    <option value="expirado">Suscripción expirada</option>
-                    <option value="cancelado">Cancelados</option>
-                    <option value="admin">Administradores</option>
-                </select>
-                <button onclick="cargarUsuarios()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded text-xs font-bold uppercase tracking-wide transition"><i class="fa-solid fa-rotate"></i> Refrescar</button>
-            </div>
-
-            <!-- Tabla -->
-            <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
-                <div class="overflow-x-auto custom-scroll">
-                    <table class="w-full text-sm">
-                        <thead class="bg-slate-50 border-b border-slate-200">
-                            <tr class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                                <th class="px-4 py-3 text-left">Usuario</th>
-                                <th class="px-4 py-3 text-left">Email</th>
-                                <th class="px-4 py-3 text-left">Empresa</th>
-                                <th class="px-4 py-3 text-center">Estado</th>
-                                <th class="px-4 py-3 text-right">Vence en</th>
-                                <th class="px-4 py-3 text-center">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabla-usuarios" class="divide-y divide-slate-100">
-                            <tr><td colspan="6" class="p-10 text-center text-slate-400">Cargando...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="px-4 py-2 bg-slate-50 border-t border-slate-200 text-[10px] text-slate-500 font-semibold uppercase tracking-wide">
-                    <span id="contador-resultados">0 usuarios</span>
-                </div>
-            </div>
-        </main>
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <button class="topbar-burger" id="topbarBurger" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="topbar-title">
+      <div class="breadcrumb">
+        <a href="#">Admin</a>
+        <span class="breadcrumb-sep">/</span>
+        <span id="breadcrumbCurrent">Configuración</span>
+      </div>
+      <div class="topbar-page-title" id="topbarPageTitle">Configuración del sitio</div>
     </div>
+    <div class="topbar-actions">
+      <div class="save-indicator" id="saveIndicator">
+        <div class="save-indicator-dot"></div>
+        <span id="saveStatus">Guardado</span>
+      </div>
+      <a href="../index.html" target="_blank" rel="noopener" class="topbar-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <span>Ver sitio</span>
+      </a>
+      <button class="topbar-btn topbar-btn-orange" id="exportBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Exportar JSON</span>
+      </button>
+    </div>
+  </header>
 
-    <!-- MODAL DETALLE USUARIO -->
-    <div id="modal-detalle" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-40 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[95vh] overflow-hidden flex flex-col fade-in">
-            <div class="bg-slate-900 text-white px-5 py-3 flex justify-between items-center">
-                <h3 class="font-black text-sm tracking-wide"><i class="fa-solid fa-user mr-2"></i> <span id="md-titulo">Detalle de usuario</span></h3>
-                <button onclick="cerrarModalDetalle()" class="text-white hover:text-slate-300 transition"><i class="fa-solid fa-times"></i></button>
-            </div>
-            <div class="p-5 overflow-y-auto custom-scroll space-y-4">
+  <!-- MAIN -->
+  <main class="main">
+    <div class="main-inner">
 
-                <!-- Info -->
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-slate-50 p-3 rounded border border-slate-200">
-                        <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Nombre</div>
-                        <div id="md-nombre" class="text-sm font-bold text-slate-900 mt-1">—</div>
-                    </div>
-                    <div class="bg-slate-50 p-3 rounded border border-slate-200">
-                        <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Email</div>
-                        <div id="md-email" class="text-sm font-mono text-slate-900 mt-1 break-all">—</div>
-                    </div>
-                    <div class="bg-slate-50 p-3 rounded border border-slate-200">
-                        <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Empresa</div>
-                        <div id="md-empresa" class="text-sm font-bold text-slate-900 mt-1">—</div>
-                    </div>
-                    <div class="bg-slate-50 p-3 rounded border border-slate-200">
-                        <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Estado actual</div>
-                        <div id="md-estado" class="mt-1">—</div>
-                    </div>
-                </div>
-
-                <!-- Suscripción -->
-                <div class="bg-blue-50 border border-blue-200 rounded p-3">
-                    <div class="text-[10px] font-black text-blue-900 uppercase tracking-widest mb-2"><i class="fa-solid fa-credit-card mr-1"></i> Suscripción</div>
-                    <div id="md-suscripcion" class="text-xs text-slate-700">Cargando...</div>
-                </div>
-
-                <!-- Actividad -->
-                <div class="bg-purple-50 border border-purple-200 rounded p-3">
-                    <div class="text-[10px] font-black text-purple-900 uppercase tracking-widest mb-2"><i class="fa-solid fa-chart-line mr-1"></i> Actividad</div>
-                    <div id="md-actividad" class="grid grid-cols-3 gap-2 text-xs">Cargando...</div>
-                </div>
-
-                <!-- Acciones -->
-                <div class="border-t border-slate-200 pt-4">
-                    <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Acciones rápidas</div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button onclick="accionActivar(1)" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded text-xs uppercase tracking-wide transition"><i class="fa-solid fa-check mr-1"></i> Activar 1 mes</button>
-                        <button onclick="accionActivar(3)" class="bg-green-700 hover:bg-green-800 text-white font-bold py-2 rounded text-xs uppercase tracking-wide transition"><i class="fa-solid fa-check mr-1"></i> Activar 3 meses</button>
-                        <button onclick="accionActivar(12)" class="bg-green-800 hover:bg-green-900 text-white font-bold py-2 rounded text-xs uppercase tracking-wide transition"><i class="fa-solid fa-star mr-1"></i> Activar 1 año</button>
-                        <button onclick="accionExtenderTrial(7)" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 rounded text-xs uppercase tracking-wide transition"><i class="fa-solid fa-clock-rotate-left mr-1"></i> +7 días trial</button>
-                        <button onclick="accionExtenderTrial(15)" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded text-xs uppercase tracking-wide transition"><i class="fa-solid fa-clock-rotate-left mr-1"></i> +15 días trial</button>
-                        <button onclick="accionCancelar()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded text-xs uppercase tracking-wide transition"><i class="fa-solid fa-ban mr-1"></i> Cancelar</button>
-                    </div>
-                </div>
-            </div>
+      <!-- VIEW: CONFIGURACIÓN -->
+      <div class="view" id="view-configuracion">
+        <div class="config-banner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <div>
+            <strong>Modo de almacenamiento: Local (navegador)</strong><br>
+            Los cambios se guardan en tu navegador. Cuando conectes Supabase, los datos se sincronizarán con la nube. Busca el comentario <code style="background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 3px; font-family: 'Geist Mono', monospace;">// CONECTAR SUPABASE AQUÍ</code> en el código.
+          </div>
         </div>
-    </div>
 
-    <!-- TOAST de notificación -->
-    <div id="toast" class="fixed top-4 right-4 z-50 hidden">
-        <div id="toast-content" class="bg-slate-900 text-white px-4 py-2 rounded shadow-lg text-sm font-bold">—</div>
-    </div>
+        <div class="config-layout">
 
+          <!-- ===== FORMULARIO ===== -->
+          <div class="config-form" id="configForm">
+
+            <!-- 1. IDENTIDAD DE MARCA -->
+            <div class="config-section" data-section="brand">
+              <div class="config-section-header">
+                <div class="section-title-wrap">
+                  <div class="section-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                  </div>
+                  <div>
+                    <div class="section-title">Identidad de marca</div>
+                    <div class="section-meta">Logo · Nombre · Tagline</div>
+                  </div>
+                </div>
+                <div class="section-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+              </div>
+              <div class="config-section-body">
+                <div class="field-row row-2">
+                  <div class="field-row">
+                    <label class="field-label">Logo ícono <span class="optional">PNG · 64-256px</span></label>
+                    <label class="field-image" id="logoIconField">
+                      <input type="file" accept="image/*" data-config="logoIcon">
+                      <div class="field-image-text"><strong>Subir logo</strong><br>PNG con fondo transparente</div>
+                    </label>
+                    <div class="field-hint">Se usa en el nav, footer y favicon</div>
+                  </div>
+                  <div class="field-row">
+                    <label class="field-label">Logo completo <span class="optional">Opcional</span></label>
+                    <label class="field-image" id="logoFullField">
+                      <input type="file" accept="image/*" data-config="logoFull">
+                      <div class="field-image-text"><strong>Subir logo</strong><br>Versión con texto</div>
+                    </label>
+                    <div class="field-hint">Para zonas con espacio (hero, splash)</div>
+                  </div>
+                </div>
+                <div class="field-row row-2">
+                  <div class="field-row">
+                    <label class="field-label">Nombre comercial <span class="required">*</span></label>
+                    <input type="text" data-config="brandName" placeholder="PyPCloud">
+                  </div>
+                  <div class="field-row">
+                    <label class="field-label">Subnombre <span class="optional">Aparece debajo</span></label>
+                    <input type="text" data-config="brandSub" placeholder="by PYP Soluciones">
+                  </div>
+                </div>
+                <div class="field-row">
+                  <label class="field-label">Tagline / Slogan corto</label>
+                  <input type="text" data-config="tagline" placeholder="Software empresarial con IA. Sin fronteras.">
+                  <div class="field-hint">Aparece en el footer y como meta description corta</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. HERO -->
+            <div class="config-section" data-section="hero">
+              <div class="config-section-header">
+                <div class="section-title-wrap">
+                  <div class="section-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  </div>
+                  <div>
+                    <div class="section-title">Hero (Titular principal)</div>
+                    <div class="section-meta">Mensaje impactante de bienvenida</div>
+                  </div>
+                </div>
+                <div class="section-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+              </div>
+              <div class="config-section-body">
+                <div class="field-row">
+                  <label class="field-label">Titular principal <span class="required">*</span></label>
+                  <textarea data-config="heroTitle" rows="2" placeholder="Tu día a día en una conversación."></textarea>
+                  <div class="field-hint">Usa <code style="background: rgba(0,0,0,0.05); padding: 0 4px; border-radius: 3px;">[acento]palabra[/acento]</code> para resaltar una palabra en cursiva naranja</div>
+                </div>
+                <div class="field-row">
+                  <label class="field-label">Texto descriptivo (lead) <span class="required">*</span></label>
+                  <textarea data-config="heroLead" rows="3" placeholder="Recuérdame es el asistente con IA..."></textarea>
+                </div>
+                <div class="field-row row-2">
+                  <div class="field-row">
+                    <label class="field-label">Botón principal (texto)</label>
+                    <input type="text" data-config="heroBtnPrimary" placeholder="Probar 30 días gratis">
+                  </div>
+                  <div class="field-row">
+                    <label class="field-label">Botón secundario (texto)</label>
+                    <input type="text" data-config="heroBtnSecondary" placeholder="Ver módulos">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. CONTACTO -->
+            <div class="config-section" data-section="contact">
+              <div class="config-section-header">
+                <div class="section-title-wrap">
+                  <div class="section-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  </div>
+                  <div>
+                    <div class="section-title">Contacto</div>
+                    <div class="section-meta">Emails · WhatsApp · Teléfono</div>
+                  </div>
+                </div>
+                <div class="section-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+              </div>
+              <div class="config-section-body">
+                <div class="field-row row-2">
+                  <div class="field-row">
+                    <label class="field-label">Email principal <span class="required">*</span></label>
+                    <input type="email" data-config="emailMain" placeholder="soporte@pypcloud.com">
+                  </div>
+                  <div class="field-row">
+                    <label class="field-label">Email comercial <span class="optional">Opcional</span></label>
+                    <input type="email" data-config="emailSales" placeholder="ventas@pypcloud.com">
+                  </div>
+                </div>
+                <div class="field-row row-2">
+                  <div class="field-row">
+                    <label class="field-label">WhatsApp <span class="required">*</span></label>
+                    <input type="tel" data-config="whatsapp" placeholder="+58 414-028-5806">
+                    <div class="field-hint">Formato internacional con código de país</div>
+                  </div>
+                  <div class="field-row">
+                    <label class="field-label">Teléfono fijo <span class="optional">Opcional</span></label>
+                    <input type="tel" data-config="phone" placeholder="+58 212-555-0123">
+                  </div>
+                </div>
+                <div class="field-row">
+                  <label class="field-label">Horario de atención <span class="optional">Aparece junto al WhatsApp</span></label>
+                  <input type="text" data-config="hours" placeholder="Lunes a Viernes, 9:00 AM - 6:00 PM">
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. DIRECCIÓN -->
+            <div class="config-section collapsed" data-section="address">
+              <div class="config-section-header">
+                <div class="section-title-wrap">
+                  <div class="section-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  </div>
+                  <div>
+                    <div class="section-title">Dirección física</div>
+                    <div class="section-meta">Ubicación de la empresa · Opcional</div>
+                  </div>
+                </div>
+                <div class="section-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+              </div>
+              <div class="config-section-body">
+                <label class="field-toggle">
+                  <div class="field-toggle-text">
+                    <div class="field-toggle-label">Mostrar dirección en el sitio</div>
+                    <div class="field-toggle-hint">Si está desactivado, no se muestra aunque tengas datos</div>
+                  </div>
+                  <input type="checkbox" data-config="showAddress">
+                  <div class="toggle-switch"></div>
+                </label>
+                <div class="field-row row-2">
+                  <div class="field-row">
+                    <label class="field-label">País</label>
+                    <input type="text" data-config="country" placeholder="Venezuela">
+                  </div>
+                  <div class="field-row">
+                    <label class="field-label">Ciudad</label>
+                    <input type="text" data-config="city" placeholder="Caracas">
+                  </div>
+                </div>
+                <div class="field-row">
+                  <label class="field-label">Dirección completa <span class="optional">Opcional</span></label>
+                  <textarea data-config="addressFull" rows="2" placeholder="Av. Principal, Edif. PyP, Piso 5, Oficina 503"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- 5. REDES SOCIALES -->
+            <div class="config-section" data-section="social">
+              <div class="config-section-header">
+                <div class="section-title-wrap">
+                  <div class="section-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                  </div>
+                  <div>
+                    <div class="section-title">Redes sociales</div>
+                    <div class="section-meta">Solo se muestran las que llenes</div>
+                  </div>
+                </div>
+                <div class="section-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+              </div>
+              <div class="config-section-body">
+                <div class="config-banner" style="margin-bottom: 4px; background: rgba(20, 59, 98, 0.04); border-color: rgba(20, 59, 98, 0.15); border-left-color: var(--primary); color: var(--ink);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  <div>Solo las redes con URL llenada aparecerán en el sitio. Cuando crees tus cuentas, agrégalas aquí.</div>
+                </div>
+                <div class="social-list" id="socialList">
+                  <!-- Filas dinámicas -->
+                </div>
+                <button type="button" class="btn-add-social" id="btnAddSocial">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Agregar red social
+                </button>
+              </div>
+            </div>
+
+            <!-- 6. PLANES Y PRECIOS -->
+            <div class="config-section" data-section="pricing">
+              <div class="config-section-header">
+                <div class="section-title-wrap">
+                  <div class="section-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                  </div>
+                  <div>
+                    <div class="section-title">Planes y precios</div>
+                    <div class="section-meta">Mensual · Trimestral · Anual</div>
+                  </div>
+                </div>
+                <div class="section-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+              </div>
+              <div class="config-section-body">
+                <!-- MENSUAL -->
+                <div style="background: var(--paper-warm); padding: 14px; border-radius: 10px; border: 1px solid var(--line-soft);">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <strong style="font-size: 13px; color: var(--ink);">Plan Mensual</strong>
+                    <label class="field-toggle" style="padding: 6px 10px; margin: 0;">
+                      <span style="font-size: 11px; color: var(--tertiary); margin-right: 8px;">Activo</span>
+                      <input type="checkbox" data-config="planMonthlyActive">
+                      <div class="toggle-switch"></div>
+                    </label>
+                  </div>
+                  <div class="field-row row-3">
+                    <div class="field-row">
+                      <label class="field-label">Precio (USD)</label>
+                      <input type="number" step="0.01" min="0" data-config="planMonthlyPrice" placeholder="1.60">
+                    </div>
+                    <div class="field-row">
+                      <label class="field-label">Período</label>
+                      <input type="text" data-config="planMonthlyPeriod" placeholder="/mes">
+                    </div>
+                    <div class="field-row">
+                      <label class="field-label">Etiqueta</label>
+                      <input type="text" data-config="planMonthlyTag" placeholder="Disponible ahora">
+                    </div>
+                  </div>
+                </div>
+                <!-- TRIMESTRAL -->
+                <div style="background: var(--paper-warm); padding: 14px; border-radius: 10px; border: 1px solid var(--line-soft);">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <strong style="font-size: 13px; color: var(--ink);">Plan Trimestral</strong>
+                    <label class="field-toggle" style="padding: 6px 10px; margin: 0;">
+                      <span style="font-size: 11px; color: var(--tertiary); margin-right: 8px;">Activo</span>
+                      <input type="checkbox" data-config="planQuarterlyActive">
+                      <div class="toggle-switch"></div>
+                    </label>
+                  </div>
+                  <div class="field-row row-3">
+                    <div class="field-row">
+                      <label class="field-label">Precio (USD)</label>
+                      <input type="number" step="0.01" min="0" data-config="planQuarterlyPrice" placeholder="3.50">
+                    </div>
+                    <div class="field-row">
+                      <label class="field-label">Período</label>
+                      <input type="text" data-config="planQuarterlyPeriod" placeholder="/3 meses">
+                    </div>
+                    <div class="field-row">
+                      <label class="field-label">Etiqueta</label>
+                      <input type="text" data-config="planQuarterlyTag" placeholder="Ahorra 27%">
+                    </div>
+                  </div>
+                </div>
+                <!-- ANUAL -->
+                <div style="background: var(--paper-warm); padding: 14px; border-radius: 10px; border: 1px solid var(--line-soft);">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <strong style="font-size: 13px; color: var(--ink);">Plan Anual</strong>
+                    <label class="field-toggle" style="padding: 6px 10px; margin: 0;">
+                      <span style="font-size: 11px; color: var(--tertiary); margin-right: 8px;">Activo</span>
+                      <input type="checkbox" data-config="planYearlyActive">
+                      <div class="toggle-switch"></div>
+                    </label>
+                  </div>
+                  <div class="field-row row-3">
+                    <div class="field-row">
+                      <label class="field-label">Precio (USD)</label>
+                      <input type="number" step="0.01" min="0" data-config="planYearlyPrice" placeholder="14.00">
+                    </div>
+                    <div class="field-row">
+                      <label class="field-label">Período</label>
+                      <input type="text" data-config="planYearlyPeriod" placeholder="/año">
+                    </div>
+                    <div class="field-row">
+                      <label class="field-label">Etiqueta</label>
+                      <input type="text" data-config="planYearlyTag" placeholder="Ahorra 40%">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="field-row row-2">
+                  <div class="field-row">
+                    <label class="field-label">Días de prueba gratis</label>
+                    <input type="number" min="0" data-config="trialDays" placeholder="30">
+                  </div>
+                  <label class="field-toggle" style="margin-top: auto;">
+                    <div class="field-toggle-text">
+                      <div class="field-toggle-label">Sin tarjeta de crédito</div>
+                      <div class="field-toggle-hint">Aparece en CTAs</div>
+                    </div>
+                    <input type="checkbox" data-config="noCard" checked>
+                    <div class="toggle-switch"></div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- 7. URLS IMPORTANTES -->
+            <div class="config-section collapsed" data-section="urls">
+              <div class="config-section-header">
+                <div class="section-title-wrap">
+                  <div class="section-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                  </div>
+                  <div>
+                    <div class="section-title">URLs importantes</div>
+                    <div class="section-meta">Enlaces del ecosistema</div>
+                  </div>
+                </div>
+                <div class="section-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+              </div>
+              <div class="config-section-body">
+                <div class="field-row">
+                  <label class="field-label">URL de Recuérdame (app)</label>
+                  <input type="url" data-config="urlApp" placeholder="https://recuerdame.pypcloud.com">
+                </div>
+                <div class="field-row">
+                  <label class="field-label">URL del panel admin</label>
+                  <input type="url" data-config="urlAdmin" placeholder="https://pypcloud.com/admin">
+                </div>
+                <div class="field-row">
+                  <label class="field-label">URL del futuro ERP <span class="optional">Cuando esté listo</span></label>
+                  <input type="url" data-config="urlErp" placeholder="https://erp.pypcloud.com">
+                </div>
+              </div>
+            </div>
+
+            <!-- 8. EMPRESA / LEGAL -->
+            <div class="config-section collapsed" data-section="company">
+              <div class="config-section-header">
+                <div class="section-title-wrap">
+                  <div class="section-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 9h1"/><path d="M9 13h1"/><path d="M9 17h1"/><path d="M14 9h1"/><path d="M14 13h1"/><path d="M14 17h1"/></svg>
+                  </div>
+                  <div>
+                    <div class="section-title">Empresa / Legal</div>
+                    <div class="section-meta">Razón social · RIF · Fundación</div>
+                  </div>
+                </div>
+                <div class="section-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+              </div>
+              <div class="config-section-body">
+                <div class="field-row row-2">
+                  <div class="field-row">
+                    <label class="field-label">Razón social</label>
+                    <input type="text" data-config="legalName" placeholder="PYP Soluciones C.A.">
+                  </div>
+                  <div class="field-row">
+                    <label class="field-label">Año de fundación</label>
+                    <input type="number" min="1900" max="2100" data-config="foundedYear" placeholder="2025">
+                  </div>
+                </div>
+                <div class="field-row row-2">
+                  <div class="field-row">
+                    <label class="field-label">RIF / RUC / NIT <span class="optional">Opcional · legal</span></label>
+                    <input type="text" data-config="taxId" placeholder="J-12345678-9">
+                  </div>
+                  <div class="field-row">
+                    <label class="field-label">"Hecho en..." <span class="optional">Footer</span></label>
+                    <input type="text" data-config="madeIn" placeholder="(vacío = no se muestra)">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 9. SEO Y META -->
+            <div class="config-section collapsed" data-section="seo">
+              <div class="config-section-header">
+                <div class="section-title-wrap">
+                  <div class="section-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  </div>
+                  <div>
+                    <div class="section-title">SEO y metadatos</div>
+                    <div class="section-meta">Visibilidad en buscadores</div>
+                  </div>
+                </div>
+                <div class="section-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+              </div>
+              <div class="config-section-body">
+                <div class="field-row">
+                  <label class="field-label">Título del sitio (SEO) <span class="optional">Máx 60 caracteres</span></label>
+                  <input type="text" maxlength="60" data-config="seoTitle" placeholder="PyPCloud — Asistente personal con IA">
+                </div>
+                <div class="field-row">
+                  <label class="field-label">Meta descripción <span class="optional">Máx 160 caracteres</span></label>
+                  <textarea maxlength="160" data-config="seoDescription" rows="3" placeholder="Recuérdame es el asistente personal con IA..."></textarea>
+                </div>
+                <div class="field-row">
+                  <label class="field-label">Palabras clave <span class="optional">Separadas por coma</span></label>
+                  <input type="text" data-config="seoKeywords" placeholder="asistente IA, CRM, PyMEs, finanzas">
+                </div>
+                <div class="field-row row-2">
+                  <div class="field-row">
+                    <label class="field-label">Google Analytics ID <span class="optional">Cuando lo tengas</span></label>
+                    <input type="text" data-config="gaId" placeholder="G-XXXXXXXXXX">
+                  </div>
+                  <div class="field-row">
+                    <label class="field-label">Google Search Console <span class="optional">Token de verificación</span></label>
+                    <input type="text" data-config="gscToken" placeholder="abc123...">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 10. ROADMAP -->
+            <div class="config-section collapsed" data-section="roadmap">
+              <div class="config-section-header">
+                <div class="section-title-wrap">
+                  <div class="section-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  </div>
+                  <div>
+                    <div class="section-title">Roadmap / Próximamente</div>
+                    <div class="section-meta">Productos en desarrollo</div>
+                  </div>
+                </div>
+                <div class="section-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+              </div>
+              <div class="config-section-body">
+                <label class="field-toggle">
+                  <div class="field-toggle-text">
+                    <div class="field-toggle-label">Mostrar sección "ERP próximamente"</div>
+                    <div class="field-toggle-hint">Toda la sección Roadmap del sitio</div>
+                  </div>
+                  <input type="checkbox" data-config="showErpRoadmap" checked>
+                  <div class="toggle-switch"></div>
+                </label>
+                <label class="field-toggle">
+                  <div class="field-toggle-text">
+                    <div class="field-toggle-label">Mostrar "English coming soon"</div>
+                    <div class="field-toggle-hint">Mención de futura versión en inglés</div>
+                  </div>
+                  <input type="checkbox" data-config="showEnglish" checked>
+                  <div class="toggle-switch"></div>
+                </label>
+                <div class="field-row">
+                  <label class="field-label">Fecha estimada ERP <span class="optional">Texto libre</span></label>
+                  <input type="text" data-config="erpDate" placeholder="2026">
+                </div>
+              </div>
+            </div>
+
+            <!-- 11. APARIENCIA -->
+            <div class="config-section collapsed" data-section="appearance">
+              <div class="config-section-header">
+                <div class="section-title-wrap">
+                  <div class="section-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+                  </div>
+                  <div>
+                    <div class="section-title">Apariencia (avanzado)</div>
+                    <div class="section-meta">Colores corporativos</div>
+                  </div>
+                </div>
+                <div class="section-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+              </div>
+              <div class="config-section-body">
+                <div class="field-row">
+                  <label class="field-label">Color primario (azul)</label>
+                  <div class="color-field">
+                    <input type="color" data-config="colorPrimary" value="#143B62">
+                    <input type="text" data-config="colorPrimaryHex" placeholder="#143B62">
+                  </div>
+                </div>
+                <div class="field-row">
+                  <label class="field-label">Color secundario (naranja)</label>
+                  <div class="color-field">
+                    <input type="color" data-config="colorSecondary" value="#E67E22">
+                    <input type="text" data-config="colorSecondaryHex" placeholder="#E67E22">
+                  </div>
+                </div>
+                <div class="field-hint">⚠️ Cambiar los colores corporativos requiere regenerar el HTML del sitio público. Los cambios se aplican al exportar.</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ===== VISTA PREVIA ===== -->
+          <div class="config-preview">
+            <div class="preview-card">
+              <div class="preview-header">
+                <div class="preview-title">
+                  <div class="preview-live-dot"></div>
+                  Vista previa en vivo
+                </div>
+                <div class="preview-tabs">
+                  <button class="preview-tab active" data-pv="desktop">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    Desktop
+                  </button>
+                  <button class="preview-tab" data-pv="mobile">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                    Móvil
+                  </button>
+                </div>
+              </div>
+              <div class="preview-frame-wrap">
+                <div class="preview-frame desktop" id="previewFrame">
+                  <!-- NAV -->
+                  <div class="pv-nav">
+                    <div class="pv-nav-logo">
+                      <div class="pv-nav-mark"><img src="" id="pvLogo" alt=""></div>
+                      <div>
+                        <div class="pv-nav-name" id="pvBrandName">PyP<span>Cloud</span></div>
+                        <div class="pv-nav-sub" id="pvBrandSub">by PYP Soluciones</div>
+                      </div>
+                    </div>
+                    <div class="pv-cta">Probar gratis</div>
+                  </div>
+                  <!-- HERO -->
+                  <div class="pv-hero">
+                    <div class="pv-h1" id="pvHeroTitle">Tu día a día en una <span class="accent">conversación</span>.</div>
+                    <div class="pv-lead" id="pvHeroLead">Recuérdame es el asistente con IA que organiza tu vida y tu negocio.</div>
+                    <div class="pv-cta-main" id="pvBtnPrimary">Probar 30 días gratis →</div>
+                  </div>
+                  <!-- PRICING -->
+                  <div class="pv-pricing">
+                    <div class="pv-pricing-title">Planes</div>
+                    <div class="pv-plans" id="pvPlans"></div>
+                  </div>
+                  <!-- FOOTER -->
+                  <div class="pv-footer">
+                    <strong style="color: rgba(255,255,255,0.85);" id="pvFooterBrand">PYP Soluciones · División PyPCloud.</strong>
+                    <div class="pv-footer-contact" id="pvFooterContact">soporte@pypcloud.com</div>
+                    <div class="pv-footer-socials" id="pvFooterSocials"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <a href="../index.html" target="_blank" rel="noopener" class="preview-open-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              Ver sitio completo en pestaña nueva
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- VIEW: DASHBOARD (placeholder) -->
+      <div class="view" id="view-dashboard" style="display: none;">
+        <div class="empty-state">
+          <div class="empty-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          </div>
+          <div class="empty-title">Dashboard</div>
+          <div class="empty-text">Aquí verás métricas clave del sitio: visitas, registros, conversiones y más.</div>
+          <div class="empty-badge">En desarrollo</div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toastText">Configuración guardada</span>
+</div>
 
 <script>
-// =============================================================================
-// CONFIGURACIÓN — ajusta estos valores al de TU proyecto Supabase
-// =============================================================================
-const SUPABASE_URL = 'https://gbmtdgoztuxtkmcanrck.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_uUgHR98jxxxmFzS6r-EZOQ_-6m_b1G2';
-let TOKEN_JWT = null;
-let USUARIOS = [];
-let USUARIO_ACTUAL_MODAL = null;
+  // ============================================
+  // === AUTENTICACIÓN ===
+  // ============================================
+  // En producción: verificar token JWT con backend / Supabase
+  // Por ahora: simulamos verificación rápida
+  
+  const SESSION_KEY = 'pypcloud_admin_session';
+  
+  function checkAuth() {
+    // === CONECTAR SUPABASE AQUÍ ===
+    // En producción:
+    // const { data: { session } } = await supabase.auth.getSession();
+    // if (!session) window.location.href = './login.html';
+    // else return session.user;
+    
+    // Por ahora: aceptar si hay sesión simulada en localStorage
+    const session = localStorage.getItem(SESSION_KEY);
+    if (!session) {
+      // Sin sesión: en producción redirigir a login
+      // window.location.href = './login.html';
+      // Por demo: crear sesión automática
+      const demoSession = { email: 'admin@pypcloud.com', name: 'Administrador', loginAt: Date.now() };
+      localStorage.setItem(SESSION_KEY, JSON.stringify(demoSession));
+      return demoSession;
+    }
+    return JSON.parse(session);
+  }
 
-// =============================================================================
-// LOGIN
-// =============================================================================
-async function iniciarSesion() {
-    const email = document.getElementById('login-email').value.trim();
-    const pass = document.getElementById('login-pass').value;
-    const errBox = document.getElementById('login-error');
-    const btn = document.getElementById('btn-login');
-    errBox.classList.add('hidden');
-    if (!email || !pass) { errBox.textContent = 'Completa email y contraseña'; errBox.classList.remove('hidden'); return; }
-    btn.disabled = true; btn.textContent = 'Ingresando...';
+  // Simular verificación con un pequeño delay (UX más profesional)
+  setTimeout(() => {
+    const user = checkAuth();
+    if (user) {
+      document.getElementById('authGate').classList.add('hidden');
+      document.getElementById('adminShell').style.display = 'grid';
+      
+      // Llenar info del usuario
+      document.getElementById('userName').textContent = user.name || 'Administrador';
+      document.getElementById('userAvatar').textContent = (user.name || 'A')[0].toUpperCase();
+    }
+  }, 600);
 
+  // ============================================
+  // === LOGOUT ===
+  // ============================================
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    if (!confirm('¿Cerrar sesión?')) return;
+    
+    // === CONECTAR SUPABASE AQUÍ ===
+    // await supabase.auth.signOut();
+    
+    localStorage.removeItem(SESSION_KEY);
+    window.location.href = './login.html';
+  });
+
+  // ============================================
+  // === CONFIGURACIÓN: ESTADO Y PERSISTENCIA ===
+  // ============================================
+  const CONFIG_KEY = 'pypcloud_site_config';
+  
+  // Configuración por defecto (matchea la web actual)
+  const defaultConfig = {
+    // Brand
+    logoIcon: '',  // base64
+    logoFull: '',  // base64
+    brandName: 'PyPCloud',
+    brandSub: 'by PYP Soluciones',
+    tagline: 'Software empresarial con IA. Sin fronteras.',
+    
+    // Hero
+    heroTitle: 'Tu día a día en una [acento]conversación[/acento].',
+    heroLead: 'Recuérdame es el asistente con IA que organiza tu vida y tu negocio. Agenda, finanzas, compras y recordatorios — todo desde una conversación natural.',
+    heroBtnPrimary: 'Probar 30 días gratis',
+    heroBtnSecondary: 'Ver módulos',
+    
+    // Contact
+    emailMain: 'soporte@pypcloud.com',
+    emailSales: '',
+    whatsapp: '+58 414-028-5806',
+    phone: '',
+    hours: '',
+    
+    // Address
+    showAddress: false,
+    country: '',
+    city: '',
+    addressFull: '',
+    
+    // Social - array
+    socials: [],
+    
+    // Pricing
+    planMonthlyActive: true,
+    planMonthlyPrice: '1.60',
+    planMonthlyPeriod: '/mes',
+    planMonthlyTag: 'Disponible ahora',
+    planQuarterlyActive: true,
+    planQuarterlyPrice: '3.50',
+    planQuarterlyPeriod: '/3 meses',
+    planQuarterlyTag: 'Ahorra 27%',
+    planYearlyActive: false,
+    planYearlyPrice: '',
+    planYearlyPeriod: '/año',
+    planYearlyTag: '',
+    trialDays: '30',
+    noCard: true,
+    
+    // URLs
+    urlApp: 'https://recuerdame.pypcloud.com',
+    urlAdmin: 'https://pypcloud.com/admin',
+    urlErp: '',
+    
+    // Legal
+    legalName: 'PYP Soluciones',
+    foundedYear: '2025',
+    taxId: '',
+    madeIn: '',
+    
+    // SEO
+    seoTitle: 'PyPCloud — Recuérdame · Asistente personal con IA',
+    seoDescription: 'Recuérdame es el asistente personal con inteligencia artificial de PyPCloud. Organiza agenda, finanzas, compras y recordatorios con tu voz.',
+    seoKeywords: 'asistente IA, CRM PyME, agenda inteligente, control financiero, PyPCloud',
+    gaId: '',
+    gscToken: '',
+    
+    // Roadmap
+    showErpRoadmap: true,
+    showEnglish: true,
+    erpDate: '2026',
+    
+    // Appearance
+    colorPrimary: '#143B62',
+    colorSecondary: '#E67E22'
+  };
+
+  let config = {};
+
+  async function loadConfig() {
+    // === CONECTAR SUPABASE AQUÍ ===
+    // En producción:
+    // const { data, error } = await supabase
+    //   .from('site_config')
+    //   .select('*')
+    //   .eq('id', 1)
+    //   .single();
+    // if (!error && data) config = { ...defaultConfig, ...data };
+    // else config = defaultConfig;
+    
+    // Por ahora: localStorage
     try {
-        const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
-            method: 'POST',
-            headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password: pass })
-        });
-        if (!res.ok) {
-            const err = await res.json();
-            throw new Error(err.error_description || err.message || 'Credenciales inválidas');
-        }
-        const data = await res.json();
-        TOKEN_JWT = data.access_token;
-        localStorage.setItem('admin_jwt', TOKEN_JWT);
-
-        // Verificar que sea admin
-        const esAdmin = await verificarAdmin();
-        if (!esAdmin) {
-            localStorage.removeItem('admin_jwt');
-            TOKEN_JWT = null;
-            throw new Error('Tu usuario no tiene permisos de administrador');
-        }
-
-        document.getElementById('login-gate').classList.add('hidden');
-        document.getElementById('admin-panel').classList.remove('hidden');
-        document.getElementById('admin-greeting').textContent = `Bienvenido · ${email}`;
-        await cargarTodo();
+      const stored = localStorage.getItem(CONFIG_KEY);
+      config = stored ? { ...defaultConfig, ...JSON.parse(stored) } : { ...defaultConfig };
     } catch (e) {
-        errBox.textContent = e.message;
-        errBox.classList.remove('hidden');
-    } finally {
-        btn.disabled = false; btn.textContent = 'Ingresar';
+      config = { ...defaultConfig };
     }
-}
+  }
 
-async function verificarAdmin() {
+  let saveTimer = null;
+  let lastSavedAt = null;
+
+  async function saveConfig(showToast = false) {
+    showSaveStatus('saving');
+    
+    // === CONECTAR SUPABASE AQUÍ ===
+    // En producción:
+    // const { error } = await supabase
+    //   .from('site_config')
+    //   .upsert({ id: 1, ...config });
+    // if (error) { showSaveStatus('error'); return; }
+    
+    // Por ahora: localStorage
     try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/es_admin`, {
-            method: 'POST',
-            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${TOKEN_JWT}`, 'Content-Type': 'application/json' },
-            body: '{}'
-        });
-        if (!res.ok) return false;
-        const result = await res.json();
-        return result === true;
-    } catch { return false; }
-}
-
-function cerrarSesion() {
-    localStorage.removeItem('admin_jwt');
-    TOKEN_JWT = null;
-    location.reload();
-}
-
-// =============================================================================
-// CARGA DE DATOS
-// =============================================================================
-async function cargarTodo() {
-    await Promise.all([cargarStats(), cargarUsuarios()]);
-}
-
-async function cargarStats() {
-    try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/admin_stats`, {
-            method: 'POST',
-            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${TOKEN_JWT}`, 'Content-Type': 'application/json' },
-            body: '{}'
-        });
-        if (!res.ok) throw new Error('No se pudo cargar stats');
-        const s = await res.json();
-        document.getElementById('kpi-total').textContent = s.total_usuarios || 0;
-        document.getElementById('kpi-activos').textContent = s.sub_activos || 0;
-        document.getElementById('kpi-trial').textContent = s.sub_trial || 0;
-        document.getElementById('kpi-expirados').textContent = s.sub_expirados || 0;
-        document.getElementById('kpi-cancelados').textContent = s.sub_cancelados || 0;
-        document.getElementById('kpi-nuevos').textContent = s.nuevos_mes || 0;
-    } catch (e) { console.error(e); }
-}
-
-async function cargarUsuarios() {
-    try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/admin_usuarios_view?select=*&order=updated_at.desc.nullslast`, {
-            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${TOKEN_JWT}` }
-        });
-        if (!res.ok) throw new Error('No se pudo cargar usuarios');
-        USUARIOS = await res.json();
-        filtrar();
+      localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+      lastSavedAt = Date.now();
+      setTimeout(() => showSaveStatus('saved'), 300);
+      if (showToast) showToastMsg('Configuración guardada', 'success');
     } catch (e) {
-        document.getElementById('tabla-usuarios').innerHTML = `<tr><td colspan="6" class="p-10 text-center text-red-500 text-xs font-bold">${e.message}</td></tr>`;
+      showSaveStatus('error');
+      showToastMsg('Error al guardar: ' + e.message, 'error');
     }
-}
+  }
 
-// =============================================================================
-// FILTROS Y RENDER
-// =============================================================================
-function filtrar() {
-    const q = document.getElementById('search-input').value.trim().toLowerCase();
-    const f = document.getElementById('filter-status').value;
-    let datos = USUARIOS;
-    if (q) {
-        datos = datos.filter(u =>
-            (u.email||'').toLowerCase().includes(q) ||
-            (u.full_name||'').toLowerCase().includes(q) ||
-            (u.display_name||'').toLowerCase().includes(q) ||
-            (u.company_name||'').toLowerCase().includes(q)
-        );
+  function showSaveStatus(state) {
+    const ind = document.getElementById('saveIndicator');
+    const txt = document.getElementById('saveStatus');
+    ind.classList.remove('saving', 'unsaved');
+    if (state === 'saving') {
+      ind.classList.add('saving');
+      txt.textContent = 'Guardando...';
+    } else if (state === 'saved') {
+      txt.textContent = 'Guardado';
+    } else if (state === 'unsaved') {
+      ind.classList.add('unsaved');
+      txt.textContent = 'Sin guardar';
+    } else if (state === 'error') {
+      ind.classList.add('unsaved');
+      txt.textContent = 'Error';
     }
-    if (f !== 'TODOS') {
-        if (f === 'admin') datos = datos.filter(u => u.is_admin === true);
-        else datos = datos.filter(u => u.estado_calculado === f);
-    }
-    renderTabla(datos);
-    document.getElementById('contador-resultados').textContent = `${datos.length} usuario${datos.length !== 1 ? 's' : ''}`;
-}
+  }
 
-function renderTabla(datos) {
-    const tbody = document.getElementById('tabla-usuarios');
-    if (datos.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="p-10 text-center text-slate-400 text-xs font-bold uppercase">No se encontraron usuarios</td></tr>`;
+  function scheduleAutoSave() {
+    if (saveTimer) clearTimeout(saveTimer);
+    showSaveStatus('unsaved');
+    saveTimer = setTimeout(() => saveConfig(false), 800);
+  }
+
+  // ============================================
+  // === BINDING DE FORMULARIO ===
+  // ============================================
+  function bindFormToConfig() {
+    document.querySelectorAll('[data-config]').forEach(el => {
+      const key = el.dataset.config;
+      const value = config[key];
+      
+      if (el.type === 'checkbox') {
+        el.checked = !!value;
+      } else if (el.type === 'file') {
+        // Image inputs: si hay valor, mostrar preview
+        const wrap = el.closest('.field-image');
+        if (value && wrap) {
+          showImagePreview(wrap, value);
+        }
+      } else if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+        el.value = value || '';
+      }
+      
+      // Listener
+      el.addEventListener(el.type === 'file' ? 'change' : 'input', () => handleFieldChange(el));
+    });
+
+    // Color hex sync
+    document.querySelectorAll('[data-config$="Hex"]').forEach(hexInput => {
+      const colorKey = hexInput.dataset.config.replace('Hex', '');
+      const colorInput = document.querySelector(`[data-config="${colorKey}"]`);
+      hexInput.value = config[colorKey] || '';
+      hexInput.addEventListener('input', () => {
+        if (/^#[0-9a-fA-F]{6}$/.test(hexInput.value)) {
+          colorInput.value = hexInput.value;
+          config[colorKey] = hexInput.value;
+          scheduleAutoSave();
+          updatePreview();
+        }
+      });
+      colorInput.addEventListener('input', () => {
+        hexInput.value = colorInput.value;
+        config[colorKey] = colorInput.value;
+        scheduleAutoSave();
+        updatePreview();
+      });
+    });
+  }
+
+  function handleFieldChange(el) {
+    const key = el.dataset.config;
+    if (el.type === 'checkbox') {
+      config[key] = el.checked;
+    } else if (el.type === 'file') {
+      const file = el.files[0];
+      if (file) {
+        // Limitar tamaño a 2MB
+        if (file.size > 2 * 1024 * 1024) {
+          showToastMsg('La imagen es muy grande (máx 2MB)', 'error');
+          el.value = '';
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          config[key] = e.target.result; // base64
+          showImagePreview(el.closest('.field-image'), e.target.result);
+          scheduleAutoSave();
+          updatePreview();
+        };
+        reader.readAsDataURL(file);
         return;
+      }
+    } else {
+      config[key] = el.value;
     }
-    tbody.innerHTML = datos.map(u => {
-        const nombre = u.full_name || u.display_name || '(sin nombre)';
-        const inicial = (nombre[0] || '?').toUpperCase();
-        const badgeEstado = renderBadge(u);
-        const diasTxt = u.dias_restantes !== null
-            ? (u.dias_restantes > 0 ? `<span class="text-green-700 font-bold">${u.dias_restantes} días</span>` : `<span class="text-red-600 font-bold">Expirado</span>`)
-            : '<span class="text-slate-400">—</span>';
-        return `<tr class="hover:bg-slate-50 transition">
-            <td class="px-4 py-3">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-black text-xs">${inicial}</div>
-                    <div>
-                        <div class="font-bold text-slate-900 text-sm">${escapeHtml(nombre)}</div>
-                        ${u.is_admin ? '<span class="badge badge-admin">Admin</span>' : ''}
-                    </div>
-                </div>
-            </td>
-            <td class="px-4 py-3 text-xs text-slate-600 font-mono">${escapeHtml(u.email || '—')}</td>
-            <td class="px-4 py-3 text-xs text-slate-700">${escapeHtml(u.company_name || '—')}</td>
-            <td class="px-4 py-3 text-center">${badgeEstado}</td>
-            <td class="px-4 py-3 text-right text-xs">${diasTxt}</td>
-            <td class="px-4 py-3 text-center">
-                <button onclick="verDetalle('${u.id}')" class="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1 rounded text-[10px] font-bold uppercase tracking-wide transition"><i class="fa-solid fa-eye mr-1"></i> Ver</button>
-            </td>
-        </tr>`;
-    }).join('');
-}
+    scheduleAutoSave();
+    updatePreview();
+  }
 
-function renderBadge(u) {
-    const e = u.estado_calculado;
-    const labels = {
-        'activo': ['badge-active', 'Activo'],
-        'trial': ['badge-trial', 'Trial'],
-        'trial_expirado': ['badge-expired', 'Trial Exp.'],
-        'expirado': ['badge-expired', 'Expirado'],
-        'cancelado': ['badge-cancelled', 'Cancelado'],
-        'admin': ['badge-admin', 'Admin'],
-        'sin_suscripcion': ['badge-cancelled', 'Sin Sub.']
+  function showImagePreview(wrap, src) {
+    wrap.classList.add('has-image');
+    let img = wrap.querySelector('.field-image-preview');
+    if (!img) {
+      img = document.createElement('img');
+      img.className = 'field-image-preview';
+      wrap.insertBefore(img, wrap.firstChild);
+    }
+    img.src = src;
+    
+    // Ocultar texto
+    const text = wrap.querySelector('.field-image-text');
+    if (text) text.style.display = 'none';
+    
+    // Botón remover
+    let removeBtn = wrap.querySelector('.field-image-remove');
+    if (!removeBtn) {
+      removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'field-image-remove';
+      removeBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+      removeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const input = wrap.querySelector('input[type="file"]');
+        const key = input.dataset.config;
+        config[key] = '';
+        input.value = '';
+        wrap.classList.remove('has-image');
+        img.remove();
+        removeBtn.remove();
+        if (text) text.style.display = '';
+        scheduleAutoSave();
+        updatePreview();
+      });
+      wrap.appendChild(removeBtn);
+    }
+  }
+
+  // ============================================
+  // === REDES SOCIALES (REPEATER) ===
+  // ============================================
+  const SOCIAL_OPTIONS = [
+    { key: 'facebook', label: 'Facebook', placeholder: 'https://facebook.com/pypcloud' },
+    { key: 'instagram', label: 'Instagram', placeholder: 'https://instagram.com/pypcloud' },
+    { key: 'linkedin', label: 'LinkedIn', placeholder: 'https://linkedin.com/company/pypcloud' },
+    { key: 'twitter', label: 'X / Twitter', placeholder: 'https://x.com/pypcloud' },
+    { key: 'youtube', label: 'YouTube', placeholder: 'https://youtube.com/@pypcloud' },
+    { key: 'tiktok', label: 'TikTok', placeholder: 'https://tiktok.com/@pypcloud' },
+    { key: 'threads', label: 'Threads', placeholder: 'https://threads.net/@pypcloud' },
+    { key: 'github', label: 'GitHub', placeholder: 'https://github.com/pypcloud' },
+    { key: 'discord', label: 'Discord', placeholder: 'https://discord.gg/pypcloud' },
+    { key: 'telegram', label: 'Telegram', placeholder: 'https://t.me/pypcloud' }
+  ];
+
+  function renderSocials() {
+    const list = document.getElementById('socialList');
+    list.innerHTML = '';
+    (config.socials || []).forEach((social, idx) => {
+      const row = document.createElement('div');
+      row.className = 'social-row';
+      const opt = SOCIAL_OPTIONS.find(s => s.key === social.platform) || SOCIAL_OPTIONS[0];
+      row.innerHTML = `
+        <select data-social-platform="${idx}">
+          ${SOCIAL_OPTIONS.map(s => `<option value="${s.key}" ${s.key === social.platform ? 'selected' : ''}>${s.label}</option>`).join('')}
+        </select>
+        <input type="url" data-social-url="${idx}" value="${social.url || ''}" placeholder="${opt.placeholder}">
+        <button type="button" class="social-row-btn-remove" data-social-remove="${idx}" title="Eliminar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      `;
+      list.appendChild(row);
+    });
+
+    // Listeners
+    list.querySelectorAll('[data-social-platform]').forEach(sel => {
+      sel.addEventListener('change', e => {
+        const idx = parseInt(e.target.dataset.socialPlatform);
+        config.socials[idx].platform = e.target.value;
+        // Actualizar placeholder
+        const urlInput = list.querySelector(`[data-social-url="${idx}"]`);
+        const opt = SOCIAL_OPTIONS.find(s => s.key === e.target.value);
+        if (opt && urlInput) urlInput.placeholder = opt.placeholder;
+        scheduleAutoSave();
+        updatePreview();
+      });
+    });
+    list.querySelectorAll('[data-social-url]').forEach(inp => {
+      inp.addEventListener('input', e => {
+        const idx = parseInt(e.target.dataset.socialUrl);
+        config.socials[idx].url = e.target.value;
+        scheduleAutoSave();
+        updatePreview();
+      });
+    });
+    list.querySelectorAll('[data-social-remove]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const idx = parseInt(btn.dataset.socialRemove);
+        config.socials.splice(idx, 1);
+        renderSocials();
+        scheduleAutoSave();
+        updatePreview();
+      });
+    });
+  }
+
+  document.getElementById('btnAddSocial').addEventListener('click', () => {
+    if (!config.socials) config.socials = [];
+    if (config.socials.length >= 10) {
+      showToastMsg('Máximo 10 redes sociales', 'error');
+      return;
+    }
+    config.socials.push({ platform: 'instagram', url: '' });
+    renderSocials();
+    scheduleAutoSave();
+    updatePreview();
+  });
+
+  // ============================================
+  // === VISTA PREVIA ===
+  // ============================================
+  function parseAccent(text) {
+    if (!text) return '';
+    return text
+      .replace(/\[acento\]/g, '<span class="accent">')
+      .replace(/\[\/acento\]/g, '</span>');
+  }
+
+  function updatePreview() {
+    // Logo
+    const logoEl = document.getElementById('pvLogo');
+    const sidebarLogoEl = document.getElementById('sidebarLogo');
+    if (config.logoIcon) {
+      logoEl.src = config.logoIcon;
+      sidebarLogoEl.src = config.logoIcon;
+    }
+    
+    // Brand
+    document.getElementById('pvBrandName').innerHTML = (config.brandName || 'PyPCloud').replace(/Cloud$/, '<span>Cloud</span>');
+    document.getElementById('pvBrandSub').textContent = config.brandSub || '';
+    document.getElementById('sidebarBrandName').innerHTML = (config.brandName || 'PyPCloud').replace(/Cloud$/, '<span>Cloud</span>');
+    
+    // Hero
+    document.getElementById('pvHeroTitle').innerHTML = parseAccent(config.heroTitle || '');
+    document.getElementById('pvHeroLead').textContent = config.heroLead || '';
+    document.getElementById('pvBtnPrimary').textContent = (config.heroBtnPrimary || 'Probar 30 días gratis') + ' →';
+    
+    // Pricing
+    const plansEl = document.getElementById('pvPlans');
+    plansEl.innerHTML = '';
+    const plans = [
+      { active: config.planMonthlyActive, price: config.planMonthlyPrice, period: config.planMonthlyPeriod, name: 'Mensual', featured: true },
+      { active: config.planQuarterlyActive, price: config.planQuarterlyPrice, period: config.planQuarterlyPeriod, name: 'Trimestral' },
+      { active: config.planYearlyActive, price: config.planYearlyPrice, period: config.planYearlyPeriod, name: 'Anual' }
+    ].filter(p => p.active && p.price);
+    
+    plans.slice(0, 2).forEach(p => {
+      const div = document.createElement('div');
+      div.className = 'pv-plan' + (p.featured ? ' featured' : '');
+      div.innerHTML = `
+        <div class="pv-plan-name">${p.name}</div>
+        <div class="pv-plan-price">$${p.price}</div>
+        <div class="pv-plan-period">${p.period || ''}</div>
+      `;
+      plansEl.appendChild(div);
+    });
+    
+    // Footer
+    document.getElementById('pvFooterBrand').textContent = (config.legalName || 'PYP Soluciones') + ' · División ' + (config.brandName || 'PyPCloud') + '.';
+    document.getElementById('pvFooterContact').textContent = (config.emailMain || '') + (config.whatsapp ? ' · ' + config.whatsapp : '');
+    
+    // Footer socials
+    const socialsEl = document.getElementById('pvFooterSocials');
+    socialsEl.innerHTML = '';
+    (config.socials || []).filter(s => s.url).forEach(s => {
+      const a = document.createElement('div');
+      a.className = 'pv-social';
+      a.innerHTML = getSocialIcon(s.platform);
+      socialsEl.appendChild(a);
+    });
+
+    // Colors
+    if (config.colorPrimary) {
+      document.documentElement.style.setProperty('--primary', config.colorPrimary);
+    }
+    if (config.colorSecondary) {
+      document.documentElement.style.setProperty('--secondary', config.colorSecondary);
+    }
+  }
+
+  function getSocialIcon(platform) {
+    const icons = {
+      facebook: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.5 9.9v-7H8v-3h2.5V9.8c0-2.5 1.5-3.8 3.7-3.8 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.6V12h2.7l-.4 3h-2.3v7A10 10 0 0 0 22 12z"/></svg>',
+      instagram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>',
+      linkedin: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>',
+      twitter: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>',
+      youtube: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2c-.3-1-1-1.8-2-2.1C19.7 3.5 12 3.5 12 3.5s-7.7 0-9.5.6c-1 .3-1.8 1.1-2 2.1C0 8 0 12 0 12s0 4 .5 5.8c.3 1 1 1.8 2 2.1C4.3 20.5 12 20.5 12 20.5s7.7 0 9.5-.6c1-.3 1.8-1.1 2-2.1C24 16 24 12 24 12s0-4-.5-5.8zM9.5 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>',
+      tiktok: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.6 6.3a4.7 4.7 0 0 1-3-4.3h-3.4v13.7a2.9 2.9 0 0 1-5.4 1.4 2.9 2.9 0 0 1 4-3.8V9.8a6.3 6.3 0 0 0-7.4 6.2 6.3 6.3 0 0 0 10.7 4.5 6.3 6.3 0 0 0 1.8-4.4V8.7a8 8 0 0 0 4.7 1.5V6.8a4.7 4.7 0 0 1-2-.5z"/></svg>',
+      threads: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.18 22h-.04c-3.3-.02-5.85-1.11-7.57-3.23-1.53-1.9-2.32-4.53-2.35-7.83 0-3.3.82-5.93 2.35-7.83C6.29 1 8.84-.09 12.14-.11h.04c2.54 0 4.67.66 6.28 1.95 1.69 1.35 2.66 3.27 2.96 5.69l-2.34.27c-.51-3.65-2.93-5.45-7.4-5.48-2.6.02-4.59.95-5.8 2.71-1.18 1.7-1.78 4.16-1.78 7.31s.6 5.61 1.78 7.31c1.21 1.76 3.2 2.69 5.8 2.71 2.36 0 3.92-.55 5.21-1.84 1.47-1.47 1.44-3.27.97-4.37-.27-.65-.78-1.18-1.46-1.58-.17 1.21-.55 2.19-1.13 2.92-.78.97-1.89 1.5-3.28 1.57-1.06.05-2.08-.2-2.87-.71-.93-.6-1.48-1.51-1.53-2.56-.11-2.07 1.54-3.56 4.11-3.71 1.13-.07 2.18-.04 3.18.07-.13-.81-.4-1.46-.81-1.92-.55-.62-1.4-.95-2.55-.95h-.03c-.92.01-2.17.27-2.97 1.45l-1.94-1.3c1.07-1.59 2.81-2.46 4.92-2.47h.04c3.5.02 5.6 2.17 5.83 5.96.13.06.27.11.4.18 1.92.9 3.32 2.27 4.06 3.95.99 2.34.85 5.16-.38 7.5-1.4 2.65-3.65 4.04-6.87 4.05z"/></svg>',
+      github: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12c0 5.3 3.4 9.8 8.2 11.4.6.1.8-.3.8-.6v-2.1c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.9 1.3 1.9 1.3 1.1 1.9 2.9 1.3 3.6 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.3-3.2-.1-.3-.6-1.6.1-3.3 0 0 1-.3 3.3 1.2 1-.3 2-.4 3-.4s2 .1 3 .4c2.3-1.5 3.3-1.2 3.3-1.2.7 1.7.2 3 .1 3.3.8.8 1.3 1.9 1.3 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6C20.6 21.8 24 17.3 24 12c0-6.6-5.4-12-12-12z"/></svg>',
+      discord: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.3 4.4A19.8 19.8 0 0 0 15.4 3l-.2.3a13 13 0 0 0-4.4 0L10.6 3a19.8 19.8 0 0 0-4.9 1.4 21 21 0 0 0-3.6 14 20 20 0 0 0 6 3 14.3 14.3 0 0 0 1.3-2.1c-.7-.3-1.3-.6-1.9-1l.4-.4a14.3 14.3 0 0 0 12.2 0l.4.3c-.6.4-1.2.7-2 1 .4.8.8 1.5 1.4 2.2a20 20 0 0 0 6-3 21 21 0 0 0-3.6-14zM8.5 15.3c-1.2 0-2.2-1.1-2.2-2.4 0-1.4 1-2.5 2.2-2.5s2.2 1.1 2.2 2.5c0 1.3-1 2.4-2.2 2.4zm7 0c-1.2 0-2.2-1.1-2.2-2.4 0-1.4 1-2.5 2.2-2.5s2.2 1.1 2.2 2.5c0 1.3-1 2.4-2.2 2.4z"/></svg>',
+      telegram: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>'
     };
-    const [clase, txt] = labels[e] || ['badge-cancelled', e];
-    return `<span class="badge ${clase}">${txt}</span>`;
-}
+    return icons[platform] || icons.instagram;
+  }
 
-// =============================================================================
-// MODAL DETALLE
-// =============================================================================
-async function verDetalle(userId) {
-    USUARIO_ACTUAL_MODAL = USUARIOS.find(u => u.id === userId);
-    if (!USUARIO_ACTUAL_MODAL) return;
-    const u = USUARIO_ACTUAL_MODAL;
+  // Preview tabs
+  document.querySelectorAll('.preview-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.preview-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const frame = document.getElementById('previewFrame');
+      frame.className = 'preview-frame ' + tab.dataset.pv;
+    });
+  });
 
-    document.getElementById('md-titulo').textContent = u.full_name || u.email || 'Usuario';
-    document.getElementById('md-nombre').textContent = u.full_name || u.display_name || '(sin nombre)';
-    document.getElementById('md-email').textContent = u.email || '—';
-    document.getElementById('md-empresa').textContent = u.company_name || '—';
-    document.getElementById('md-estado').innerHTML = renderBadge(u);
+  // ============================================
+  // === COLAPSADO DE SECCIONES ===
+  // ============================================
+  document.querySelectorAll('.config-section-header').forEach(header => {
+    header.addEventListener('click', () => {
+      header.parentElement.classList.toggle('collapsed');
+    });
+  });
 
-    // Suscripción
-    const subInfo = [];
-    if (u.sub_status) subInfo.push(`<div><b>Estado:</b> ${u.sub_status}</div>`);
-    if (u.trial_ends_at) subInfo.push(`<div><b>Trial vence:</b> ${new Date(u.trial_ends_at).toLocaleDateString('es-ES')}</div>`);
-    if (u.current_period_ends_at) subInfo.push(`<div><b>Período vence:</b> ${new Date(u.current_period_ends_at).toLocaleDateString('es-ES')}</div>`);
-    if (u.dias_restantes !== null) subInfo.push(`<div><b>Días restantes:</b> ${u.dias_restantes}</div>`);
-    if (subInfo.length === 0) subInfo.push('<div class="text-slate-400 italic">Sin suscripción registrada</div>');
-    document.getElementById('md-suscripcion').innerHTML = subInfo.join('');
+  // ============================================
+  // === EXPORT JSON ===
+  // ============================================
+  document.getElementById('exportBtn').addEventListener('click', () => {
+    const data = JSON.stringify(config, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `pypcloud-config-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToastMsg('Configuración exportada', 'success');
+  });
 
-    document.getElementById('md-actividad').innerHTML = '<div class="col-span-3 text-slate-400">Cargando actividad...</div>';
-    document.getElementById('modal-detalle').classList.remove('hidden');
-    document.getElementById('modal-detalle').classList.add('flex');
+  // ============================================
+  // === TOAST ===
+  // ============================================
+  function showToastMsg(text, type = 'success') {
+    const toast = document.getElementById('toast');
+    document.getElementById('toastText').textContent = text;
+    toast.className = 'toast show ' + type;
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
 
-    // Cargar actividad async
-    try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/admin_user_activity`, {
-            method: 'POST',
-            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${TOKEN_JWT}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ p_user_id: userId })
-        });
-        if (!res.ok) throw new Error('No se pudo cargar actividad');
-        const a = await res.json();
-        document.getElementById('md-actividad').innerHTML = `
-            <div class="bg-white p-2 rounded border border-purple-200">
-                <div class="text-[9px] font-bold text-purple-500 uppercase">Citas</div>
-                <div class="text-xl font-black text-purple-900">${a.appointments || 0}</div>
-            </div>
-            <div class="bg-white p-2 rounded border border-purple-200">
-                <div class="text-[9px] font-bold text-purple-500 uppercase">Recordatorios</div>
-                <div class="text-xl font-black text-purple-900">${a.reminders || 0}</div>
-                <div class="text-[9px] text-purple-600">${a.reminders_pendientes||0} pendientes</div>
-            </div>
-            <div class="bg-white p-2 rounded border border-purple-200">
-                <div class="text-[9px] font-bold text-purple-500 uppercase">Deudas</div>
-                <div class="text-xl font-black text-purple-900">${a.debts || 0}</div>
-                <div class="text-[9px] text-purple-600">${a.debts_pendientes||0} pendientes</div>
-            </div>
-            <div class="bg-white p-2 rounded border border-purple-200">
-                <div class="text-[9px] font-bold text-purple-500 uppercase">Contactos</div>
-                <div class="text-xl font-black text-purple-900">${a.contacts || 0}</div>
-            </div>
-            <div class="bg-white p-2 rounded border border-purple-200">
-                <div class="text-[9px] font-bold text-purple-500 uppercase">Notas</div>
-                <div class="text-xl font-black text-purple-900">${a.notes || 0}</div>
-            </div>
-            <div class="bg-white p-2 rounded border border-purple-200">
-                <div class="text-[9px] font-bold text-purple-500 uppercase">Compras</div>
-                <div class="text-xl font-black text-purple-900">${a.shopping_items || 0}</div>
-            </div>`;
-    } catch (e) {
-        document.getElementById('md-actividad').innerHTML = `<div class="col-span-3 text-red-500 text-xs">${e.message}</div>`;
+  // ============================================
+  // === NAVEGACIÓN DEL SIDEBAR ===
+  // ============================================
+  document.querySelectorAll('.sidebar-link[data-view]').forEach(link => {
+    link.addEventListener('click', () => {
+      if (link.classList.contains('disabled')) return;
+      const view = link.dataset.view;
+      document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+      document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
+      const target = document.getElementById('view-' + view);
+      if (target) target.style.display = 'block';
+      
+      // Actualizar título
+      const titles = {
+        dashboard: 'Dashboard',
+        configuracion: 'Configuración del sitio'
+      };
+      document.getElementById('topbarPageTitle').textContent = titles[view] || view;
+      document.getElementById('breadcrumbCurrent').textContent = titles[view] || view;
+      
+      // Cerrar sidebar móvil
+      document.getElementById('sidebar').classList.remove('open');
+    });
+  });
+
+  // Mobile burger
+  document.getElementById('topbarBurger').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+  });
+
+  // ============================================
+  // === INICIALIZACIÓN ===
+  // ============================================
+  (async function init() {
+    await loadConfig();
+    
+    // Default logo si no hay
+    if (!config.logoIcon) {
+      // El logo embebido va aquí - se reemplaza después
+      config.logoIcon = 'data:image/png;base64,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';
     }
-}
-
-function cerrarModalDetalle() {
-    document.getElementById('modal-detalle').classList.add('hidden');
-    document.getElementById('modal-detalle').classList.remove('flex');
-    USUARIO_ACTUAL_MODAL = null;
-}
-
-// =============================================================================
-// ACCIONES
-// =============================================================================
-async function accionActivar(meses) {
-    if (!USUARIO_ACTUAL_MODAL) return;
-    if (!confirm(`¿Activar licencia de ${meses} mes${meses>1?'es':''} para ${USUARIO_ACTUAL_MODAL.email}?`)) return;
-    await llamarRPC('admin_activar_licencia', { p_user_id: USUARIO_ACTUAL_MODAL.id, p_meses: meses }, `✅ Licencia activada por ${meses} mes${meses>1?'es':''}`);
-}
-
-async function accionExtenderTrial(dias) {
-    if (!USUARIO_ACTUAL_MODAL) return;
-    if (!confirm(`¿Extender trial por ${dias} días a ${USUARIO_ACTUAL_MODAL.email}?`)) return;
-    await llamarRPC('admin_extender_trial', { p_user_id: USUARIO_ACTUAL_MODAL.id, p_dias: dias }, `✅ Trial extendido ${dias} días`);
-}
-
-async function accionCancelar() {
-    if (!USUARIO_ACTUAL_MODAL) return;
-    if (!confirm(`⚠️ ¿Cancelar suscripción de ${USUARIO_ACTUAL_MODAL.email}?`)) return;
-    await llamarRPC('admin_cancelar_suscripcion', { p_user_id: USUARIO_ACTUAL_MODAL.id }, `🚫 Suscripción cancelada`);
-}
-
-async function llamarRPC(funcion, params, mensajeOk) {
-    try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${funcion}`, {
-            method: 'POST',
-            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${TOKEN_JWT}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify(params)
-        });
-        if (!res.ok) {
-            const err = await res.json();
-            throw new Error(err.message || err.hint || 'Error desconocido');
-        }
-        toast(mensajeOk, 'ok');
-        cerrarModalDetalle();
-        await cargarTodo();
-    } catch (e) {
-        toast(`❌ ${e.message}`, 'err');
-    }
-}
-
-// =============================================================================
-// UTILIDADES
-// =============================================================================
-function escapeHtml(s) { return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
-
-function toast(msg, tipo) {
-    const t = document.getElementById('toast');
-    const c = document.getElementById('toast-content');
-    c.textContent = msg;
-    c.className = tipo === 'err' ? 'bg-red-600 text-white px-4 py-2 rounded shadow-lg text-sm font-bold' : 'bg-green-600 text-white px-4 py-2 rounded shadow-lg text-sm font-bold';
-    t.classList.remove('hidden');
-    setTimeout(() => t.classList.add('hidden'), 3500);
-}
-
-// =============================================================================
-// INIT: si hay JWT guardado, intentar usar
-// =============================================================================
-(async function init() {
-    const t = localStorage.getItem('admin_jwt');
-    if (t) {
-        TOKEN_JWT = t;
-        const esAdmin = await verificarAdmin();
-        if (esAdmin) {
-            document.getElementById('login-gate').classList.add('hidden');
-            document.getElementById('admin-panel').classList.remove('hidden');
-            await cargarTodo();
-        } else {
-            localStorage.removeItem('admin_jwt');
-            TOKEN_JWT = null;
-        }
-    }
-})();
+    
+    bindFormToConfig();
+    renderSocials();
+    updatePreview();
+    
+    // Ctrl+S para guardar manual
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        saveConfig(true);
+      }
+    });
+  })();
 </script>
 
 </body>
