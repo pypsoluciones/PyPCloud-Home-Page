@@ -146,13 +146,28 @@
     background: rgba(255,255,255,0.08);
     color: #fff;
   }
+  .nav-login {
+    background: transparent !important;
+    color: rgba(255,255,255,0.9) !important;
+    padding: 8px 14px !important;
+    font-weight: 600 !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    border-radius: 6px;
+    margin-left: 8px;
+    transition: all 0.2s !important;
+  }
+  .nav-login:hover {
+    background: rgba(255,255,255,0.08) !important;
+    border-color: rgba(255,255,255,0.4) !important;
+    color: #fff !important;
+  }
   .nav-cta {
     background: var(--secondary) !important;
     color: #fff !important;
     padding: 9px 18px !important;
     font-weight: 600 !important;
     transition: all 0.2s !important;
-    margin-left: 8px;
+    margin-left: 4px;
   }
   .nav-cta:hover {
     background: var(--secondary-dark) !important;
@@ -177,12 +192,7 @@
     padding: 0 32px;
   }
 
-  /* === HERO === */
-  .hero {
-    padding: 100px 0 56px;
-    position: relative;
-    overflow: hidden;
-  }
+  /* === HERO ORIGINAL REEMPLAZADO === */
   .hero-grid-bg {
     position: absolute;
     inset: 0;
@@ -195,13 +205,7 @@
     mask-image: radial-gradient(ellipse at center top, black 30%, transparent 70%);
     -webkit-mask-image: radial-gradient(ellipse at center top, black 30%, transparent 70%);
   }
-  .hero-inner {
-    display: grid;
-    grid-template-columns: 1.1fr 1fr;
-    gap: 56px;
-    align-items: center;
-    position: relative;
-  }
+
   .hero-eyebrow {
     display: inline-flex;
     align-items: center;
@@ -230,36 +234,9 @@
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
   }
-  .hero h1 {
-    font-size: clamp(2.5rem, 5.5vw, 4.5rem);
-    font-weight: 700;
-    line-height: 1.02;
-    letter-spacing: -0.035em;
-    color: var(--ink);
-    margin-bottom: 20px;
-  }
-  .hero h1 .serif {
-    font-style: italic;
-    color: var(--primary);
-    font-weight: 400;
-  }
-  .hero h1 .accent {
-    color: var(--secondary);
-    font-style: italic;
-    font-family: 'Instrument Serif', serif;
-    font-weight: 400;
-  }
-  .hero-lead {
-    font-size: 18px;
-    color: var(--tertiary);
-    line-height: 1.6;
-    margin-bottom: 28px;
-    max-width: 540px;
-  }
-  .hero-cta-group {
-    display: flex; gap: 12px; flex-wrap: wrap;
-    margin-bottom: 32px;
-  }
+
+
+
   .btn {
     display: inline-flex;
     align-items: center;
@@ -1609,7 +1586,8 @@
     .nav-links.open { display: flex; }
     .nav-links a { padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.85); }
     .nav-links a:last-child { border-bottom: none; }
-    .nav-cta { margin-top: 8px; text-align: center; }
+    .nav-login { margin: 8px 0 0; text-align: center; border: 1px solid rgba(255,255,255,0.2) !important; border-radius: 6px; }
+    .nav-cta { margin-top: 6px !important; text-align: center; }
     .nav-burger { display: block; }
     .hero { padding: 80px 0 40px; }
     .problem-grid { grid-template-columns: 1fr; }
@@ -1733,6 +1711,337 @@
     .footer-bottom-meta { gap: 12px; }
   }
 
+
+  /* === HERO OPCIÓN C (compacto + dashboard) === */
+  .hero {
+    padding: 90px 0 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
+    align-items: start;
+    position: relative;
+  }
+  .hero-headline {
+    text-align: center;
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+  .hero h1 .serif {
+    font-style: italic;
+    color: var(--primary);
+    font-weight: 400;
+    font-family: 'Instrument Serif', serif;
+  }
+  .hero h1 .accent {
+    color: var(--secondary);
+    font-style: italic;
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+  }
+  .hero-lead {
+    font-size: 17px;
+    color: var(--tertiary);
+    line-height: 1.55;
+    margin: 0 auto 24px;
+    max-width: 640px;
+  }
+  .hero-cta-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 0;
+  }
+
+  /* === SHOWCASE: Dashboard + Tabs === */
+  .showcase {
+    padding: 28px 0 56px;
+    background: var(--paper);
+    position: relative;
+  }
+  .showcase::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(20, 59, 98, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(20, 59, 98, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+    pointer-events: none;
+  }
+  .showcase-inner {
+    position: relative;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: stretch;
+  }
+  .dashboard-card {
+    background: #fff;
+    border: 1px solid rgba(20, 59, 98, 0.1);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 20px 50px -25px rgba(20, 59, 98, 0.25);
+    position: relative;
+    overflow: hidden;
+  }
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(20, 59, 98, 0.08);
+  }
+  .dashboard-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dashboard-title::before {
+    content: '';
+    width: 8px; height: 8px;
+    background: #10b981;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    animation: pulseDash 2s infinite;
+  }
+  @keyframes pulseDash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  .dashboard-date {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .dashboard-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .stat-card {
+    background: var(--paper-warm);
+    padding: 14px 16px;
+    border-radius: 10px;
+    border-left: 3px solid var(--secondary);
+    transition: transform 0.2s;
+  }
+  .stat-card:hover { transform: translateY(-2px); }
+  .stat-card.green { border-left-color: #10b981; }
+  .stat-card.red { border-left-color: #ef4444; }
+  .stat-card.blue { border-left-color: var(--primary); }
+  .stat-label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    color: var(--tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+  .stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.025em;
+    line-height: 1;
+  }
+  .stat-card.green .stat-value { color: #047857; }
+  .stat-card.red .stat-value { color: #b91c1c; }
+  .stat-card.blue .stat-value { color: var(--primary); }
+  .stat-meta {
+    font-size: 10px;
+    color: var(--tertiary);
+    margin-top: 4px;
+  }
+  .dashboard-activity {
+    background: rgba(20, 59, 98, 0.03);
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .activity-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .activity-row .check { color: #10b981; }
+  .activity-row .time {
+    color: var(--tertiary);
+    font-size: 9px;
+  }
+
+  /* === TABS INTERACTIVOS === */
+  .tabs-card {
+    background: var(--ink);
+    border-radius: 16px;
+    padding: 24px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 50px -25px rgba(10, 24, 40, 0.6);
+    display: flex;
+    flex-direction: column;
+  }
+  .tabs-card::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(230, 126, 34, 0.2), transparent 70%);
+    pointer-events: none;
+  }
+  .tabs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    position: relative;
+  }
+  .tabs-eyebrow {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 500;
+  }
+  .tabs-status {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .tabs-nav {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    padding: 4px;
+    margin-bottom: 18px;
+    position: relative;
+  }
+  .tab-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.5);
+    padding: 8px 6px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.25s;
+    letter-spacing: -0.005em;
+  }
+  .tab-btn:hover {
+    color: rgba(255,255,255,0.85);
+  }
+  .tab-btn.active {
+    background: var(--secondary);
+    color: #fff;
+    box-shadow: 0 4px 12px -2px rgba(230, 126, 34, 0.4);
+  }
+  .tab-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 200px;
+    position: relative;
+  }
+  .tab-panel {
+    display: none;
+    animation: fadeIn 0.4s ease-out;
+  }
+  .tab-panel.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .tab-step-num {
+    font-family: 'Instrument Serif', serif;
+    font-size: 14px;
+    color: var(--secondary);
+    font-style: italic;
+    margin-bottom: 4px;
+  }
+  .tab-step-title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin-bottom: 10px;
+    line-height: 1.1;
+  }
+  .tab-step-desc {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.55;
+    margin-bottom: 16px;
+  }
+  .tab-example {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.85);
+  }
+  .tab-example .prompt { color: var(--secondary); }
+  .tab-example .result { color: #6ee7b7; display: block; margin-top: 6px; }
+  .tab-example .arrow { color: rgba(255,255,255,0.4); margin-right: 4px; }
+
+  @media (max-width: 1024px) {
+    .showcase-inner { grid-template-columns: 1fr; gap: 20px; }
+    .hero { padding: 72px 0 24px; }
+    .showcase { padding: 20px 0 40px; }
+  }
+  @media (max-width: 640px) {
+    .hero { padding: 60px 0 20px; }
+    .hero-lead { font-size: 15px; padding: 0 8px; }
+    .dashboard-card, .tabs-card { padding: 18px; }
+    .dashboard-stats { gap: 8px; }
+    .stat-value { font-size: 19px; }
+    .tab-step-title { font-size: 19px; }
+    .tab-btn { font-size: 10px; padding: 7px 4px; }
+  }
+
   /* Iconos SVG inline */
   .icon { width: 1em; height: 1em; display: inline-block; vertical-align: -0.125em; fill: currentColor; }
 </style>
@@ -1755,6 +2064,7 @@
       <a href="#empresa">Empresa</a>
       <a href="#precios">Precios</a>
       <a href="#faq">Preguntas</a>
+      <a href="https://pypcloud.com/admin" class="nav-login">Iniciar sesión</a>
       <a href="https://recuerdame.pypcloud.com" class="nav-cta" target="_blank" rel="noopener">Probar gratis →</a>
     </div>
     <button class="nav-burger" id="navBurger" aria-label="Menú">
@@ -1768,77 +2078,116 @@
   <div class="hero-grid-bg"></div>
   <div class="container">
     <div class="hero-inner">
-      <div>
+      <div class="hero-headline">
         <h1>
-          El asistente <span class="serif">personal</span> con inteligencia <span class="accent">artificial</span> para tu día a día.
+          Tu día a día en una <span class="accent">conversación</span>.
         </h1>
         <p class="hero-lead">
-          <strong style="color: var(--ink);">Recuérdame</strong> organiza tu agenda, controla tus finanzas, gestiona compras y captura recordatorios — todo desde una conversación natural. Construido sobre <strong style="color: var(--primary);">PostgreSQL</strong> con encriptación de nivel bancario. Hablas, él se encarga.
+          <strong style="color: var(--ink);">Recuérdame</strong> es el asistente con IA que organiza tu vida y tu negocio. Agenda, finanzas, compras y recordatorios — todo desde una conversación natural. Construido sobre <strong style="color: var(--primary);">PostgreSQL</strong> con encriptación de nivel bancario.
         </p>
         <div class="hero-cta-group">
           <a href="https://recuerdame.pypcloud.com" class="btn btn-orange" target="_blank" rel="noopener">
             Probar 30 días gratis
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
           </a>
-          <a href="#producto" class="btn btn-secondary">Ver cómo funciona</a>
+          <a href="#modulos" class="btn btn-secondary">Ver módulos</a>
         </div>
-        <div class="hero-meta">
-          <div class="hero-meta-item">
-            <strong>30 días</strong>
-            Prueba gratuita
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWCASE: Dashboard + Tabs interactivos -->
+<section class="showcase">
+  <div class="container">
+    <div class="showcase-inner">
+
+      <!-- Dashboard preview -->
+      <div class="dashboard-card">
+        <div class="dashboard-header">
+          <div class="dashboard-title">Tu día de hoy</div>
+          <div class="dashboard-date">EN VIVO</div>
+        </div>
+        <div class="dashboard-stats">
+          <div class="stat-card green">
+            <div class="stat-label">Por cobrar</div>
+            <div class="stat-value">$ 450</div>
+            <div class="stat-meta">3 clientes</div>
           </div>
-          <div class="hero-meta-item">
-            <strong>0₿</strong>
-            Sin tarjeta
+          <div class="stat-card red">
+            <div class="stat-label">Por pagar</div>
+            <div class="stat-value">$ 120</div>
+            <div class="stat-meta">2 servicios</div>
           </div>
-          <div class="hero-meta-item">
-            <strong>Español</strong>
-            Voz nativa
+          <div class="stat-card blue">
+            <div class="stat-label">Citas hoy</div>
+            <div class="stat-value">3</div>
+            <div class="stat-meta">Próxima: 3:00 PM</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Compras</div>
+            <div class="stat-value">8</div>
+            <div class="stat-meta">Pendientes</div>
+          </div>
+        </div>
+        <div class="dashboard-activity">
+          <div class="activity-row">
+            <span><span class="check">✓</span> Pedro pagó $50</span>
+            <span class="time">hace 10 min</span>
+          </div>
+          <div class="activity-row">
+            <span><span class="check">✓</span> Cita con María agendada</span>
+            <span class="time">hace 1 h</span>
+          </div>
+          <div class="activity-row">
+            <span><span class="check">✓</span> Azúcar 2kg → Casa</span>
+            <span class="time">hace 2 h</span>
           </div>
         </div>
       </div>
 
-      <div class="hero-mockup">
-        <div class="float-indicator top success">
-          <div class="label">Deuda registrada</div>
-          <div class="value">+ $50.00</div>
+      <!-- Tabs interactivos -->
+      <div class="tabs-card">
+        <div class="tabs-header">
+          <span class="tabs-eyebrow">─── Cómo funciona</span>
+          <span class="tabs-status">3 pasos</span>
         </div>
-        <div class="float-indicator bottom">
-          <div class="label">Cita agendada</div>
-          <div class="value">Mañana, 3:00 PM</div>
+        <div class="tabs-nav">
+          <button class="tab-btn active" data-tab="0">1. Hablas</button>
+          <button class="tab-btn" data-tab="1">2. Entiende</button>
+          <button class="tab-btn" data-tab="2">3. Organiza</button>
         </div>
-        <div class="phone-frame">
-          <div class="phone-screen">
-            <div class="phone-notch"></div>
-            <div class="phone-status">
-              <span>9:41</span>
-              <span>●●●● ▮▮▮▮</span>
+        <div class="tab-content">
+          <div class="tab-panel active">
+            <div class="tab-step-num">paso 01</div>
+            <h3 class="tab-step-title">Hablas o escribes natural</h3>
+            <p class="tab-step-desc">Sin formularios. Sin menús. Dictas con el micrófono o escribes como hablas — en lenguaje natural.</p>
+            <div class="tab-example">
+              <span class="prompt">"Compra 2kg de azúcar para la casa"</span>
             </div>
-            <div class="phone-header">
-              <div>
-                <div class="phone-logo-mini">recuérda<span>me</span></div>
-                <div class="phone-logo-sub">by PyPCloud</div>
-              </div>
-              <div style="font-size: 9px; color: #6b7280;">●●●</div>
+          </div>
+          <div class="tab-panel">
+            <div class="tab-step-num">paso 02</div>
+            <h3 class="tab-step-title">La IA interpreta y clasifica</h3>
+            <p class="tab-step-desc">Recuérdame entiende tu intención, identifica la acción correcta y clasifica la información automáticamente.</p>
+            <div class="tab-example">
+              Categoría: <span class="result" style="display:inline">Casa</span><br>
+              Producto: <span class="result" style="display:inline">Azúcar 2kg</span><br>
+              Acción: <span class="result" style="display:inline">Agregar a lista</span>
             </div>
-            <div class="phone-chat">
-              <div class="chat-bubble user">Pedro me debe 50 dólares por la asesoría</div>
-              <div class="chat-bubble bot"><span class="check">✓</span> Deuda de <strong>$50</strong> registrada a <strong>Pedro</strong>.</div>
-              <div class="chat-bubble user user-2">Agenda cita con María mañana 3pm</div>
-              <div class="chat-bubble bot bot-2">📅 Cita con <strong>María</strong> agendada para mañana de 3:00 PM a 4:00 PM.</div>
-            </div>
-            <div class="phone-input-bar">
-              <div class="phone-mic">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
-              </div>
-              <div class="phone-input-fake">Pregunta a Recuérdame...</div>
-              <div class="phone-send">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-              </div>
+          </div>
+          <div class="tab-panel">
+            <div class="tab-step-num">paso 03</div>
+            <h3 class="tab-step-title">Todo organizado al instante</h3>
+            <p class="tab-step-desc">Tu información queda guardada y sincronizada en tiempo real. Accesible desde cualquier dispositivo.</p>
+            <div class="tab-example">
+              <span class="prompt">"¿Qué tengo pendiente hoy?"</span>
+              <span class="result"><span class="arrow">→</span> 3 citas, 2 tareas, 8 compras</span>
             </div>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </section>
@@ -1913,44 +2262,6 @@
         <div class="problem-text">
           Sin visión del negocio
           <span>No saber cuánto te deben, cuánto debes ni qué hay para hoy.</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- COMO FUNCIONA -->
-<section class="how" id="producto">
-  <div class="container">
-    <div class="section-label">Cómo funciona</div>
-    <h2 class="section-title">Tres pasos. <span class="serif">Cero fricción.</span></h2>
-    <p class="section-lead">Hablar es más rápido que escribir. Por eso Recuérdame entiende español natural y captura todo en segundos.</p>
-
-    <div class="how-steps">
-      <div class="how-step">
-        <div class="how-num">01</div>
-        <h3>Hablas o escribes</h3>
-        <p>Dictas con el micrófono o escribes en lenguaje natural. Sin formularios, sin menús complejos.</p>
-        <div class="how-example">
-          <span class="prompt">"Compra 2kg de azúcar para la casa"</span>
-        </div>
-      </div>
-      <div class="how-step">
-        <div class="how-num">02</div>
-        <h3>La IA entiende</h3>
-        <p>Recuérdame interpreta tu mensaje, identifica la acción correcta y clasifica todo automáticamente.</p>
-        <div class="how-example">
-          Categoría: <span class="result">Casa</span><br>
-          Producto: <span class="result">Azúcar 2kg</span>
-        </div>
-      </div>
-      <div class="how-step">
-        <div class="how-num">03</div>
-        <h3>Todo organizado</h3>
-        <p>Tu información queda guardada, sincronizada y accesible desde cualquier dispositivo, en tiempo real.</p>
-        <div class="how-example">
-          <span class="prompt">"¿Qué tengo pendiente hoy?"</span><br>
-          <span class="arrow">→</span> <span class="result">3 citas, 2 tareas</span>
         </div>
       </div>
     </div>
@@ -2550,17 +2861,56 @@
   let menuOpenedAt = null;
   burger?.addEventListener('click', () => {
     if (navLinks.classList.contains('open')) {
-      // Acabamos de abrir el menú: push state para interceptar el back
       history.pushState({ menuOpen: true }, '');
       menuOpenedAt = window.location.href;
     }
   });
   window.addEventListener('popstate', (e) => {
-    // Si el menú está abierto, ciérralo (no salgas de la página)
     if (navLinks?.classList.contains('open')) {
       navLinks.classList.remove('open');
     }
   });
+
+  // === TABS INTERACTIVOS (cómo funciona) ===
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabPanels = document.querySelectorAll('.tab-panel');
+  let currentTab = 0;
+  let autoTabInterval = null;
+
+  function switchTab(idx) {
+    tabBtns.forEach((b, i) => b.classList.toggle('active', i === idx));
+    tabPanels.forEach((p, i) => p.classList.toggle('active', i === idx));
+    currentTab = idx;
+  }
+
+  tabBtns.forEach((btn, idx) => {
+    btn.addEventListener('click', () => {
+      switchTab(idx);
+      // Pausar auto-rotación cuando el usuario interactúa
+      if (autoTabInterval) {
+        clearInterval(autoTabInterval);
+        autoTabInterval = null;
+      }
+    });
+  });
+
+  // Auto-rotación de tabs cada 4.5 seg si el showcase está visible
+  const showcase = document.querySelector('.showcase');
+  if (showcase && tabBtns.length > 0) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !autoTabInterval) {
+          autoTabInterval = setInterval(() => {
+            switchTab((currentTab + 1) % tabBtns.length);
+          }, 4500);
+        } else if (!entry.isIntersecting && autoTabInterval) {
+          clearInterval(autoTabInterval);
+          autoTabInterval = null;
+        }
+      });
+    }, { threshold: 0.3 });
+    observer.observe(showcase);
+  }
 </script>
 
 </body>
