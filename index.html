@@ -153,7 +153,7 @@
     font-weight: 600 !important;
     border: 1px solid rgba(255,255,255,0.2) !important;
     border-radius: 6px;
-    margin-left: 8px;
+    margin-left: 6px;
     transition: all 0.2s !important;
   }
   .nav-login:hover {
@@ -167,7 +167,7 @@
     padding: 9px 18px !important;
     font-weight: 600 !important;
     transition: all 0.2s !important;
-    margin-left: 4px;
+    margin-left: 8px;
   }
   .nav-cta:hover {
     background: var(--secondary-dark) !important;
@@ -2042,11 +2042,151 @@
     .tab-btn { font-size: 10px; padding: 7px 4px; }
   }
 
+
+  /* === ANNOUNCEMENT BANNER === */
+  .announce-banner {
+    position: fixed;
+    top: 60px;
+    left: 0; right: 0;
+    z-index: 99;
+    background: linear-gradient(90deg, var(--ink) 0%, var(--primary-dark) 100%);
+    color: #fff;
+    padding: 10px 32px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+  .announce-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+    pointer-events: none;
+  }
+  .announce-banner.hidden { display: none; }
+  .announce-content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .announce-emoji {
+    font-size: 16px;
+    line-height: 1;
+    animation: emojiPulse 3s ease-in-out infinite;
+  }
+  @keyframes emojiPulse {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.15) rotate(-5deg); }
+  }
+  .announce-text {
+    color: rgba(255,255,255,0.95);
+  }
+  .announce-text strong { color: var(--secondary); }
+  .announce-btn {
+    background: var(--secondary);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 100px;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .announce-btn:hover {
+    background: var(--secondary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px -2px rgba(230, 126, 34, 0.5);
+  }
+  .announce-btn svg { width: 11px; height: 11px; }
+  .announce-close {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    transition: all 0.2s;
+    display: grid;
+    place-items: center;
+    z-index: 2;
+  }
+  .announce-close:hover {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+  .announce-close svg { width: 12px; height: 12px; }
+
+  /* Cuando el banner está visible, el hero debe estar más abajo */
+  body.has-banner nav { top: 36px; }
+  body.has-banner .hero { padding-top: 130px; }
+  body.has-banner .announce-banner { top: 0; }
+  
+  @media (max-width: 768px) {
+    .announce-banner {
+      padding: 8px 36px 8px 16px;
+      font-size: 11px;
+      gap: 10px;
+    }
+    .announce-content { gap: 8px; }
+    .announce-emoji { font-size: 14px; }
+    .announce-btn { font-size: 10px; padding: 3px 9px; }
+    .announce-close { right: 8px; }
+    body.has-banner nav { top: 34px; }
+    body.has-banner .hero { padding-top: 110px; }
+  }
+  @media (max-width: 480px) {
+    .announce-text { display: none; }
+    .announce-content::after {
+      content: 'Recuérdame · Asistente IA';
+      color: rgba(255,255,255,0.95);
+      font-size: 11px;
+    }
+  }
+
   /* Iconos SVG inline */
   .icon { width: 1em; height: 1em; display: inline-block; vertical-align: -0.125em; fill: currentColor; }
 </style>
 </head>
 <body>
+
+
+<!-- ANNOUNCEMENT BANNER -->
+<div class="announce-banner" id="announceBanner">
+  <div class="announce-content">
+    <span class="announce-emoji">🎉</span>
+    <span class="announce-text" id="announceText">Recuérdame, tu asistente personal potenciado con inteligencia artificial</span>
+    <a href="https://recuerdame.pypcloud.com" class="announce-btn" id="announceBtn" target="_blank" rel="noopener">
+      Probar
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+  <button class="announce-close" id="announceClose" aria-label="Cerrar anuncio">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+</div>
 
 <!-- NAV -->
 <nav>
@@ -2064,8 +2204,8 @@
       <a href="#empresa">Empresa</a>
       <a href="#precios">Precios</a>
       <a href="#faq">Preguntas</a>
-      <a href="https://pypcloud.com/admin" class="nav-login">Iniciar sesión</a>
       <a href="https://recuerdame.pypcloud.com" class="nav-cta" target="_blank" rel="noopener">Probar gratis →</a>
+      <a href="https://pypcloud.com/admin" class="nav-login">Iniciar sesión</a>
     </div>
     <button class="nav-burger" id="navBurger" aria-label="Menú">
       <span></span><span></span><span></span>
@@ -2830,6 +2970,58 @@
 <script>
   // Año actual
   document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+  // ===== ANNOUNCEMENT BANNER =====
+  // Lee la config del banner (de localStorage / Supabase config en el futuro)
+  function loadBannerConfig() {
+    try {
+      const config = JSON.parse(localStorage.getItem('pypcloud_site_config') || '{}');
+      return {
+        active: config.bannerActive !== undefined ? config.bannerActive : true,
+        emoji: config.bannerEmoji || '🎉',
+        text: config.bannerText || 'Recuérdame, tu asistente personal potenciado con inteligencia artificial',
+        btnText: config.bannerBtnText || 'Probar',
+        btnUrl: config.bannerBtnUrl || 'https://recuerdame.pypcloud.com',
+        dismissible: config.bannerDismissible !== false
+      };
+    } catch (e) {
+      return { active: true, emoji: '🎉', text: 'Recuérdame, tu asistente personal potenciado con inteligencia artificial', btnText: 'Probar', btnUrl: 'https://recuerdame.pypcloud.com', dismissible: true };
+    }
+  }
+
+  const bannerEl = document.getElementById('announceBanner');
+  const bannerConfig = loadBannerConfig();
+  const dismissedKey = 'pypcloud_banner_dismissed';
+  const wasDismissed = sessionStorage.getItem(dismissedKey) === '1';
+
+  if (bannerConfig.active && !wasDismissed) {
+    // Aplicar config
+    document.querySelector('.announce-emoji').textContent = bannerConfig.emoji;
+    document.getElementById('announceText').textContent = bannerConfig.text;
+    const btn = document.getElementById('announceBtn');
+    if (btn && bannerConfig.btnText && bannerConfig.btnUrl) {
+      btn.querySelector(':scope > :not(svg)') ? null : null;
+      // Cambiar texto del botón
+      const btnSvg = btn.querySelector('svg');
+      btn.innerHTML = '';
+      btn.appendChild(document.createTextNode(bannerConfig.btnText + ' '));
+      btn.appendChild(btnSvg);
+      btn.href = bannerConfig.btnUrl;
+    } else if (btn) {
+      btn.style.display = 'none';
+    }
+    bannerEl.classList.remove('hidden');
+    document.body.classList.add('has-banner');
+  } else {
+    bannerEl.classList.add('hidden');
+  }
+
+  // Cerrar banner (queda cerrado por la sesión)
+  document.getElementById('announceClose')?.addEventListener('click', () => {
+    bannerEl.classList.add('hidden');
+    document.body.classList.remove('has-banner');
+    sessionStorage.setItem(dismissedKey, '1');
+  });
 
   // Menú móvil
   const burger = document.getElementById('navBurger');

@@ -1273,29 +1273,49 @@
     submitBtn.classList.add('loading');
     submitBtn.disabled = true;
 
-    try {
-      // === AQUÍ VA TU LÓGICA DE LOGIN REAL ===
-      // Por ahora simulo un delay
-      await new Promise(resolve => setTimeout(resolve, 1200));
-      
-      // Ejemplo: en producción harás algo como:
-      // const response = await fetch('/api/login', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ email: emailInput.value, password: pwdInput.value, remember: document.getElementById('remember').checked })
+        try {
+      // === LOGIN CONECTADO A SUPABASE (próximamente) ===
+      // Cuando conectes Supabase, esto será:
+      // const { data, error } = await supabase.auth.signInWithPassword({
+      //   email: emailInput.value,
+      //   password: pwdInput.value
       // });
-      // if (response.ok) window.location.href = '/admin/dashboard';
-      // else throw new Error('Credenciales incorrectas');
-
-      // Demo: mostrar error de credenciales
-      throw new Error('Credenciales incorrectas. Verifica tu correo y contraseña.');
+      // if (error) throw new Error('Credenciales incorrectas. Verifica tu correo y contraseña.');
+      // // Sesión guardada automáticamente por Supabase
+      // window.location.href = './admin.html';
+      
+      // ============================================
+      // MIENTRAS NO HAY SUPABASE: modo de transición
+      // Se acepta cualquier email/contraseña ≥ 6 chars
+      // y guarda sesión local válida para el admin
+      // ============================================
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      const remember = document.getElementById('remember').checked;
+      const session = {
+        email: emailInput.value.trim(),
+        name: emailInput.value.trim().split('@')[0],
+        loginAt: Date.now(),
+        remember: remember,
+        // Marcador para saber que es sesión temporal pre-Supabase
+        _temporal: true
+      };
+      localStorage.setItem('pypcloud_admin_session', JSON.stringify(session));
+      
+      // Pequeño delay para mostrar el estado de éxito
+      submitBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> ¡Bienvenido!';
+      submitBtn.style.background = 'var(--success)';
+      
+      setTimeout(() => {
+        window.location.href = './admin.html';
+      }, 500);
+      return;
       
     } catch (err) {
       alertText.textContent = err.message || 'Ocurrió un error. Intenta nuevamente.';
       formAlert.classList.add('show');
       submitBtn.classList.remove('loading');
       submitBtn.disabled = false;
-      // Shake del alert
       formAlert.style.animation = 'none';
       setTimeout(() => formAlert.style.animation = '', 10);
     }
@@ -1574,6 +1594,18 @@
     }
   `;
   document.head.appendChild(style);
+
+  // Mostrar alerta si vino con ?expired=1 (sesión expirada)
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('expired') === '1') {
+    alertText.textContent = 'Tu sesión ha expirado. Por favor ingresa de nuevo.';
+    formAlert.classList.add('show');
+    formAlert.style.background = 'rgba(20, 59, 98, 0.06)';
+    formAlert.style.borderLeftColor = 'var(--primary)';
+    formAlert.style.color = 'var(--primary)';
+    const alertSvg = formAlert.querySelector('svg');
+    if (alertSvg) alertSvg.style.color = 'var(--primary)';
+  }
 
   // Focus inicial en email
   setTimeout(() => emailInput.focus(), 300);

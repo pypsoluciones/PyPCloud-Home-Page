@@ -293,12 +293,13 @@
   /* ============== TOPBAR ============== */
   .topbar {
     grid-area: topbar;
-    background: #fff;
-    border-bottom: 1px solid var(--line-soft);
+    background: var(--primary);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
     display: flex;
     align-items: center;
     padding: 0 24px;
     gap: 16px;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.05);
   }
   .topbar-burger {
     display: none;
@@ -311,7 +312,7 @@
     display: block;
     width: 20px;
     height: 2px;
-    background: var(--ink);
+    background: #fff;
     margin: 4px 0;
   }
   .topbar-title {
@@ -322,20 +323,20 @@
   .breadcrumb {
     font-family: 'Geist Mono', monospace;
     font-size: 10px;
-    color: var(--tertiary);
+    color: rgba(255,255,255,0.6);
     text-transform: uppercase;
     letter-spacing: 0.12em;
   }
   .breadcrumb a {
-    color: var(--tertiary);
+    color: rgba(255,255,255,0.6);
     text-decoration: none;
   }
-  .breadcrumb a:hover { color: var(--primary); }
-  .breadcrumb-sep { color: var(--line); margin: 0 6px; }
+  .breadcrumb a:hover { color: var(--secondary); }
+  .breadcrumb-sep { color: rgba(255,255,255,0.3); margin: 0 6px; }
   .topbar-page-title {
     font-size: 16px;
     font-weight: 700;
-    color: var(--ink);
+    color: #fff;
     letter-spacing: -0.02em;
     line-height: 1.2;
   }
@@ -347,13 +348,13 @@
     gap: 8px;
   }
   .topbar-btn {
-    background: #fff;
-    border: 1px solid var(--line-soft);
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
     padding: 7px 12px;
     border-radius: 7px;
     font-size: 12px;
     font-weight: 600;
-    color: var(--ink);
+    color: rgba(255,255,255,0.9);
     cursor: pointer;
     font-family: inherit;
     display: flex;
@@ -363,18 +364,21 @@
     text-decoration: none;
   }
   .topbar-btn:hover {
-    background: var(--paper-warm);
-    border-color: var(--tertiary);
+    background: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0.3);
+    color: #fff;
   }
   .topbar-btn svg { width: 13px; height: 13px; }
   .topbar-btn-primary {
-    background: var(--primary);
-    border-color: var(--primary);
+    background: var(--secondary);
+    border-color: var(--secondary);
     color: #fff;
   }
   .topbar-btn-primary:hover {
-    background: var(--primary-dark);
-    border-color: var(--primary-dark);
+    background: var(--secondary-dark);
+    border-color: var(--secondary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px -2px rgba(230, 126, 34, 0.4);
   }
   .topbar-btn-orange {
     background: var(--secondary);
@@ -384,6 +388,8 @@
   .topbar-btn-orange:hover {
     background: var(--secondary-dark);
     border-color: var(--secondary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px -2px rgba(230, 126, 34, 0.4);
   }
 
   .save-indicator {
@@ -392,7 +398,7 @@
     gap: 6px;
     font-family: 'Geist Mono', monospace;
     font-size: 10px;
-    color: var(--tertiary);
+    color: rgba(255,255,255,0.65);
     text-transform: uppercase;
     letter-spacing: 0.1em;
     padding: 0 8px;
@@ -1418,7 +1424,67 @@
               </div>
             </div>
 
-            <!-- 3. CONTACTO -->
+            <!-- 3. BANNER ANUNCIO SUPERIOR -->
+            <div class="config-section" data-section="banner">
+              <div class="config-section-header">
+                <div class="section-title-wrap">
+                  <div class="section-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><line x1="3" y1="13" x2="21" y2="13"/></svg>
+                  </div>
+                  <div>
+                    <div class="section-title">Banner de anuncio</div>
+                    <div class="section-meta">Aparece arriba de todo · Configurable</div>
+                  </div>
+                </div>
+                <div class="section-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+              </div>
+              <div class="config-section-body">
+                <label class="field-toggle">
+                  <div class="field-toggle-text">
+                    <div class="field-toggle-label">Mostrar banner en el sitio</div>
+                    <div class="field-toggle-hint">Aparece como barra superior llamativa</div>
+                  </div>
+                  <input type="checkbox" data-config="bannerActive">
+                  <div class="toggle-switch"></div>
+                </label>
+                <div class="field-row row-2">
+                  <div class="field-row">
+                    <label class="field-label">Emoji <span class="optional">Decorativo</span></label>
+                    <input type="text" data-config="bannerEmoji" placeholder="🎉" maxlength="4" style="text-align: center; font-size: 18px;">
+                    <div class="field-hint">Ejemplos: 🎉 ⚡ 🚀 📢 ✨ 🆕 💡 🔥</div>
+                  </div>
+                  <label class="field-toggle">
+                    <div class="field-toggle-text">
+                      <div class="field-toggle-label">Permitir cerrar</div>
+                      <div class="field-toggle-hint">Mostrar botón X</div>
+                    </div>
+                    <input type="checkbox" data-config="bannerDismissible" checked>
+                    <div class="toggle-switch"></div>
+                  </label>
+                </div>
+                <div class="field-row">
+                  <label class="field-label">Texto del banner <span class="required">*</span></label>
+                  <textarea data-config="bannerText" rows="2" placeholder="Recuérdame, tu asistente personal potenciado con inteligencia artificial"></textarea>
+                  <div class="field-hint">Mantenlo corto y directo (máximo ~100 caracteres)</div>
+                </div>
+                <div class="field-row row-2">
+                  <div class="field-row">
+                    <label class="field-label">Texto del botón <span class="optional">Opcional</span></label>
+                    <input type="text" data-config="bannerBtnText" placeholder="Probar">
+                  </div>
+                  <div class="field-row">
+                    <label class="field-label">URL del botón <span class="optional">Opcional</span></label>
+                    <input type="url" data-config="bannerBtnUrl" placeholder="https://recuerdame.pypcloud.com">
+                  </div>
+                </div>
+                <div class="config-banner" style="margin-bottom: 0; background: rgba(20, 59, 98, 0.04); border-color: rgba(20, 59, 98, 0.15); border-left-color: var(--primary); color: var(--ink);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  <div>Si dejas botón y URL vacíos, solo se mostrará el texto. Los visitantes que cierren el banner no lo verán hasta que recarguen.</div>
+                </div>
+              </div>
+            </div>
+
+                        <!-- 3. CONTACTO -->
             <div class="config-section" data-section="contact">
               <div class="config-section-header">
                 <div class="section-title-wrap">
@@ -1916,20 +1982,33 @@
     // === CONECTAR SUPABASE AQUÍ ===
     // En producción:
     // const { data: { session } } = await supabase.auth.getSession();
-    // if (!session) window.location.href = './login.html';
+    // if (!session) { window.location.href = './login.html'; return null; }
     // else return session.user;
     
-    // Por ahora: aceptar si hay sesión simulada en localStorage
-    const session = localStorage.getItem(SESSION_KEY);
-    if (!session) {
-      // Sin sesión: en producción redirigir a login
-      // window.location.href = './login.html';
-      // Por demo: crear sesión automática
-      const demoSession = { email: 'admin@pypcloud.com', name: 'Administrador', loginAt: Date.now() };
-      localStorage.setItem(SESSION_KEY, JSON.stringify(demoSession));
-      return demoSession;
+    // Por ahora: estricta - sin sesión NO HAY ACCESO
+    const sessionRaw = localStorage.getItem(SESSION_KEY);
+    if (!sessionRaw) {
+      // No hay sesión: redirigir al login
+      window.location.replace('./login.html');
+      return null;
     }
-    return JSON.parse(session);
+    try {
+      const session = JSON.parse(sessionRaw);
+      // Verificar expiración (1 hora si no marcó "mantener sesión")
+      const now = Date.now();
+      const sessionAge = now - (session.loginAt || 0);
+      const maxAge = session.remember ? (30 * 24 * 60 * 60 * 1000) : (60 * 60 * 1000);
+      if (sessionAge > maxAge) {
+        localStorage.removeItem(SESSION_KEY);
+        window.location.replace('./login.html?expired=1');
+        return null;
+      }
+      return session;
+    } catch (e) {
+      localStorage.removeItem(SESSION_KEY);
+      window.location.replace('./login.html');
+      return null;
+    }
   }
 
   // Simular verificación con un pequeño delay (UX más profesional)
@@ -1977,6 +2056,14 @@
     heroLead: 'Recuérdame es el asistente con IA que organiza tu vida y tu negocio. Agenda, finanzas, compras y recordatorios — todo desde una conversación natural.',
     heroBtnPrimary: 'Probar 30 días gratis',
     heroBtnSecondary: 'Ver módulos',
+    
+    // Banner anuncio superior
+    bannerActive: true,
+    bannerEmoji: '🎉',
+    bannerText: 'Recuérdame, tu asistente personal potenciado con inteligencia artificial',
+    bannerBtnText: 'Probar',
+    bannerBtnUrl: 'https://recuerdame.pypcloud.com',
+    bannerDismissible: true,
     
     // Contact
     emailMain: 'soporte@pypcloud.com',
