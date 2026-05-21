@@ -1487,6 +1487,84 @@
               </div>
             </div>
 
+                        <!-- 3.5 BANNER HERO (IMAGEN GRANDE) -->
+            <div class="config-section collapsed" data-section="bannerHero">
+              <div class="config-section-header">
+                <div class="section-title-wrap">
+                  <div class="section-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  </div>
+                  <div>
+                    <div class="section-title">Banner Hero (Imagen grande)</div>
+                    <div class="section-meta">Imagen llamativa entre el nav y el contenido</div>
+                  </div>
+                </div>
+                <div class="section-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+              </div>
+              <div class="config-section-body">
+                <label class="field-toggle">
+                  <div class="field-toggle-text">
+                    <div class="field-toggle-label">Mostrar banner hero</div>
+                    <div class="field-toggle-hint">Banner grande con imagen de fondo</div>
+                  </div>
+                  <input type="checkbox" data-config="bannerHeroActive">
+                  <div class="toggle-switch"></div>
+                </label>
+                
+                <div class="field-row">
+                  <label class="field-label">Imagen de fondo <span class="optional">JPG/PNG · se convierte a WebP automáticamente</span></label>
+                  <div class="field-image" id="bannerHeroImageField">
+                    <input type="file" accept="image/*" id="bannerHeroInput">
+                    <div class="field-image-text"><strong>Subir imagen</strong><br>Recomendado: 1920×800px · Será comprimida a WebP</div>
+                  </div>
+                  <div class="field-hint">La imagen se redimensiona y comprime automáticamente (max 1920px ancho, calidad 85%, formato WebP)</div>
+                  <div id="bannerHeroUploadStatus" style="display: none; padding: 10px 14px; border-radius: 8px; margin-top: 10px; font-size: 12px;"></div>
+                </div>
+                
+                <div class="field-row">
+                  <label class="field-label">Titular grande <span class="required">*</span></label>
+                  <textarea data-config="bannerHeroTitle" rows="2" placeholder="SOLUCIONES INTEGRALES PARA TU CASA U OFICINA"></textarea>
+                  <div class="field-hint">Va sobre la imagen. Mantenlo corto y llamativo.</div>
+                </div>
+                
+                <div class="field-row">
+                  <label class="field-label">Subtítulo <span class="optional">Opcional</span></label>
+                  <textarea data-config="bannerHeroSubtitle" rows="2" placeholder="El mejor servicio técnico en computación, papelería y más."></textarea>
+                </div>
+                
+                <div class="field-row row-2">
+                  <div class="field-row">
+                    <label class="field-label">Texto del botón</label>
+                    <input type="text" data-config="bannerHeroBtnText" placeholder="Ver Catálogo de Productos y Servicios">
+                  </div>
+                  <div class="field-row">
+                    <label class="field-label">URL del botón</label>
+                    <input type="url" data-config="bannerHeroBtnUrl" placeholder="https://recuerdame.pypcloud.com">
+                  </div>
+                </div>
+                
+                <div class="field-row row-2">
+                  <div class="field-row">
+                    <label class="field-label">Alineación del texto</label>
+                    <select data-config="bannerHeroAlign">
+                      <option value="left">Izquierda</option>
+                      <option value="center">Centrado</option>
+                      <option value="right" selected>Derecha (estilo P&P)</option>
+                    </select>
+                  </div>
+                  <div class="field-row">
+                    <label class="field-label">Oscurecimiento del fondo</label>
+                    <select data-config="bannerHeroOverlay">
+                      <option value="0">Sin oscurecer</option>
+                      <option value="0.2">Leve (20%)</option>
+                      <option value="0.4" selected>Medio (40%)</option>
+                      <option value="0.6">Fuerte (60%)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
                         <!-- 3. CONTACTO -->
             <div class="config-section" data-section="contact">
               <div class="config-section-header">
@@ -2120,6 +2198,16 @@
     bannerBtnUrl: 'https://recuerdame.pypcloud.com',
     bannerDismissible: true,
     
+    // Banner Hero (imagen grande)
+    bannerHeroActive: false,
+    bannerHeroImage: '',
+    bannerHeroTitle: 'SOLUCIONES INTEGRALES PARA TU NEGOCIO',
+    bannerHeroSubtitle: 'El asistente personal con IA que organiza tu día a día.',
+    bannerHeroBtnText: 'Probar 14 días gratis',
+    bannerHeroBtnUrl: 'https://recuerdame.pypcloud.com',
+    bannerHeroAlign: 'right',
+    bannerHeroOverlay: '0.4',
+    
     // Contact
     emailMain: 'soporte@pypcloud.com',
     emailSales: '',
@@ -2198,13 +2286,15 @@
         .single();
       
       if (error) {
-        console.warn('Error cargando config:', error);
+        console.warn('⚠️ Error cargando config:', error);
         // Fallback a localStorage si existe
         const stored = localStorage.getItem(CONFIG_KEY);
         config = stored ? { ...defaultConfig, ...JSON.parse(stored) } : { ...defaultConfig };
         showToastMsg('Usando configuración local (Supabase no respondió)', 'error');
         return;
       }
+      
+      console.log('✅ Config cargada desde Supabase. Keys:', Object.keys(data?.data || {}).length);
       
       // data.data es el campo jsonb con toda la configuración
       const remoteConfig = data?.data || {};
@@ -2249,15 +2339,27 @@
         .eq('id', 1);
       
       if (error) {
-        console.error('Error guardando en Supabase:', error);
-        // Fallback a localStorage
+        console.error('❌ Error guardando en Supabase:', error);
+        // Mostrar el mensaje real al usuario
+        let userMsg = 'Error guardando: ';
+        if (error.message?.includes('row-level security')) {
+          userMsg += 'Tu usuario no tiene permisos. Verifica que is_admin=true.';
+        } else if (error.message?.includes('JWT')) {
+          userMsg += 'Sesión expirada. Recarga la página.';
+        } else {
+          userMsg += error.message || 'Error desconocido';
+        }
+        // Fallback a localStorage para no perder los cambios
         try {
           localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
         } catch(e) {}
         showSaveStatus('error');
-        showToastMsg('Error guardando en la nube. Guardado localmente.', 'error');
+        showToastMsg(userMsg, 'error');
         return;
       }
+      
+      // Log de éxito para depuración
+      console.log('✅ Config guardada en Supabase:', new Date().toLocaleTimeString());
       
       // Éxito: también cachear en localStorage
       try {
@@ -2655,6 +2757,181 @@
   });
 
   // ============================================
+  // === BANNER HERO: COMPRESIÓN WEBP + UPLOAD ===
+  // ============================================
+  const bannerHeroInput = document.getElementById('bannerHeroInput');
+  const bannerHeroField = document.getElementById('bannerHeroImageField');
+  const bannerHeroStatus = document.getElementById('bannerHeroUploadStatus');
+
+  function showBannerStatus(text, type = 'info') {
+    bannerHeroStatus.style.display = 'block';
+    bannerHeroStatus.textContent = text;
+    const colors = {
+      info: { bg: 'rgba(20, 59, 98, 0.08)', color: 'var(--primary)' },
+      success: { bg: 'rgba(45, 122, 62, 0.1)', color: 'var(--success)' },
+      error: { bg: 'rgba(220, 38, 38, 0.08)', color: 'var(--error)' }
+    };
+    const c = colors[type] || colors.info;
+    bannerHeroStatus.style.background = c.bg;
+    bannerHeroStatus.style.color = c.color;
+    bannerHeroStatus.style.borderLeft = '3px solid ' + c.color;
+  }
+
+  // Comprimir imagen a WebP usando Canvas API
+  async function compressImageToWebP(file, maxWidth = 1920, quality = 0.85) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          // Calcular dimensiones manteniendo proporción
+          let w = img.width;
+          let h = img.height;
+          if (w > maxWidth) {
+            h = Math.round((maxWidth / w) * h);
+            w = maxWidth;
+          }
+          
+          // Dibujar en canvas
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          // Fondo blanco para imágenes PNG con transparencia
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+          
+          // Convertir a WebP
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                resolve({
+                  blob,
+                  width: w,
+                  height: h,
+                  originalSize: file.size,
+                  newSize: blob.size,
+                  compression: ((1 - blob.size / file.size) * 100).toFixed(1)
+                });
+              } else {
+                reject(new Error('No se pudo convertir a WebP'));
+              }
+            },
+            'image/webp',
+            quality
+          );
+        };
+        img.onerror = () => reject(new Error('Imagen inválida'));
+        img.src = e.target.result;
+      };
+      reader.onerror = () => reject(new Error('No se pudo leer el archivo'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Manejar selección de imagen del banner hero
+  bannerHeroInput?.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    // Validar que sea imagen
+    if (!file.type.startsWith('image/')) {
+      showBannerStatus('❌ Solo se permiten imágenes (JPG, PNG, WebP, GIF)', 'error');
+      return;
+    }
+    
+    // Validar tamaño (max 10MB de entrada, después se comprime)
+    if (file.size > 10 * 1024 * 1024) {
+      showBannerStatus('❌ Imagen muy grande (máximo 10MB). Reduce el tamaño antes de subir.', 'error');
+      bannerHeroInput.value = '';
+      return;
+    }
+    
+    if (!sb) {
+      showBannerStatus('❌ Supabase no disponible. Verifica tu conexión.', 'error');
+      return;
+    }
+    
+    try {
+      // 1. Comprimir
+      showBannerStatus('🔄 Comprimiendo imagen a WebP...', 'info');
+      const compressed = await compressImageToWebP(file, 1920, 0.85);
+      
+      const originalKB = (compressed.originalSize / 1024).toFixed(0);
+      const newKB = (compressed.newSize / 1024).toFixed(0);
+      
+      showBannerStatus(`📤 Subiendo (${compressed.width}×${compressed.height}, ${originalKB}KB → ${newKB}KB, ahorro ${compressed.compression}%)...`, 'info');
+      
+      // 2. Subir a Supabase Storage
+      const fileName = `banner-hero-${Date.now()}.webp`;
+      const { data: uploadData, error: uploadError } = await sb.storage
+        .from('site-assets')
+        .upload(fileName, compressed.blob, {
+          contentType: 'image/webp',
+          cacheControl: '3600',
+          upsert: false
+        });
+      
+      if (uploadError) {
+        console.error('Error upload:', uploadError);
+        if (uploadError.message?.includes('bucket')) {
+          throw new Error('El bucket "site-assets" no existe. Ejecuta el SQL de setup primero.');
+        }
+        if (uploadError.message?.includes('row-level security') || uploadError.message?.includes('policy')) {
+          throw new Error('Sin permisos para subir. Verifica que tu usuario sea admin.');
+        }
+        throw uploadError;
+      }
+      
+      // 3. Obtener URL pública
+      const { data: urlData } = sb.storage
+        .from('site-assets')
+        .getPublicUrl(fileName);
+      
+      const publicUrl = urlData.publicUrl;
+      
+      // 4. Si había una imagen anterior, intentar borrarla (opcional, no rompe si falla)
+      if (config.bannerHeroImage && config.bannerHeroImage.includes('site-assets')) {
+        try {
+          const oldFileName = config.bannerHeroImage.split('/').pop().split('?')[0];
+          if (oldFileName && oldFileName.startsWith('banner-hero-')) {
+            await sb.storage.from('site-assets').remove([oldFileName]);
+            console.log('🗑️ Imagen anterior borrada:', oldFileName);
+          }
+        } catch (e) {
+          console.warn('No se pudo borrar imagen anterior:', e);
+        }
+      }
+      
+      // 5. Guardar la URL en config
+      config.bannerHeroImage = publicUrl;
+      
+      // 6. Mostrar preview
+      showImagePreview(bannerHeroField, publicUrl);
+      
+      // 7. Auto-guardar config
+      scheduleAutoSave();
+      updatePreview();
+      
+      showBannerStatus(`✅ Imagen subida correctamente (${newKB}KB · ahorro ${compressed.compression}%)`, 'success');
+      setTimeout(() => bannerHeroStatus.style.display = 'none', 5000);
+      
+    } catch (err) {
+      console.error('Error procesando banner hero:', err);
+      showBannerStatus(`❌ ${err.message}`, 'error');
+      bannerHeroInput.value = '';
+    }
+  });
+
+  // Cargar preview si ya hay imagen
+  function initBannerHeroPreview() {
+    if (config.bannerHeroImage && bannerHeroField) {
+      showImagePreview(bannerHeroField, config.bannerHeroImage);
+    }
+  }
+
+  // ============================================
   // === INICIALIZACIÓN ===
   // ============================================
   (async function init() {
@@ -2668,6 +2945,7 @@
     
     bindFormToConfig();
     renderSocials();
+    initBannerHeroPreview();
     updatePreview();
     
     // Ctrl+S para guardar manual
