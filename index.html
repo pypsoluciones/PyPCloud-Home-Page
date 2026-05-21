@@ -2225,7 +2225,7 @@
         <h1>
           Tu día a día en una <span class="accent">conversación</span>.
         </h1>
-        <p class="hero-lead">
+        <p class="hero-lead" data-hero="lead">
           <strong style="color: var(--ink);">Recuérdame</strong> es el asistente con IA que organiza tu vida y tu negocio. Agenda, finanzas, compras y recordatorios — todo desde una conversación natural. Construido sobre <strong style="color: var(--primary);">PostgreSQL</strong> con encriptación de nivel bancario.
         </p>
         <div class="hero-cta-group">
@@ -2763,17 +2763,17 @@
   <div class="container">
     <div class="section-label">Planes</div>
     <h2 class="section-title">Una inversión, <span class="serif">no un gasto.</span></h2>
-    <p class="section-lead">Empieza con 30 días gratis. Sin tarjeta de crédito, sin compromiso. Cancela cuando quieras y exporta toda tu información.</p>
+    <p class="section-lead" data-pricing="lead">Empieza con 30 días gratis. Sin tarjeta de crédito, sin compromiso. Cancela cuando quieras y exporta toda tu información.</p>
 
     <div class="pricing-grid two-plans">
 
-      <div class="plan featured">
-        <div class="plan-tag">Disponible ahora</div>
+      <div class="plan featured" data-plan="monthly">
+        <div class="plan-tag" data-plan-field="tag">Disponible ahora</div>
         <div class="plan-name">Plan Mensual</div>
         <div class="plan-price">
           <span class="currency">$</span>
-          <span class="amount">1.60</span>
-          <span class="period">/mes</span>
+          <span class="amount" data-plan-field="price">1.60</span>
+          <span class="period" data-plan-field="period">/mes</span>
         </div>
         <p class="plan-tagline">Facturación mensual. Renovación automática. Cancela cuando quieras, sin penalidad.</p>
         <ul class="plan-features">
@@ -2784,18 +2784,18 @@
           <li>Soporte por email y WhatsApp</li>
           <li>Exportación de datos sin restricciones</li>
         </ul>
-        <a href="https://recuerdame.pypcloud.com" class="btn btn-orange" target="_blank" rel="noopener">
+        <a href="https://recuerdame.pypcloud.com" class="btn btn-orange" target="_blank" rel="noopener" data-cta="trial">
           Empezar 30 días gratis
         </a>
       </div>
 
-      <div class="plan">
-        <div class="plan-tag-save">Ahorra 27%</div>
+      <div class="plan" data-plan="quarterly">
+        <div class="plan-tag-save" data-plan-field="tag">Ahorra 27%</div>
         <div class="plan-name">Plan Trimestral</div>
         <div class="plan-price">
           <span class="currency">$</span>
-          <span class="amount">3.50</span>
-          <span class="period">/3 meses</span>
+          <span class="amount" data-plan-field="price">3.50</span>
+          <span class="period" data-plan-field="period">/3 meses</span>
         </div>
         <p class="plan-tagline">Equivalente a $1.17/mes. La mejor inversión para profesionales constantes.</p>
         <ul class="plan-features">
@@ -2805,14 +2805,14 @@
           <li>Acceso anticipado a nuevos módulos</li>
           <li>Bloqueo de precio durante el periodo</li>
         </ul>
-        <a href="https://recuerdame.pypcloud.com" class="btn btn-secondary-light" target="_blank" rel="noopener">
+        <a href="https://recuerdame.pypcloud.com" class="btn btn-secondary-light" target="_blank" rel="noopener" data-cta="trial">
           Probar 30 días gratis
         </a>
       </div>
 
     </div>
 
-    <p class="pricing-trial-note">+ 30 días de prueba gratuita en cualquier plan · Sin tarjeta de crédito · Cancela cuando quieras</p>
+    <p class="pricing-trial-note" data-pricing="trial-note">+ 30 días de prueba gratuita en cualquier plan · Sin tarjeta de crédito · Cancela cuando quieras</p>
   </div>
 </section>
 
@@ -3012,19 +3012,27 @@
       return false;
     }
     try {
+      console.log('🔄 Cargando configuración desde Supabase...');
       const { data, error } = await sb
         .from('site_config')
         .select('data')
         .eq('id', 1)
         .single();
-      if (!error && data?.data) {
+      
+      if (error) {
+        console.error('❌ Error en consulta:', error);
+      } else if (!data?.data) {
+        console.warn('⚠️ Supabase respondió pero data está vacío:', data);
+      } else {
+        const keys = Object.keys(data.data);
+        console.log('✅ Config cargada. Campos:', keys.length, keys);
         siteConfig = { ...defaultConfig, ...data.data };
         // Cache local para próxima carga
         try { localStorage.setItem('pypcloud_site_config_cache', JSON.stringify(siteConfig)); } catch(e){}
         return true;
       }
     } catch (e) {
-      console.warn('No se pudo cargar config desde Supabase:', e);
+      console.error('❌ Error fatal cargando config:', e);
     }
     // Fallback: usar cache local
     try {
@@ -3081,22 +3089,156 @@
     }
   } // end applyBanner
 
-  // Aplicar otros datos configurables (email, whatsapp, redes sociales)
+  // Aplicar TODOS los datos configurables de Supabase al DOM
   function applyOtherConfig() {
-    // Actualizar links de email si están definidos
+    console.log('🎨 Aplicando configuración al sitio...');
+    let applied = 0;
+
+    // ===== EMAILS =====
     if (siteConfig.emailMain) {
       document.querySelectorAll('a[href^="mailto:"]').forEach(a => {
         a.href = 'mailto:' + siteConfig.emailMain;
-        if (a.textContent.includes('@')) a.textContent = siteConfig.emailMain;
+        applied++;
+      });
+      // Reemplazar texto del email donde aparezca el viejo
+      document.querySelectorAll('strong').forEach(el => {
+        if (el.textContent === 'soporte@pypcloud.com' || el.textContent.match(/^[\w.-]+@[\w.-]+\.[\w]+$/)) {
+          el.textContent = siteConfig.emailMain;
+          applied++;
+        }
       });
     }
-    // Actualizar links de WhatsApp
+
+    // ===== WHATSAPP =====
     if (siteConfig.whatsapp) {
       const cleanPhone = siteConfig.whatsapp.replace(/\D/g, '');
       document.querySelectorAll('a[href*="wa.me"], a[href*="whatsapp"]').forEach(a => {
         a.href = 'https://wa.me/' + cleanPhone;
+        applied++;
+      });
+      // Texto del whatsapp donde aparezca
+      document.querySelectorAll('strong').forEach(el => {
+        if (el.textContent.match(/^\+\d+[\s\-\d]+$/)) {
+          el.textContent = siteConfig.whatsapp;
+          applied++;
+        }
       });
     }
+
+    // ===== HERO TITLE =====
+    if (siteConfig.heroTitle) {
+      const heroTitleEl = document.querySelector('[data-hero="title"]');
+      if (heroTitleEl) {
+        // Soporta [acento]palabra[/acento]
+        const parsed = siteConfig.heroTitle
+          .replace(/\[acento\]/g, '<span class="serif">')
+          .replace(/\[\/acento\]/g, '</span>');
+        heroTitleEl.innerHTML = parsed;
+        applied++;
+      }
+    }
+
+    // ===== HERO LEAD =====
+    if (siteConfig.heroLead) {
+      const heroLeadEl = document.querySelector('[data-hero="lead"]');
+      if (heroLeadEl) {
+        // Preservar formato simple, no parsear HTML del config
+        heroLeadEl.textContent = siteConfig.heroLead;
+        applied++;
+      }
+    }
+
+    // ===== HERO BUTTONS =====
+    if (siteConfig.heroBtnPrimary) {
+      const heroBtn = document.querySelector('[data-hero="btn-primary"]');
+      if (heroBtn) {
+        // Mantener el ícono SVG si lo tiene
+        const svg = heroBtn.querySelector('svg');
+        heroBtn.innerHTML = '';
+        heroBtn.appendChild(document.createTextNode(siteConfig.heroBtnPrimary + ' '));
+        if (svg) heroBtn.appendChild(svg);
+        applied++;
+      }
+    }
+
+    // ===== TRIAL DAYS - reemplazar en CTAs =====
+    const trialDays = siteConfig.trialDays || '30';
+    document.querySelectorAll('[data-cta="trial"]').forEach(btn => {
+      const text = btn.textContent.trim();
+      const newText = text.replace(/\d+\s*días gratis/i, trialDays + ' días gratis');
+      btn.textContent = newText;
+      applied++;
+    });
+
+    // ===== PRICING LEAD =====
+    if (siteConfig.trialDays) {
+      const pricingLead = document.querySelector('[data-pricing="lead"]');
+      if (pricingLead) {
+        pricingLead.textContent = `Empieza con ${trialDays} días gratis. Sin tarjeta de crédito, sin compromiso. Cancela cuando quieras y exporta toda tu información.`;
+        applied++;
+      }
+      const trialNote = document.querySelector('[data-pricing="trial-note"]');
+      if (trialNote) {
+        trialNote.textContent = `+ ${trialDays} días de prueba gratuita en cualquier plan · Sin tarjeta de crédito · Cancela cuando quieras`;
+        applied++;
+      }
+    }
+
+    // ===== PLAN MENSUAL =====
+    const planMonthly = document.querySelector('[data-plan="monthly"]');
+    if (planMonthly && siteConfig.planMonthlyActive !== false) {
+      if (siteConfig.planMonthlyPrice) {
+        const priceEl = planMonthly.querySelector('[data-plan-field="price"]');
+        if (priceEl) { priceEl.textContent = siteConfig.planMonthlyPrice; applied++; }
+      }
+      if (siteConfig.planMonthlyPeriod) {
+        const perEl = planMonthly.querySelector('[data-plan-field="period"]');
+        if (perEl) { perEl.textContent = siteConfig.planMonthlyPeriod; applied++; }
+      }
+      if (siteConfig.planMonthlyTag) {
+        const tagEl = planMonthly.querySelector('[data-plan-field="tag"]');
+        if (tagEl) { tagEl.textContent = siteConfig.planMonthlyTag; applied++; }
+      }
+    } else if (planMonthly && siteConfig.planMonthlyActive === false) {
+      planMonthly.style.display = 'none';
+    }
+
+    // ===== PLAN TRIMESTRAL =====
+    const planQuarterly = document.querySelector('[data-plan="quarterly"]');
+    if (planQuarterly && siteConfig.planQuarterlyActive !== false) {
+      if (siteConfig.planQuarterlyPrice) {
+        const priceEl = planQuarterly.querySelector('[data-plan-field="price"]');
+        if (priceEl) { priceEl.textContent = siteConfig.planQuarterlyPrice; applied++; }
+      }
+      if (siteConfig.planQuarterlyPeriod) {
+        const perEl = planQuarterly.querySelector('[data-plan-field="period"]');
+        if (perEl) { perEl.textContent = siteConfig.planQuarterlyPeriod; applied++; }
+      }
+      if (siteConfig.planQuarterlyTag) {
+        const tagEl = planQuarterly.querySelector('[data-plan-field="tag"]');
+        if (tagEl) { tagEl.textContent = siteConfig.planQuarterlyTag; applied++; }
+      }
+    } else if (planQuarterly && siteConfig.planQuarterlyActive === false) {
+      planQuarterly.style.display = 'none';
+    }
+
+    // ===== LOGO CUSTOM (si el usuario subió uno desde admin) =====
+    if (siteConfig.logoIcon && siteConfig.logoIcon.startsWith('data:image/')) {
+      document.querySelectorAll('.nav-logo-mark img, .footer-logo-mark img').forEach(img => {
+        img.src = siteConfig.logoIcon;
+        applied++;
+      });
+    }
+
+    // ===== BRAND NAME =====
+    if (siteConfig.brandName && siteConfig.brandName !== 'PyPCloud') {
+      document.querySelectorAll('.nav-brand-name').forEach(el => {
+        el.innerHTML = siteConfig.brandName.replace(/Cloud$/, '<span>Cloud</span>');
+        applied++;
+      });
+    }
+
+    console.log(`✅ Aplicados ${applied} cambios al DOM`);
   }
 
   // Cerrar banner (queda cerrado por la sesión)
