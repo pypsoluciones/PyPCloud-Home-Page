@@ -604,7 +604,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-  let supabase = null;
+  let sb = null;
   let report = {};
 
   const $ = (id) => document.getElementById(id);
@@ -650,10 +650,10 @@
 
     try {
       // Crear cliente
-      supabase = window.supabase.createClient(url, key);
+      sb = window.supabase.createClient(url, key);
 
       // Login
-      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+      const { data: authData, error: authError } = await sb.auth.signInWithPassword({
         email: email,
         password: pwd
       });
@@ -705,7 +705,7 @@
     body.innerHTML = '<div class="loading"><div class="spinner"></div> Verificando...</div>';
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await sb.auth.getUser();
       report.currentUser = user;
 
       // Detectar rol en metadata
@@ -799,7 +799,7 @@
     const found = [];
     const tasks = commonTables.map(async (table) => {
       try {
-        const { data, error, count } = await supabase
+        const { data, error, count } = await sb
           .from(table)
           .select('*', { count: 'exact', head: false })
           .limit(1);
@@ -884,7 +884,7 @@
 
     for (const t of tablesToTry) {
       try {
-        const { data, error } = await supabase.from(t).select('*').limit(20);
+        const { data, error } = await sb.from(t).select('*').limit(20);
         if (!error && data) {
           users = data;
           sourceTable = t;
