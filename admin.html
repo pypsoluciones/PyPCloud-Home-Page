@@ -10,6 +10,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
   :root {
     --primary: #143B62;
@@ -1323,11 +1326,11 @@
 
       <!-- VIEW: CONFIGURACIÓN -->
       <div class="view" id="view-configuracion">
-        <div class="config-banner">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <div class="config-banner" style="background: rgba(45, 122, 62, 0.08); border-color: rgba(45, 122, 62, 0.2); border-left-color: var(--success); color: #166534;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);"><polyline points="20 6 9 17 4 12"/></svg>
           <div>
-            <strong>Modo de almacenamiento: Local (navegador)</strong><br>
-            Los cambios se guardan en tu navegador. Cuando conectes Supabase, los datos se sincronizarán con la nube. Busca el comentario <code style="background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 3px; font-family: 'Geist Mono', monospace;">// CONECTAR SUPABASE AQUÍ</code> en el código.
+            <strong>✅ Conectado a Supabase</strong><br>
+            Los cambios se guardan automáticamente en la nube y se reflejan en el sitio público al instante.
           </div>
         </div>
 
@@ -1978,63 +1981,115 @@
   
   const SESSION_KEY = 'pypcloud_admin_session';
   
-  function checkAuth() {
-    // === CONECTAR SUPABASE AQUÍ ===
-    // En producción:
-    // const { data: { session } } = await supabase.auth.getSession();
-    // if (!session) { window.location.href = './login.html'; return null; }
-    // else return session.user;
+  // ============================================
+  // CONFIGURACIÓN SUPABASE
+  // ============================================
+  const SUPABASE_URL = 'https://gbmtdgoztuxtkmcanrck.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdibXRkZ296dHV4dGttY2FucmNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2MDk1MzYsImV4cCI6MjA5NDE4NTUzNn0.Fz1KAp6iXKv-etvT-ut5sYfvNPochSrU_XFAm_Ct7XE';
+  // Verificar que el SDK cargó (puede fallar en redes restrictivas)
+  if (typeof window.supabase === 'undefined') {
+    console.error('Supabase SDK no se cargó. Verifica tu conexión.');
+  }
+  const sb = (typeof window.supabase !== 'undefined') 
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) 
+    : null;
+
+  let currentUser = null;
+  let currentProfile = null;
+
+  async function checkAuth() {
+    // Verificar SDK
+    if (!sb) {
+      // SDK no cargó: redirigir al login con mensaje
+      document.getElementById('authGate').innerHTML = `
+        <div style="text-align: center; max-width: 400px; padding: 24px;">
+          <h2 style="color: var(--error); margin-bottom: 12px;">⚠️ Error de conexión</h2>
+          <p style="color: var(--tertiary); font-size: 14px; margin-bottom: 16px;">No se pudo cargar el sistema de autenticación. Verifica tu conexión a internet.</p>
+          <button onclick="window.location.reload()" style="background: var(--primary); color: #fff; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-family: inherit; font-weight: 600;">Reintentar</button>
+        </div>`;
+      return null;
+    }
+
+    // 1. Verificar sesión con Supabase
+    const { data: { session }, error: sessionError } = await sb.auth.getSession();
     
-    // Por ahora: estricta - sin sesión NO HAY ACCESO
-    const sessionRaw = localStorage.getItem(SESSION_KEY);
-    if (!sessionRaw) {
-      // No hay sesión: redirigir al login
+    if (sessionError || !session) {
+      // Sin sesión válida: redirigir al login
+      sessionStorage.removeItem('pypcloud_admin_profile');
       window.location.replace('./login.html');
       return null;
     }
-    try {
-      const session = JSON.parse(sessionRaw);
-      // Verificar expiración (1 hora si no marcó "mantener sesión")
-      const now = Date.now();
-      const sessionAge = now - (session.loginAt || 0);
-      const maxAge = session.remember ? (30 * 24 * 60 * 60 * 1000) : (60 * 60 * 1000);
-      if (sessionAge > maxAge) {
-        localStorage.removeItem(SESSION_KEY);
-        window.location.replace('./login.html?expired=1');
-        return null;
-      }
-      return session;
-    } catch (e) {
-      localStorage.removeItem(SESSION_KEY);
-      window.location.replace('./login.html');
+
+    currentUser = session.user;
+
+    // 2. Verificar que sea admin consultando profiles
+    const { data: profile, error: profileError } = await sb
+      .from('profiles')
+      .select('id, full_name, display_name, email, is_admin')
+      .eq('id', session.user.id)
+      .single();
+
+    if (profileError || !profile || !profile.is_admin) {
+      // No es admin: cerrar sesión y bloquear
+      await sb.auth.signOut();
+      sessionStorage.removeItem('pypcloud_admin_profile');
+      window.location.replace('./login.html?denied=1');
       return null;
     }
+
+    currentProfile = profile;
+
+    // 3. Refresh automático del token (Supabase lo hace solo, pero forzamos check de inactividad)
+    const INACTIVITY_MAX = 30 * 60 * 1000; // 30 min inactividad
+    const lastActivity = parseInt(sessionStorage.getItem('pypcloud_last_activity') || Date.now());
+    if (Date.now() - lastActivity > INACTIVITY_MAX) {
+      await sb.auth.signOut();
+      window.location.replace('./login.html?expired=1');
+      return null;
+    }
+    sessionStorage.setItem('pypcloud_last_activity', Date.now().toString());
+
+    // Actualizar actividad cada interacción
+    ['click', 'keydown', 'mousemove'].forEach(evt => {
+      let throttle = 0;
+      document.addEventListener(evt, () => {
+        const now = Date.now();
+        if (now - throttle > 30000) { // throttle 30s
+          throttle = now;
+          sessionStorage.setItem('pypcloud_last_activity', now.toString());
+        }
+      });
+    });
+
+    return profile;
   }
 
-  // Simular verificación con un pequeño delay (UX más profesional)
-  setTimeout(() => {
-    const user = checkAuth();
-    if (user) {
+  // Verificar auth (es async ahora)
+  (async () => {
+    const profile = await checkAuth();
+    if (profile) {
       document.getElementById('authGate').classList.add('hidden');
       document.getElementById('adminShell').style.display = 'grid';
       
       // Llenar info del usuario
-      document.getElementById('userName').textContent = user.name || 'Administrador';
-      document.getElementById('userAvatar').textContent = (user.name || 'A')[0].toUpperCase();
+      const displayName = profile.display_name || profile.full_name || 'Admin';
+      document.getElementById('userName').textContent = displayName;
+      document.getElementById('userAvatar').textContent = displayName[0].toUpperCase();
     }
-  }, 600);
+  })();
 
   // ============================================
   // === LOGOUT ===
   // ============================================
-  document.getElementById('logoutBtn').addEventListener('click', () => {
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
     if (!confirm('¿Cerrar sesión?')) return;
     
-    // === CONECTAR SUPABASE AQUÍ ===
-    // await supabase.auth.signOut();
-    
-    localStorage.removeItem(SESSION_KEY);
-    window.location.href = './login.html';
+    // Cerrar sesión real con Supabase
+    await sb.auth.signOut();
+    sessionStorage.removeItem('pypcloud_admin_profile');
+    sessionStorage.removeItem('pypcloud_last_activity');
+    sessionStorage.removeItem('pypcloud_remember');
+    window.location.replace('./login.html');
   });
 
   // ============================================
@@ -2128,21 +2183,39 @@
   let config = {};
 
   async function loadConfig() {
-    // === CONECTAR SUPABASE AQUÍ ===
-    // En producción:
-    // const { data, error } = await supabase
-    //   .from('site_config')
-    //   .select('*')
-    //   .eq('id', 1)
-    //   .single();
-    // if (!error && data) config = { ...defaultConfig, ...data };
-    // else config = defaultConfig;
-    
-    // Por ahora: localStorage
-    try {
+    if (!sb) {
+      // SDK no cargó: fallback local
       const stored = localStorage.getItem(CONFIG_KEY);
       config = stored ? { ...defaultConfig, ...JSON.parse(stored) } : { ...defaultConfig };
+      return;
+    }
+    // Cargar configuración desde Supabase (tabla site_config)
+    try {
+      const { data, error } = await sb
+        .from('site_config')
+        .select('data')
+        .eq('id', 1)
+        .single();
+      
+      if (error) {
+        console.warn('Error cargando config:', error);
+        // Fallback a localStorage si existe
+        const stored = localStorage.getItem(CONFIG_KEY);
+        config = stored ? { ...defaultConfig, ...JSON.parse(stored) } : { ...defaultConfig };
+        showToastMsg('Usando configuración local (Supabase no respondió)', 'error');
+        return;
+      }
+      
+      // data.data es el campo jsonb con toda la configuración
+      const remoteConfig = data?.data || {};
+      config = { ...defaultConfig, ...remoteConfig };
+      
+      // También guardar en localStorage como cache offline
+      try {
+        localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+      } catch(e) {}
     } catch (e) {
+      console.error('Error fatal cargando config:', e);
       config = { ...defaultConfig };
     }
   }
@@ -2153,19 +2226,47 @@
   async function saveConfig(showToast = false) {
     showSaveStatus('saving');
     
-    // === CONECTAR SUPABASE AQUÍ ===
-    // En producción:
-    // const { error } = await supabase
-    //   .from('site_config')
-    //   .upsert({ id: 1, ...config });
-    // if (error) { showSaveStatus('error'); return; }
-    
-    // Por ahora: localStorage
+    if (!sb) {
+      // SDK no cargó: solo guardar local
+      try {
+        localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+        lastSavedAt = Date.now();
+        setTimeout(() => showSaveStatus('saved'), 300);
+        if (showToast) showToastMsg('Guardado localmente (sin conexión)', 'error');
+      } catch(e) { showSaveStatus('error'); }
+      return;
+    }
+
     try {
-      localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+      // Guardar en Supabase: UPDATE de la fila id=1
+      const { error } = await sb
+        .from('site_config')
+        .update({ 
+          data: config,
+          updated_at: new Date().toISOString(),
+          updated_by: currentUser?.id || null
+        })
+        .eq('id', 1);
+      
+      if (error) {
+        console.error('Error guardando en Supabase:', error);
+        // Fallback a localStorage
+        try {
+          localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+        } catch(e) {}
+        showSaveStatus('error');
+        showToastMsg('Error guardando en la nube. Guardado localmente.', 'error');
+        return;
+      }
+      
+      // Éxito: también cachear en localStorage
+      try {
+        localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+      } catch(e) {}
+      
       lastSavedAt = Date.now();
       setTimeout(() => showSaveStatus('saved'), 300);
-      if (showToast) showToastMsg('Configuración guardada', 'success');
+      if (showToast) showToastMsg('Configuración guardada en la nube', 'success');
     } catch (e) {
       showSaveStatus('error');
       showToastMsg('Error al guardar: ' + e.message, 'error');

@@ -11,6 +11,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
   :root {
     --primary: #143B62;
@@ -1216,7 +1219,101 @@
 
 </div>
 
+<!-- MODAL RECUPERAR CONTRASEÑA -->
+<div class="modal-overlay" id="recoverModal">
+  <div class="modal">
+    <button type="button" class="modal-close" id="modalClose" aria-label="Cerrar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    
+    <!-- Vista 1: Solicitar email -->
+    <div class="modal-view" id="recoverView1">
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
+        </svg>
+      </div>
+      <div class="modal-eyebrow">Recuperación segura</div>
+      <h3 class="modal-title">Recupera tu <span class="serif">contraseña.</span></h3>
+      <p class="modal-text">Te enviaremos un enlace de recuperación a tu correo electrónico. El enlace expira en 1 hora por seguridad.</p>
+      
+      <div class="modal-field">
+        <label for="recoverEmail">Correo electrónico</label>
+        <div class="input-wrap">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+          <input type="email" id="recoverEmail" placeholder="tu@correo.com" autocomplete="email" required>
+        </div>
+      </div>
+      
+      <div class="modal-buttons">
+        <button type="button" class="modal-btn modal-btn-secondary" id="recoverCancel">Cancelar</button>
+        <button type="button" class="modal-btn modal-btn-primary" id="recoverSubmit">
+          Enviar enlace
+        </button>
+      </div>
+      
+      <div class="modal-help-link">
+        ¿Sigues con problemas? <a href="mailto:soporte@pypcloud.com">Contactar soporte</a>
+      </div>
+    </div>
+    
+    <!-- Vista 2: Éxito -->
+    <div class="modal-view" id="recoverView2" style="display: none;">
+      <div class="modal-success">
+        <div class="modal-success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div class="modal-eyebrow">Enviado correctamente</div>
+        <h3 class="modal-title">Revisa tu <span class="serif">correo.</span></h3>
+        <p class="modal-text">Hemos enviado un enlace de recuperación a <strong id="recoverEmailShown" style="color: var(--primary);"></strong>. Revisa también tu carpeta de spam.</p>
+      </div>
+      <div class="modal-buttons">
+        <button type="button" class="modal-btn modal-btn-primary" id="recoverDone">Entendido</button>
+      </div>
+      <div class="modal-help-link">
+        ¿No te llegó? <a href="#" id="recoverRetry">Reenviar enlace</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
+  // ============================================
+  // CONFIGURACIÓN SUPABASE
+  // ============================================
+  const SUPABASE_URL = 'https://gbmtdgoztuxtkmcanrck.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdibXRkZ296dHV4dGttY2FucmNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2MDk1MzYsImV4cCI6MjA5NDE4NTUzNn0.Fz1KAp6iXKv-etvT-ut5sYfvNPochSrU_XFAm_Ct7XE';
+  // Verificar que el SDK cargó (puede fallar en redes restrictivas)
+  if (typeof window.supabase === 'undefined') {
+    console.error('Supabase SDK no se cargó. Verifica tu conexión.');
+  }
+  const sb = (typeof window.supabase !== 'undefined') 
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) 
+    : null;
+
+  // Si ya hay sesión activa, redirigir directo al admin
+  (async () => {
+    if (!sb) return;
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) {
+      // Verificar que sea admin antes de redirigir
+      const { data: profile } = await sb
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', session.user.id)
+        .single();
+      if (profile?.is_admin) {
+        window.location.replace('./admin.html');
+      }
+    }
+  })();
+
   const form = document.getElementById('loginForm');
   const emailInput = document.getElementById('email');
   const pwdInput = document.getElementById('password');
@@ -1274,35 +1371,71 @@
     submitBtn.disabled = true;
 
         try {
-      // === LOGIN CONECTADO A SUPABASE (próximamente) ===
-      // Cuando conectes Supabase, esto será:
-      // const { data, error } = await supabase.auth.signInWithPassword({
-      //   email: emailInput.value,
-      //   password: pwdInput.value
-      // });
-      // if (error) throw new Error('Credenciales incorrectas. Verifica tu correo y contraseña.');
-      // // Sesión guardada automáticamente por Supabase
-      // window.location.href = './admin.html';
-      
       // ============================================
-      // MIENTRAS NO HAY SUPABASE: modo de transición
-      // Se acepta cualquier email/contraseña ≥ 6 chars
-      // y guarda sesión local válida para el admin
+      // LOGIN REAL CON SUPABASE
       // ============================================
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
+      const email = emailInput.value.trim();
+      const password = pwdInput.value;
       const remember = document.getElementById('remember').checked;
-      const session = {
-        email: emailInput.value.trim(),
-        name: emailInput.value.trim().split('@')[0],
-        loginAt: Date.now(),
-        remember: remember,
-        // Marcador para saber que es sesión temporal pre-Supabase
-        _temporal: true
-      };
-      localStorage.setItem('pypcloud_admin_session', JSON.stringify(session));
+
+      // Verificar SDK disponible
+      if (!sb) {
+        throw new Error('No se pudo conectar al servidor. Verifica tu conexión a internet.');
+      }
       
-      // Pequeño delay para mostrar el estado de éxito
+      // 1. Intentar autenticarse contra Supabase Auth
+      const { data: authData, error: authError } = await sb.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+      if (authError) {
+        // Errores comunes:
+        // - "Invalid login credentials" → contraseña incorrecta
+        // - "Email not confirmed" → email no verificado
+        const msg = authError.message === 'Invalid login credentials'
+          ? 'Credenciales incorrectas. Verifica tu correo y contraseña.'
+          : authError.message === 'Email not confirmed'
+            ? 'Tu correo no está confirmado. Revisa tu bandeja de entrada.'
+            : authError.message;
+        throw new Error(msg);
+      }
+
+      // 2. Verificar que el usuario sea admin en profiles
+      const { data: profile, error: profileError } = await sb
+        .from('profiles')
+        .select('id, full_name, display_name, is_admin')
+        .eq('id', authData.user.id)
+        .single();
+
+      if (profileError || !profile) {
+        // Cerrar sesión inmediatamente, no es admin
+        await sb.auth.signOut();
+        throw new Error('No se pudo verificar tu perfil. Contacta al administrador.');
+      }
+
+      if (!profile.is_admin) {
+        // Usuario válido pero NO es admin: cerrar sesión y bloquear
+        await sb.auth.signOut();
+        throw new Error('Tu cuenta no tiene permisos de administrador.');
+      }
+
+      // 3. ¡Es admin! Guardar info útil en sessionStorage para el admin.html
+      // (la sesión real la maneja Supabase automáticamente)
+      sessionStorage.setItem('pypcloud_admin_profile', JSON.stringify({
+        id: profile.id,
+        name: profile.display_name || profile.full_name || 'Admin',
+        email: authData.user.email,
+        is_admin: true
+      }));
+
+      // 4. Configurar duración de sesión según "remember"
+      // Supabase por default usa 1 hora; con remember, refrescamos token automáticamente
+      if (remember) {
+        sessionStorage.setItem('pypcloud_remember', '1');
+      }
+
+      // 5. Mostrar éxito y redirigir
       submitBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> ¡Bienvenido!';
       submitBtn.style.background = 'var(--success)';
       
@@ -1310,7 +1443,7 @@
         window.location.href = './admin.html';
       }, 500);
       return;
-      
+
     } catch (err) {
       alertText.textContent = err.message || 'Ocurrió un error. Intenta nuevamente.';
       formAlert.classList.add('show');
@@ -1376,22 +1509,12 @@
     recoverSubmit.disabled = true;
     
     try {
-      // === AQUÍ VA TU LÓGICA DE RECUPERACIÓN REAL ===
-      // En producción harás algo como:
-      // const response = await fetch('/api/auth/recover', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ email })
-      // });
-      // if (!response.ok) throw new Error('Error al enviar enlace');
-      
-      // Si usas Supabase Auth:
-      // const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      //   redirectTo: 'https://pypcloud.com/admin/reset-password'
-      // });
-      
-      // Demo: simular envío
-      await new Promise(r => setTimeout(r, 1200));
+      // RECUPERACIÓN REAL CON SUPABASE
+      if (!sb) throw new Error('No se pudo conectar al servidor.');
+      const { error: resetError } = await sb.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + '/admin/login.html'
+      });
+      if (resetError) throw resetError;
       
       // Mostrar vista de éxito
       recoverEmailShown.textContent = email;
@@ -1612,69 +1735,7 @@
 </script>
 
 
-<!-- MODAL RECUPERAR CONTRASEÑA -->
-<div class="modal-overlay" id="recoverModal">
-  <div class="modal">
-    <button type="button" class="modal-close" id="modalClose" aria-label="Cerrar">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-    
-    <!-- Vista 1: Solicitar email -->
-    <div class="modal-view" id="recoverView1">
-      <div class="modal-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-          <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
-        </svg>
-      </div>
-      <div class="modal-eyebrow">Recuperación segura</div>
-      <h3 class="modal-title">Recupera tu <span class="serif">contraseña.</span></h3>
-      <p class="modal-text">Te enviaremos un enlace de recuperación a tu correo electrónico. El enlace expira en 1 hora por seguridad.</p>
-      
-      <div class="modal-field">
-        <label for="recoverEmail">Correo electrónico</label>
-        <div class="input-wrap">
-          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-            <polyline points="22,6 12,13 2,6"/>
-          </svg>
-          <input type="email" id="recoverEmail" placeholder="tu@correo.com" autocomplete="email" required>
-        </div>
-      </div>
-      
-      <div class="modal-buttons">
-        <button type="button" class="modal-btn modal-btn-secondary" id="recoverCancel">Cancelar</button>
-        <button type="button" class="modal-btn modal-btn-primary" id="recoverSubmit">
-          Enviar enlace
-        </button>
-      </div>
-      
-      <div class="modal-help-link">
-        ¿Sigues con problemas? <a href="mailto:soporte@pypcloud.com">Contactar soporte</a>
-      </div>
-    </div>
-    
-    <!-- Vista 2: Éxito -->
-    <div class="modal-view" id="recoverView2" style="display: none;">
-      <div class="modal-success">
-        <div class="modal-success-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="20 6 9 17 4 12"/>
-          </svg>
-        </div>
-        <div class="modal-eyebrow">Enviado correctamente</div>
-        <h3 class="modal-title">Revisa tu <span class="serif">correo.</span></h3>
-        <p class="modal-text">Hemos enviado un enlace de recuperación a <strong id="recoverEmailShown" style="color: var(--primary);"></strong>. Revisa también tu carpeta de spam.</p>
-      </div>
-      <div class="modal-buttons">
-        <button type="button" class="modal-btn modal-btn-primary" id="recoverDone">Entendido</button>
-      </div>
-      <div class="modal-help-link">
-        ¿No te llegó? <a href="#" id="recoverRetry">Reenviar enlace</a>
-      </div>
-    </div>
-  </div>
-</div>
+
 
 </body>
 </html>

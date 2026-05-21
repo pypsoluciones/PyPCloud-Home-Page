@@ -17,6 +17,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 
+<!-- Supabase SDK para leer config dinámica -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
   :root {
     --primary: #143B62;
@@ -2971,49 +2974,129 @@
   // Año actual
   document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-  // ===== ANNOUNCEMENT BANNER =====
-  // Lee la config del banner (de localStorage / Supabase config en el futuro)
-  function loadBannerConfig() {
-    try {
-      const config = JSON.parse(localStorage.getItem('pypcloud_site_config') || '{}');
-      return {
-        active: config.bannerActive !== undefined ? config.bannerActive : true,
-        emoji: config.bannerEmoji || '🎉',
-        text: config.bannerText || 'Recuérdame, tu asistente personal potenciado con inteligencia artificial',
-        btnText: config.bannerBtnText || 'Probar',
-        btnUrl: config.bannerBtnUrl || 'https://recuerdame.pypcloud.com',
-        dismissible: config.bannerDismissible !== false
-      };
-    } catch (e) {
-      return { active: true, emoji: '🎉', text: 'Recuérdame, tu asistente personal potenciado con inteligencia artificial', btnText: 'Probar', btnUrl: 'https://recuerdame.pypcloud.com', dismissible: true };
+  // ===== CONFIGURACIÓN DINÁMICA DESDE SUPABASE =====
+  const SUPABASE_URL = 'https://gbmtdgoztuxtkmcanrck.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdibXRkZ296dHV4dGttY2FucmNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2MDk1MzYsImV4cCI6MjA5NDE4NTUzNn0.Fz1KAp6iXKv-etvT-ut5sYfvNPochSrU_XFAm_Ct7XE';
+  // Verificar que el SDK cargó (puede fallar en redes restrictivas)
+  if (typeof window.supabase === 'undefined') {
+    console.error('Supabase SDK no se cargó. Verifica tu conexión.');
+  }
+  const sb = (typeof window.supabase !== 'undefined') 
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) 
+    : null;
+
+  // Defaults (fallback si Supabase no responde)
+  const defaultConfig = {
+    bannerActive: true,
+    bannerEmoji: '🎉',
+    bannerText: 'Recuérdame, tu asistente personal potenciado con inteligencia artificial',
+    bannerBtnText: 'Probar',
+    bannerBtnUrl: 'https://recuerdame.pypcloud.com',
+    bannerDismissible: true,
+    brandName: 'PyPCloud',
+    brandSub: 'by PYP Soluciones',
+    emailMain: 'soporte@pypcloud.com',
+    whatsapp: '+58 414-028-5806',
+    socials: []
+  };
+
+  let siteConfig = { ...defaultConfig };
+
+  async function loadSiteConfig() {
+    if (!sb) {
+      // SDK no cargó: usar cache local o defaults
+      try {
+        const cache = localStorage.getItem('pypcloud_site_config_cache');
+        if (cache) siteConfig = { ...defaultConfig, ...JSON.parse(cache) };
+      } catch(e) {}
+      return false;
     }
+    try {
+      const { data, error } = await sb
+        .from('site_config')
+        .select('data')
+        .eq('id', 1)
+        .single();
+      if (!error && data?.data) {
+        siteConfig = { ...defaultConfig, ...data.data };
+        // Cache local para próxima carga
+        try { localStorage.setItem('pypcloud_site_config_cache', JSON.stringify(siteConfig)); } catch(e){}
+        return true;
+      }
+    } catch (e) {
+      console.warn('No se pudo cargar config desde Supabase:', e);
+    }
+    // Fallback: usar cache local
+    try {
+      const cache = localStorage.getItem('pypcloud_site_config_cache');
+      if (cache) siteConfig = { ...defaultConfig, ...JSON.parse(cache) };
+    } catch(e) {}
+    return false;
+  }
+
+  function loadBannerConfig() {
+    return {
+      active: siteConfig.bannerActive !== undefined ? siteConfig.bannerActive : true,
+      emoji: siteConfig.bannerEmoji || '🎉',
+      text: siteConfig.bannerText || defaultConfig.bannerText,
+      btnText: siteConfig.bannerBtnText || 'Probar',
+      btnUrl: siteConfig.bannerBtnUrl || 'https://recuerdame.pypcloud.com',
+      dismissible: siteConfig.bannerDismissible !== false
+    };
   }
 
   const bannerEl = document.getElementById('announceBanner');
-  const bannerConfig = loadBannerConfig();
   const dismissedKey = 'pypcloud_banner_dismissed';
   const wasDismissed = sessionStorage.getItem(dismissedKey) === '1';
 
-  if (bannerConfig.active && !wasDismissed) {
-    // Aplicar config
-    document.querySelector('.announce-emoji').textContent = bannerConfig.emoji;
-    document.getElementById('announceText').textContent = bannerConfig.text;
-    const btn = document.getElementById('announceBtn');
-    if (btn && bannerConfig.btnText && bannerConfig.btnUrl) {
-      btn.querySelector(':scope > :not(svg)') ? null : null;
-      // Cambiar texto del botón
-      const btnSvg = btn.querySelector('svg');
-      btn.innerHTML = '';
-      btn.appendChild(document.createTextNode(bannerConfig.btnText + ' '));
-      btn.appendChild(btnSvg);
-      btn.href = bannerConfig.btnUrl;
-    } else if (btn) {
-      btn.style.display = 'none';
+  // Cargar config y aplicar banner (asíncrono)
+  (async () => {
+    await loadSiteConfig();
+    const bannerConfig = loadBannerConfig();
+    applyBanner(bannerConfig, wasDismissed);
+    applyOtherConfig();
+  })();
+
+  // Función original para aplicar el banner (extraída en función)
+  function applyBanner(bannerConfig, wasDismissed) {
+
+    if (bannerConfig.active && !wasDismissed) {
+      // Aplicar config
+      document.querySelector('.announce-emoji').textContent = bannerConfig.emoji;
+      document.getElementById('announceText').textContent = bannerConfig.text;
+      const btn = document.getElementById('announceBtn');
+      if (btn && bannerConfig.btnText && bannerConfig.btnUrl) {
+        const btnSvg = btn.querySelector('svg');
+        btn.innerHTML = '';
+        btn.appendChild(document.createTextNode(bannerConfig.btnText + ' '));
+        if (btnSvg) btn.appendChild(btnSvg);
+        btn.href = bannerConfig.btnUrl;
+      } else if (btn) {
+        btn.style.display = 'none';
+      }
+      bannerEl.classList.remove('hidden');
+      document.body.classList.add('has-banner');
+    } else {
+      bannerEl.classList.add('hidden');
     }
-    bannerEl.classList.remove('hidden');
-    document.body.classList.add('has-banner');
-  } else {
-    bannerEl.classList.add('hidden');
+  } // end applyBanner
+
+  // Aplicar otros datos configurables (email, whatsapp, redes sociales)
+  function applyOtherConfig() {
+    // Actualizar links de email si están definidos
+    if (siteConfig.emailMain) {
+      document.querySelectorAll('a[href^="mailto:"]').forEach(a => {
+        a.href = 'mailto:' + siteConfig.emailMain;
+        if (a.textContent.includes('@')) a.textContent = siteConfig.emailMain;
+      });
+    }
+    // Actualizar links de WhatsApp
+    if (siteConfig.whatsapp) {
+      const cleanPhone = siteConfig.whatsapp.replace(/\D/g, '');
+      document.querySelectorAll('a[href*="wa.me"], a[href*="whatsapp"]').forEach(a => {
+        a.href = 'https://wa.me/' + cleanPhone;
+      });
+    }
   }
 
   // Cerrar banner (queda cerrado por la sesión)
