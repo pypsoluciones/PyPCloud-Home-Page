@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inspector de Supabase · PyPCloud</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #143B62;
+    --primary-dark: #0d2942;
+    --secondary: #E67E22;
+    --tertiary: #64748b;
+    --ink: #0a1828;
+    --paper: #fafaf7;
+    --paper-warm: #f5f3ed;
+    --line: #d4cfc1;
+    --line-soft: #e8e3d4;
+    --success: #2d7a3e;
+    --error: #dc2626;
+    --warning: #d97706;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Geist', -apple-system, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.5;
+    min-height: 100vh;
+    padding: 0;
+  }
+  .mono { font-family: 'Geist Mono', monospace; }
+
+  /* Header */
+  header {
+    background: var(--primary);
+    color: #fff;
+    padding: 20px 32px;
+    border-bottom: 4px solid var(--secondary);
+  }
+  .header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  h1 span { color: var(--secondary); }
+  .header-meta {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 28px 32px;
+  }
+
+  /* Connect card */
+  .connect-card {
+    background: #fff;
+    border: 1px solid var(--line-soft);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 24px;
+    box-shadow: 0 10px 30px -15px rgba(20, 59, 98, 0.15);
+  }
+  .connect-card h2 {
+    font-size: 16px;
+    margin-bottom: 16px;
+    color: var(--primary);
+  }
+  .field-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  input, textarea {
+    width: 100%;
+    padding: 11px 14px;
+    font-size: 13px;
+    font-family: 'Geist Mono', monospace;
+    background: var(--paper-warm);
+    border: 1.5px solid var(--line-soft);
+    border-radius: 8px;
+    color: var(--ink);
+    transition: all 0.15s;
+  }
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(20, 59, 98, 0.08);
+  }
+  textarea { resize: vertical; min-height: 70px; }
+
+  .btn {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+  }
+  .btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px -4px rgba(20, 59, 98, 0.3);
+  }
+  .btn-orange {
+    background: var(--secondary);
+  }
+  .btn-orange:hover {
+    background: #c66818;
+    box-shadow: 0 8px 20px -4px rgba(230, 126, 34, 0.3);
+  }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Status */
+  .status {
+    display: none;
+    padding: 14px 18px;
+    border-radius: 10px;
+    margin: 14px 0;
+    font-size: 13px;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .status.show { display: flex; }
+  .status.error {
+    background: #fef2f2;
+    border-left: 3px solid var(--error);
+    color: #991b1b;
+  }
+  .status.success {
+    background: #f0fdf4;
+    border-left: 3px solid var(--success);
+    color: #14532d;
+  }
+  .status.info {
+    background: rgba(20, 59, 98, 0.06);
+    border-left: 3px solid var(--primary);
+    color: var(--primary);
+  }
+
+  /* Sections */
+  .section {
+    background: #fff;
+    border: 1px solid var(--line-soft);
+    border-radius: 12px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .section-header {
+    background: var(--paper-warm);
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--line-soft);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-icon {
+    width: 28px;
+    height: 28px;
+    background: rgba(20, 59, 98, 0.08);
+    border-radius: 7px;
+    display: grid;
+    place-items: center;
+    color: var(--primary);
+  }
+  .section-icon svg { width: 14px; height: 14px; }
+  .section-count {
+    background: var(--primary);
+    color: #fff;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-weight: 600;
+  }
+  .section-body {
+    padding: 20px;
+  }
+  .section-body.empty {
+    color: var(--tertiary);
+    font-size: 13px;
+    font-style: italic;
+  }
+
+  /* Tables list */
+  .table-card {
+    background: var(--paper-warm);
+    border: 1px solid var(--line-soft);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .table-card:last-child { margin-bottom: 0; }
+  .table-card-header {
+    padding: 12px 16px;
+    background: #fff;
+    border-bottom: 1px solid var(--line-soft);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+  }
+  .table-card-name {
+    font-family: 'Geist Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary);
+  }
+  .table-card-meta {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .table-card-body {
+    padding: 14px 16px;
+    display: none;
+  }
+  .table-card.open .table-card-body { display: block; }
+
+  /* Schema table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  thead th {
+    background: var(--paper);
+    text-align: left;
+    padding: 8px 12px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--tertiary);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  tbody td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td.col-name {
+    font-family: 'Geist Mono', monospace;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  tbody td.col-type {
+    font-family: 'Geist Mono', monospace;
+    color: var(--primary);
+  }
+  .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-family: 'Geist Mono', monospace;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .pill-pk { background: rgba(230, 126, 34, 0.15); color: var(--secondary); }
+  .pill-fk { background: rgba(20, 59, 98, 0.1); color: var(--primary); }
+  .pill-required { background: rgba(220, 38, 38, 0.1); color: var(--error); }
+  .pill-null { background: rgba(100, 116, 139, 0.1); color: var(--tertiary); }
+  .pill-success { background: rgba(45, 122, 62, 0.1); color: var(--success); }
+  .pill-warning { background: rgba(217, 119, 6, 0.1); color: var(--warning); }
+
+  /* Users list */
+  .user-card {
+    background: var(--paper-warm);
+    border: 1px solid var(--line-soft);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .user-info {
+    flex: 1;
+    min-width: 200px;
+  }
+  .user-email {
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+  .user-id {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--tertiary);
+  }
+  .user-meta {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .user-meta-item {
+    background: #fff;
+    border: 1px solid var(--line-soft);
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .user-meta-label {
+    color: var(--tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 9px;
+  }
+  .user-meta-value strong {
+    color: var(--primary);
+  }
+
+  /* JSON viewer */
+  .json-block {
+    background: var(--ink);
+    color: #d4d4d8;
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    line-height: 1.6;
+    overflow-x: auto;
+    white-space: pre;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  .json-block .key { color: #93c5fd; }
+  .json-block .string { color: #86efac; }
+  .json-block .number { color: #fcd34d; }
+  .json-block .boolean { color: #f9a8d4; }
+  .json-block .null { color: #94a3b8; font-style: italic; }
+
+  /* Action bar */
+  .action-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .btn-secondary {
+    background: #fff;
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  .btn-secondary:hover {
+    background: var(--paper-warm);
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+
+  /* Loading */
+  .loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--tertiary);
+    font-size: 13px;
+    padding: 14px 0;
+  }
+  .spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(20, 59, 98, 0.1);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Code blocks */
+  .code-hint {
+    background: var(--paper-warm);
+    border: 1px solid var(--line-soft);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--tertiary);
+    margin-top: 8px;
+    overflow-x: auto;
+  }
+  .code-hint strong {
+    color: var(--secondary);
+  }
+  
+  /* Footer download */
+  .download-section {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 24px;
+  }
+  .download-section h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  .download-section p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 640px) {
+    main { padding: 18px 16px; }
+    .connect-card { padding: 20px; }
+    .header-inner { flex-direction: column; align-items: flex-start; }
+    .table-card-header { flex-direction: column; align-items: flex-start; gap: 6px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <h1>🔍 Inspector de <span>Supabase</span></h1>
+    <div class="header-meta">SOLO LECTURA · PyPCloud Admin Tool</div>
+  </div>
+</header>
+
+<main>
+  <!-- Conexión -->
+  <div class="connect-card">
+    <h2>🔌 Conectar a tu proyecto Supabase</h2>
+    <div class="field-row">
+      <label>Project URL</label>
+      <input type="url" id="supabaseUrl" value="https://gbmtdgoztuxtkmcanrck.supabase.co" placeholder="https://xxxxx.supabase.co">
+    </div>
+    <div class="field-row">
+      <label>Anon Key (eyJ...)</label>
+      <textarea id="supabaseKey" placeholder="eyJhbGciOiJIUzI1NiIs..." rows="3">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdibXRkZ296dHV4dGttY2FucmNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2MDk1MzYsImV4cCI6MjA5NDE4NTUzNn0.Fz1KAp6iXKv-etvT-ut5sYfvNPochSrU_XFAm_Ct7XE</textarea>
+    </div>
+    <div class="field-row">
+      <label>Email del usuario admin (para login)</label>
+      <input type="email" id="adminEmail" placeholder="lesme02@gmail.com" value="lesme02@gmail.com">
+    </div>
+    <div class="field-row">
+      <label>Contraseña del usuario admin</label>
+      <input type="password" id="adminPwd" placeholder="Tu contraseña de Supabase">
+    </div>
+    
+    <div class="status" id="status"></div>
+
+    <div class="action-bar" style="margin-top: 16px; margin-bottom: 0;">
+      <button class="btn" id="btnConnect">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        Conectar e inspeccionar
+      </button>
+      <button class="btn btn-secondary" id="btnExplore" disabled>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Re-explorar
+      </button>
+    </div>
+  </div>
+
+  <div id="results" style="display: none;">
+    
+    <!-- Usuario actual y rol -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <div class="section-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          Tu usuario y rol
+        </div>
+        <div id="userRoleStatus"></div>
+      </div>
+      <div class="section-body" id="currentUserBody">
+        <div class="loading"><div class="spinner"></div> Verificando...</div>
+      </div>
+    </div>
+
+    <!-- Tablas -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <div class="section-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+          </div>
+          Tablas en tu base de datos
+        </div>
+        <span class="section-count" id="tableCount">—</span>
+      </div>
+      <div class="section-body" id="tablesBody">
+        <div class="loading"><div class="spinner"></div> Cargando tablas...</div>
+      </div>
+    </div>
+
+    <!-- Usuarios -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <div class="section-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          Otros usuarios visibles
+        </div>
+        <span class="section-count" id="usersCount">—</span>
+      </div>
+      <div class="section-body" id="usersBody">
+        <div class="loading"><div class="spinner"></div> Buscando usuarios...</div>
+      </div>
+    </div>
+
+    <!-- Política de admin detectada -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <div class="section-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          Detección de estructura admin
+        </div>
+      </div>
+      <div class="section-body" id="adminDetection">
+        <div class="loading"><div class="spinner"></div> Analizando estructura...</div>
+      </div>
+    </div>
+
+    <!-- Diagnóstico final -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <div class="section-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          📋 Diagnóstico y recomendación
+        </div>
+      </div>
+      <div class="section-body" id="diagnosis">
+        <div class="loading"><div class="spinner"></div></div>
+      </div>
+    </div>
+
+    <!-- Export -->
+    <div class="download-section">
+      <h3>📤 Exportar este análisis</h3>
+      <p>Descarga un reporte JSON con todos los datos para compartirlo o referenciarlo después.</p>
+      <button class="btn btn-orange" id="btnExport">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Descargar reporte JSON
+      </button>
+    </div>
+
+  </div>
+</main>
+
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  let supabase = null;
+  let report = {};
+
+  const $ = (id) => document.getElementById(id);
+
+  function showStatus(msg, type = 'info') {
+    const s = $('status');
+    s.className = `status show ${type}`;
+    s.innerHTML = `<span>${msg}</span>`;
+  }
+  function hideStatus() { $('status').className = 'status'; }
+
+  function syntaxHighlight(json) {
+    if (typeof json !== 'string') json = JSON.stringify(json, null, 2);
+    return json.replace(/("(\\u[a-fA-F0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)/g, function (match) {
+      let cls = 'number';
+      if (/^"/.test(match)) {
+        cls = /:$/.test(match) ? 'key' : 'string';
+      } else if (/true|false/.test(match)) {
+        cls = 'boolean';
+      } else if (/null/.test(match)) {
+        cls = 'null';
+      }
+      return '<span class="' + cls + '">' + match + '</span>';
+    });
+  }
+
+  // ========================================
+  // CONECTAR E INSPECCIONAR
+  // ========================================
+  $('btnConnect').addEventListener('click', async () => {
+    const url = $('supabaseUrl').value.trim();
+    const key = $('supabaseKey').value.trim();
+    const email = $('adminEmail').value.trim();
+    const pwd = $('adminPwd').value;
+
+    if (!url || !key || !email || !pwd) {
+      showStatus('⚠️ Completa todos los campos para conectar', 'error');
+      return;
+    }
+
+    $('btnConnect').disabled = true;
+    showStatus('🔌 Conectando a Supabase...', 'info');
+
+    try {
+      // Crear cliente
+      supabase = window.supabase.createClient(url, key);
+
+      // Login
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: pwd
+      });
+
+      if (authError) {
+        showStatus(`❌ Error de login: ${authError.message}`, 'error');
+        $('btnConnect').disabled = false;
+        return;
+      }
+
+      report.user = authData.user;
+      report.session = { 
+        access_token: authData.session.access_token.substring(0, 20) + '...', 
+        expires_at: authData.session.expires_at 
+      };
+
+      showStatus(`✅ Conectado como ${authData.user.email}`, 'success');
+      $('results').style.display = 'block';
+      $('btnConnect').disabled = false;
+      $('btnExplore').disabled = false;
+
+      // Empezar exploración
+      await exploreAll();
+
+    } catch (err) {
+      showStatus(`❌ Error: ${err.message}`, 'error');
+      $('btnConnect').disabled = false;
+    }
+  });
+
+  $('btnExplore').addEventListener('click', () => exploreAll());
+
+  // ========================================
+  // EXPLORAR TODO
+  // ========================================
+  async function exploreAll() {
+    await showCurrentUser();
+    await listTables();
+    await listUsers();
+    await detectAdmin();
+    await generateDiagnosis();
+  }
+
+  // ========================================
+  // 1. USUARIO ACTUAL Y SU ROL
+  // ========================================
+  async function showCurrentUser() {
+    const body = $('currentUserBody');
+    body.innerHTML = '<div class="loading"><div class="spinner"></div> Verificando...</div>';
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      report.currentUser = user;
+
+      // Detectar rol en metadata
+      const appMeta = user.app_metadata || {};
+      const userMeta = user.user_metadata || {};
+      const detectedRole = appMeta.role || userMeta.role || appMeta.user_role || userMeta.user_role || null;
+      const isAdminInMeta = (appMeta.role === 'admin' || userMeta.role === 'admin' || appMeta.is_admin === true || userMeta.is_admin === true);
+
+      let roleHtml = '';
+      if (isAdminInMeta) {
+        roleHtml = '<span class="pill pill-success">✓ Admin en metadata</span>';
+        $('userRoleStatus').innerHTML = '<span class="pill pill-success">ADMIN DETECTADO</span>';
+      } else if (detectedRole) {
+        roleHtml = `<span class="pill pill-warning">Role: ${detectedRole}</span>`;
+        $('userRoleStatus').innerHTML = '<span class="pill pill-warning">ROL NO-ADMIN</span>';
+      } else {
+        roleHtml = '<span class="pill pill-null">Sin rol asignado</span>';
+        $('userRoleStatus').innerHTML = '<span class="pill pill-null">SIN ROL</span>';
+      }
+
+      body.innerHTML = `
+        <div class="user-card">
+          <div class="user-info">
+            <div class="user-email">${user.email}</div>
+            <div class="user-id">${user.id}</div>
+            <div style="margin-top: 8px;">${roleHtml}</div>
+          </div>
+          <div class="user-meta">
+            <div class="user-meta-item">
+              <span class="user-meta-label">Confirmado</span>
+              <span class="user-meta-value">${user.email_confirmed_at ? '✓ Sí' : '✗ No'}</span>
+            </div>
+            <div class="user-meta-item">
+              <span class="user-meta-label">Creado</span>
+              <span class="user-meta-value">${new Date(user.created_at).toLocaleDateString('es-VE')}</span>
+            </div>
+            <div class="user-meta-item">
+              <span class="user-meta-label">Último login</span>
+              <span class="user-meta-value">${user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString('es-VE') : 'N/A'}</span>
+            </div>
+          </div>
+        </div>
+        
+        <h4 style="font-size: 12px; color: var(--tertiary); text-transform: uppercase; letter-spacing: 0.1em; margin: 18px 0 8px;">📦 App Metadata (rol del sistema)</h4>
+        <div class="json-block">${syntaxHighlight(appMeta)}</div>
+        
+        <h4 style="font-size: 12px; color: var(--tertiary); text-transform: uppercase; letter-spacing: 0.1em; margin: 18px 0 8px;">👤 User Metadata (datos del perfil)</h4>
+        <div class="json-block">${syntaxHighlight(userMeta)}</div>
+      `;
+    } catch (err) {
+      body.innerHTML = `<div class="status error show">❌ Error: ${err.message}</div>`;
+    }
+  }
+
+  // ========================================
+  // 2. LISTAR TABLAS
+  // ========================================
+  async function listTables() {
+    const body = $('tablesBody');
+    body.innerHTML = '<div class="loading"><div class="spinner"></div> Cargando tablas...</div>';
+
+    // Lista de nombres comunes a probar (no podemos usar information_schema directamente desde anon)
+    const commonTables = [
+      'profiles', 'users', 'user_profiles', 'roles', 'user_roles',
+      'site_config', 'app_config', 'settings',
+      'recordatorios', 'reminders', 'tasks', 'todos',
+      'appointments', 'citas', 'agenda',
+      'debts', 'deudas', 'cobros',
+      'accounts_payable', 'cuentas_por_pagar', 'gastos',
+      'shopping_items', 'compras', 'productos',
+      'personal_notes', 'notas', 'notes',
+      'contacts', 'contactos', 'clientes',
+      'messages', 'mensajes', 'chat',
+      'payment_history', 'pagos', 'transactions',
+      'subscriptions', 'suscripciones',
+      'user_subscriptions',
+      'organizations', 'empresas', 'tenants',
+      'audit_log', 'logs', 'activity',
+      'invoices', 'facturas',
+      'products', 'inventory', 'inventario',
+      'categories', 'categorias',
+      'orders', 'pedidos',
+      'customers',
+      'employees', 'empleados',
+      'admins', 'administrators',
+      'permissions', 'permisos',
+      'sessions',
+      'banners', 'announcements'
+    ];
+
+    const found = [];
+    const tasks = commonTables.map(async (table) => {
+      try {
+        const { data, error, count } = await supabase
+          .from(table)
+          .select('*', { count: 'exact', head: false })
+          .limit(1);
+        if (!error) {
+          found.push({
+            name: table,
+            count: count || 0,
+            sample: data && data.length > 0 ? data[0] : null,
+            columns: data && data.length > 0 ? Object.keys(data[0]) : []
+          });
+        }
+      } catch (e) { /* tabla no existe o sin permiso */ }
+    });
+
+    await Promise.all(tasks);
+    report.tables = found;
+    $('tableCount').textContent = found.length;
+
+    if (found.length === 0) {
+      body.innerHTML = '<p style="color: var(--tertiary); font-size: 13px;">No se encontraron tablas accesibles con la anon key. Si tienes tablas con RLS estricto, podrían existir pero no ser visibles.</p>';
+      return;
+    }
+
+    body.innerHTML = found.sort((a,b) => b.count - a.count).map(t => `
+      <div class="table-card">
+        <div class="table-card-header" onclick="this.parentElement.classList.toggle('open')">
+          <div class="table-card-name">📊 ${t.name}</div>
+          <div class="table-card-meta">${t.count} fila${t.count !== 1 ? 's' : ''} · ${t.columns.length} columna${t.columns.length !== 1 ? 's' : ''}</div>
+        </div>
+        <div class="table-card-body">
+          ${t.columns.length > 0 ? `
+            <table>
+              <thead>
+                <tr><th>Columna</th><th>Tipo (inferido)</th><th>Ejemplo</th></tr>
+              </thead>
+              <tbody>
+                ${t.columns.map(col => `
+                  <tr>
+                    <td class="col-name">${col}${col === 'id' || col.endsWith('_id') ? ' <span class="pill pill-pk">PK</span>' : ''}</td>
+                    <td class="col-type">${inferType(t.sample[col])}</td>
+                    <td style="font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--tertiary); max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${formatSample(t.sample[col])}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          ` : '<p style="color: var(--tertiary); font-size: 12px;">Tabla vacía o sin permiso de lectura</p>'}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function inferType(val) {
+    if (val === null || val === undefined) return 'null/desconocido';
+    if (typeof val === 'string') {
+      if (/^\d{4}-\d{2}-\d{2}/.test(val)) return 'timestamp';
+      if (val.length === 36 && val.includes('-')) return 'uuid';
+      return 'text';
+    }
+    if (typeof val === 'number') return Number.isInteger(val) ? 'integer' : 'numeric';
+    if (typeof val === 'boolean') return 'boolean';
+    if (Array.isArray(val)) return 'array';
+    if (typeof val === 'object') return 'jsonb';
+    return typeof val;
+  }
+  function formatSample(val) {
+    if (val === null || val === undefined) return '<em>null</em>';
+    if (typeof val === 'object') return JSON.stringify(val).substring(0, 60) + '...';
+    return String(val).substring(0, 60);
+  }
+
+  // ========================================
+  // 3. LISTAR USUARIOS (visible si hay tabla profiles)
+  // ========================================
+  async function listUsers() {
+    const body = $('usersBody');
+    body.innerHTML = '<div class="loading"><div class="spinner"></div> Buscando usuarios...</div>';
+
+    // Intentar leer de tabla profiles primero
+    const tablesToTry = ['profiles', 'user_profiles', 'users'];
+    let users = [];
+    let sourceTable = null;
+
+    for (const t of tablesToTry) {
+      try {
+        const { data, error } = await supabase.from(t).select('*').limit(20);
+        if (!error && data) {
+          users = data;
+          sourceTable = t;
+          break;
+        }
+      } catch (e) {}
+    }
+
+    report.otherUsers = { sourceTable, count: users.length };
+    $('usersCount').textContent = users.length;
+
+    if (users.length === 0) {
+      body.innerHTML = '<p style="color: var(--tertiary); font-size: 13px;">No se encontró tabla de perfiles accesible (profiles, user_profiles, users). Esto es normal si tu app no usa tabla de perfiles separada.</p>';
+      return;
+    }
+
+    body.innerHTML = `
+      <p style="color: var(--tertiary); font-size: 12px; margin-bottom: 14px;">Fuente: tabla <code style="background: var(--paper-warm); padding: 1px 6px; border-radius: 3px; font-family: monospace;">${sourceTable}</code></p>
+      ${users.map(u => {
+        const roleField = u.role || u.user_role || u.tipo || u.tipo_usuario || u.is_admin;
+        const emailField = u.email || u.correo || u.username;
+        const nameField = u.full_name || u.name || u.nombre || u.display_name;
+        return `
+          <div class="user-card">
+            <div class="user-info">
+              <div class="user-email">${emailField || nameField || u.id || '(sin nombre)'}</div>
+              ${u.id ? `<div class="user-id">${u.id}</div>` : ''}
+            </div>
+            <div class="user-meta">
+              ${roleField ? `<div class="user-meta-item"><span class="user-meta-label">Role</span><span class="user-meta-value"><strong>${roleField}</strong></span></div>` : ''}
+              ${u.created_at ? `<div class="user-meta-item"><span class="user-meta-label">Creado</span><span class="user-meta-value">${new Date(u.created_at).toLocaleDateString('es-VE')}</span></div>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('')}
+    `;
+  }
+
+  // ========================================
+  // 4. DETECCIÓN DE ESTRUCTURA ADMIN
+  // ========================================
+  async function detectAdmin() {
+    const body = $('adminDetection');
+    body.innerHTML = '<div class="loading"><div class="spinner"></div> Analizando estructura...</div>';
+
+    const checks = [];
+
+    // Check 1: ¿hay tabla profiles?
+    const profileTables = report.tables.filter(t => 
+      ['profiles', 'user_profiles', 'users'].includes(t.name)
+    );
+    if (profileTables.length > 0) {
+      const tp = profileTables[0];
+      const hasRole = tp.columns.some(c => 
+        ['role', 'user_role', 'tipo', 'tipo_usuario', 'is_admin', 'rol'].includes(c)
+      );
+      checks.push({
+        ok: hasRole,
+        text: `Tabla <code>${tp.name}</code> ${hasRole ? '✓ tiene' : '✗ no tiene'} columna de rol`,
+        detail: `Columnas: ${tp.columns.join(', ')}`
+      });
+    } else {
+      checks.push({
+        ok: false,
+        text: '✗ No hay tabla profiles/users con perfiles de usuario',
+        detail: 'Sin esta tabla, los roles deben estar en metadata de auth.users'
+      });
+    }
+
+    // Check 2: ¿hay rol en metadata?
+    const u = report.currentUser;
+    const inAppMeta = u.app_metadata?.role || u.app_metadata?.user_role || u.app_metadata?.is_admin;
+    const inUserMeta = u.user_metadata?.role || u.user_metadata?.user_role || u.user_metadata?.is_admin;
+    if (inAppMeta) {
+      checks.push({
+        ok: true,
+        text: `✓ Rol detectado en <code>app_metadata</code>: <strong>${inAppMeta}</strong>`,
+        detail: 'app_metadata es de solo lectura desde frontend (más seguro)'
+      });
+    } else if (inUserMeta) {
+      checks.push({
+        ok: true,
+        text: `✓ Rol detectado en <code>user_metadata</code>: <strong>${inUserMeta}</strong>`,
+        detail: '⚠️ user_metadata puede ser editado por el propio usuario, menos seguro'
+      });
+    } else {
+      checks.push({
+        ok: false,
+        text: '✗ No hay rol en metadata del usuario',
+        detail: 'Sin esto, cualquier usuario autenticado entraría al admin'
+      });
+    }
+
+    // Check 3: ¿tabla site_config existe?
+    const hasSiteConfig = report.tables.some(t => 
+      ['site_config', 'settings', 'app_config'].includes(t.name)
+    );
+    checks.push({
+      ok: hasSiteConfig,
+      text: hasSiteConfig ? '✓ Tabla de configuración del sitio existe' : '✗ No existe tabla site_config',
+      detail: hasSiteConfig ? 'Lista para guardar config del sitio' : 'Habría que crearla con SQL'
+    });
+
+    // Check 4: ¿hay tabla de suscripciones?
+    const hasSubs = report.tables.some(t => 
+      ['subscriptions', 'user_subscriptions', 'suscripciones'].includes(t.name)
+    );
+    if (hasSubs) {
+      checks.push({
+        ok: true,
+        text: '✓ Tabla de suscripciones detectada',
+        detail: 'Existe sistema de planes/suscripciones'
+      });
+    }
+
+    report.adminChecks = checks;
+
+    body.innerHTML = `
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        ${checks.map(c => `
+          <div style="display: flex; gap: 12px; padding: 12px 16px; background: var(--paper-warm); border-radius: 8px; border-left: 3px solid ${c.ok ? 'var(--success)' : 'var(--warning)'};">
+            <div style="font-size: 16px;">${c.ok ? '✅' : '⚠️'}</div>
+            <div>
+              <div style="font-size: 13px; color: var(--ink); margin-bottom: 4px;">${c.text}</div>
+              <div style="font-size: 11px; color: var(--tertiary);">${c.detail}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  // ========================================
+  // 5. DIAGNÓSTICO
+  // ========================================
+  async function generateDiagnosis() {
+    const body = $('diagnosis');
+    const u = report.currentUser;
+    const tables = report.tables;
+    
+    const hasProfilesWithRole = tables.find(t => 
+      ['profiles', 'user_profiles', 'users'].includes(t.name) && 
+      t.columns.some(c => ['role', 'user_role', 'tipo', 'rol'].includes(c))
+    );
+    const hasRoleInMeta = (u.app_metadata?.role === 'admin' || u.user_metadata?.role === 'admin');
+    const hasSiteConfig = tables.find(t => ['site_config', 'settings'].includes(t.name));
+
+    let recommendation = '';
+    let setupSteps = [];
+
+    if (hasProfilesWithRole && hasRoleInMeta) {
+      recommendation = '🎉 <strong>Tu base de datos ya está perfectamente preparada.</strong> Tienes tabla de perfiles con roles y el usuario actual está marcado como admin en metadata. Solo falta conectar el frontend.';
+    } else if (hasProfilesWithRole) {
+      recommendation = `✅ <strong>Tienes tabla <code>${hasProfilesWithRole.name}</code> con columna de rol.</strong> Usaremos esa estructura existente. Solo verifica que tu usuario tenga role='admin' en esa tabla.`;
+      setupSteps.push(`Verifica en Supabase Dashboard que tu fila en <code>${hasProfilesWithRole.name}</code> tenga el rol correcto`);
+    } else if (hasRoleInMeta) {
+      recommendation = '✅ <strong>Tu usuario ya tiene rol admin en metadata.</strong> Podemos usar eso directamente sin necesidad de tabla profiles.';
+    } else {
+      recommendation = '⚠️ <strong>Tu usuario aún NO tiene rol admin asignado.</strong> Hay que asignárselo antes de avanzar.';
+      setupSteps.push('Asignar rol admin a tu usuario (te paso el SQL)');
+    }
+
+    if (!hasSiteConfig) {
+      setupSteps.push('Crear tabla <code>site_config</code> para guardar configuración del sitio');
+    }
+
+    let html = `
+      <div style="background: var(--paper-warm); padding: 18px; border-radius: 10px; border-left: 4px solid var(--primary); margin-bottom: 16px;">
+        <div style="font-size: 14px; line-height: 1.6;">${recommendation}</div>
+      </div>
+    `;
+
+    if (setupSteps.length > 0) {
+      html += `
+        <h4 style="font-size: 12px; color: var(--tertiary); text-transform: uppercase; letter-spacing: 0.1em; margin: 16px 0 10px;">📝 Pasos pendientes</h4>
+        <ol style="padding-left: 24px; font-size: 13px; line-height: 1.7;">
+          ${setupSteps.map(s => `<li style="margin-bottom: 6px;">${s}</li>`).join('')}
+        </ol>
+      `;
+    }
+
+    // Resumen para pasar a Claude
+    html += `
+      <h4 style="font-size: 12px; color: var(--tertiary); text-transform: uppercase; letter-spacing: 0.1em; margin: 20px 0 10px;">📋 Resumen para compartir</h4>
+      <div class="code-hint">
+<strong>Tablas detectadas:</strong> ${tables.map(t => t.name).join(', ') || 'ninguna'}
+<strong>Tabla perfiles con rol:</strong> ${hasProfilesWithRole ? `${hasProfilesWithRole.name} (cols: ${hasProfilesWithRole.columns.filter(c=>['role','user_role','tipo','rol','is_admin'].includes(c)).join(',')})` : 'no'}
+<strong>Rol en metadata:</strong> ${hasRoleInMeta ? 'sí (admin)' : 'no'}
+<strong>app_metadata:</strong> ${JSON.stringify(u.app_metadata)}
+<strong>user_metadata:</strong> ${JSON.stringify(u.user_metadata)}
+<strong>Tabla site_config:</strong> ${hasSiteConfig ? 'sí, ya existe' : 'no, hay que crearla'}
+      </div>
+      
+      <p style="color: var(--tertiary); font-size: 12px; margin-top: 14px; line-height: 1.6;">
+        💡 <strong>Copia el resumen de arriba y pásamelo</strong> para que ajuste el código del admin y login a tu estructura exacta sin romper nada.
+      </p>
+    `;
+
+    body.innerHTML = html;
+  }
+
+  // ========================================
+  // EXPORT
+  // ========================================
+  $('btnExport').addEventListener('click', () => {
+    const data = JSON.stringify(report, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `supabase-report-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // Auto-focus en contraseña
+  setTimeout(() => $('adminPwd').focus(), 200);
+</script>
+
+</body>
+</html>
