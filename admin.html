@@ -1202,6 +1202,243 @@
     }
     .social-row select { grid-column: 1 / -1; }
   }
+
+  /* === DASHBOARD === */
+  .dash-loading {
+    text-align: center;
+    padding: 60px 20px;
+  }
+  .dash-content { animation: fadeIn 0.3s; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  
+  /* KPI Cards */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .kpi-card {
+    background: #fff;
+    border: 1px solid var(--line-soft);
+    border-radius: 12px;
+    padding: 20px 22px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s;
+  }
+  .kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px -8px rgba(20,59,98,0.15);
+    border-color: var(--primary);
+  }
+  .kpi-card.kpi-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff;
+    border-color: var(--primary);
+  }
+  .kpi-card.kpi-primary .kpi-label,
+  .kpi-card.kpi-primary .kpi-meta { color: rgba(255,255,255,0.7); }
+  .kpi-icon {
+    width: 36px;
+    height: 36px;
+    background: rgba(20, 59, 98, 0.08);
+    color: var(--primary);
+    border-radius: 9px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 14px;
+  }
+  .kpi-icon svg { width: 18px; height: 18px; }
+  .kpi-primary .kpi-icon {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+  }
+  .kpi-label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--tertiary);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .kpi-value {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  .kpi-meta {
+    font-size: 11px;
+    color: var(--tertiary);
+  }
+  .kpi-meta.up { color: var(--success); }
+  .kpi-meta.down { color: var(--error); }
+  
+  /* Sections */
+  .dash-section {
+    background: #fff;
+    border: 1px solid var(--line-soft);
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin-bottom: 20px;
+  }
+  .dash-section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    letter-spacing: -0.005em;
+  }
+  .dash-section-meta {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--tertiary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  
+  /* Activity grid */
+  .activity-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .activity-card {
+    background: var(--paper-warm);
+    border: 1px solid var(--line-soft);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .activity-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+  .activity-icon svg { width: 18px; height: 18px; }
+  .activity-content { flex: 1; min-width: 0; }
+  .activity-label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--tertiary);
+    margin-bottom: 2px;
+  }
+  .activity-value {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  
+  /* Grid de 2 columnas */
+  .dash-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  
+  /* Tablas */
+  .dash-table-wrap {
+    overflow-x: auto;
+  }
+  .dash-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .dash-table thead th {
+    text-align: left;
+    padding: 10px 14px;
+    background: var(--paper-warm);
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--tertiary);
+    font-weight: 600;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .dash-table tbody td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line-soft);
+    color: var(--ink);
+  }
+  .dash-table tbody tr:last-child td { border-bottom: none; }
+  .dash-table tbody tr:hover td { background: rgba(20, 59, 98, 0.02); }
+  .dash-table .user-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .dash-table .user-avatar {
+    width: 28px;
+    height: 28px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+  .dash-table .user-name {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .dash-table .user-email {
+    font-size: 11px;
+    color: var(--tertiary);
+  }
+  .pill-admin {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-family: 'Geist Mono', monospace;
+    font-weight: 600;
+    background: rgba(230, 126, 34, 0.12);
+    color: var(--secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .pill-user {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-family: 'Geist Mono', monospace;
+    font-weight: 600;
+    background: rgba(100, 116, 139, 0.12);
+    color: var(--tertiary);
+  }
+  
+  @media (max-width: 1024px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .activity-grid { grid-template-columns: repeat(2, 1fr); }
+    .dash-grid-2 { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .kpi-grid { grid-template-columns: 1fr; }
+    .activity-grid { grid-template-columns: 1fr; }
+    .kpi-value { font-size: 28px; }
+  }
+
 </style>
 </head>
 <body>
@@ -1235,7 +1472,7 @@
         <button class="sidebar-link" data-view="dashboard">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
           Dashboard
-          <span class="badge">Pronto</span>
+          
         </button>
         <button class="sidebar-link active" data-view="configuracion">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -2037,15 +2274,167 @@
         </div>
       </div>
 
-      <!-- VIEW: DASHBOARD (placeholder) -->
+      <!-- VIEW: DASHBOARD (datos reales) -->
       <div class="view" id="view-dashboard" style="display: none;">
-        <div class="empty-state">
-          <div class="empty-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        <!-- Loading state -->
+        <div class="dash-loading" id="dashLoading">
+          <div class="auth-spinner"></div>
+          <p style="color: var(--tertiary); font-size: 14px; margin-top: 12px;">Cargando métricas...</p>
+        </div>
+        
+        <!-- Dashboard content -->
+        <div class="dash-content" id="dashContent" style="display: none;">
+          
+          <!-- KPIs Grandes -->
+          <div class="kpi-grid">
+            <div class="kpi-card kpi-primary">
+              <div class="kpi-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
+              <div class="kpi-label">SUSCRIPCIONES ACTIVAS</div>
+              <div class="kpi-value" id="kpiSubs">—</div>
+              <div class="kpi-meta" id="kpiSubsMeta">cargando...</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </div>
+              <div class="kpi-label">TOTAL USUARIOS</div>
+              <div class="kpi-value" id="kpiUsers">—</div>
+              <div class="kpi-meta" id="kpiUsersMeta">cargando...</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              </div>
+              <div class="kpi-label">NUEVOS ESTE MES</div>
+              <div class="kpi-value" id="kpiNew">—</div>
+              <div class="kpi-meta" id="kpiNewMeta">vs mes anterior</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              </div>
+              <div class="kpi-label">ACTIVOS (7 DÍAS)</div>
+              <div class="kpi-value" id="kpiActive">—</div>
+              <div class="kpi-meta" id="kpiActiveMeta">crearon algo recientemente</div>
+            </div>
           </div>
-          <div class="empty-title">Dashboard</div>
-          <div class="empty-text">Aquí verás métricas clave del sitio: visitas, registros, conversiones y más.</div>
-          <div class="empty-badge">En desarrollo</div>
+
+          <!-- Sección de actividad del producto -->
+          <div class="dash-section">
+            <h3 class="dash-section-title">Actividad del producto</h3>
+            <div class="activity-grid">
+              <div class="activity-card">
+                <div class="activity-icon" style="background: rgba(20, 59, 98, 0.1); color: var(--primary);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-label">Recordatorios</div>
+                  <div class="activity-value" id="actReminders">—</div>
+                </div>
+              </div>
+              <div class="activity-card">
+                <div class="activity-icon" style="background: rgba(230, 126, 34, 0.1); color: var(--secondary);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-label">Citas agendadas</div>
+                  <div class="activity-value" id="actAppointments">—</div>
+                </div>
+              </div>
+              <div class="activity-card">
+                <div class="activity-icon" style="background: rgba(45, 122, 62, 0.1); color: var(--success);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-label">Cuentas por cobrar</div>
+                  <div class="activity-value" id="actDebts">—</div>
+                </div>
+              </div>
+              <div class="activity-card">
+                <div class="activity-icon" style="background: rgba(220, 38, 38, 0.1); color: var(--error);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><path d="M18 12a2 2 0 0 0-2 2c0 1.1.9 2 2 2h4v-4h-4z"/></svg>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-label">Cuentas por pagar</div>
+                  <div class="activity-value" id="actPayable">—</div>
+                </div>
+              </div>
+              <div class="activity-card">
+                <div class="activity-icon" style="background: rgba(20, 59, 98, 0.1); color: var(--primary);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-label">Notas creadas</div>
+                  <div class="activity-value" id="actNotes">—</div>
+                </div>
+              </div>
+              <div class="activity-card">
+                <div class="activity-icon" style="background: rgba(230, 126, 34, 0.1); color: var(--secondary);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-label">Items de compra</div>
+                  <div class="activity-value" id="actShopping">—</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grid de 2 columnas: últimos usuarios + suscripciones -->
+          <div class="dash-grid-2">
+            <div class="dash-section">
+              <h3 class="dash-section-title">
+                Últimos usuarios registrados
+                <span class="dash-section-meta" id="usersTotal"></span>
+              </h3>
+              <div class="dash-table-wrap">
+                <table class="dash-table" id="recentUsersTable">
+                  <thead>
+                    <tr>
+                      <th>Usuario</th>
+                      <th>Registrado</th>
+                      <th>Rol</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recentUsersBody">
+                    <tr><td colspan="3" style="text-align: center; color: var(--tertiary);">Cargando...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+            <div class="dash-section">
+              <h3 class="dash-section-title">
+                Suscripciones activas
+                <span class="dash-section-meta" id="subsTotal"></span>
+              </h3>
+              <div class="dash-table-wrap">
+                <table class="dash-table" id="subsTable">
+                  <thead>
+                    <tr>
+                      <th>Plan</th>
+                      <th>Cantidad</th>
+                      <th>%</th>
+                    </tr>
+                  </thead>
+                  <tbody id="subsBody">
+                    <tr><td colspan="3" style="text-align: center; color: var(--tertiary);">Cargando...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botón refrescar -->
+          <div style="text-align: center; margin-top: 24px;">
+            <button class="topbar-btn topbar-btn-primary" id="dashRefreshBtn" style="background: var(--primary); color: #fff; border-color: var(--primary);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              <span>Refrescar métricas</span>
+            </button>
+          </div>
+          
         </div>
       </div>
 
@@ -2771,6 +3160,11 @@
       const target = document.getElementById('view-' + view);
       if (target) target.style.display = 'block';
       
+      // Cargar datos del dashboard cuando se activa
+      if (view === 'dashboard' && typeof loadDashboard === 'function') {
+        loadDashboard();
+      }
+      
       // Actualizar título
       const titles = {
         dashboard: 'Dashboard',
@@ -3038,6 +3432,245 @@
       showImagePreview(bannerHeroMobileField, config.bannerHeroImageMobile);
     }
   }
+
+
+  // ============================================
+  // === DASHBOARD: CARGAR MÉTRICAS REALES ===
+  // ============================================
+  
+  // Formatea número con coma de miles
+  function fmt(n) {
+    if (n === null || n === undefined) return '—';
+    return n.toLocaleString('es-VE');
+  }
+  
+  // Genera iniciales del nombre
+  function initials(name) {
+    if (!name) return '?';
+    const parts = name.trim().split(/\s+/);
+    return (parts[0][0] + (parts[1]?.[0] || '')).toUpperCase();
+  }
+  
+  // Formato fecha relativa (ej: "hace 3 días")
+  function timeAgo(dateStr) {
+    if (!dateStr) return '—';
+    const date = new Date(dateStr);
+    const diff = Date.now() - date.getTime();
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    if (days === 0) return 'Hoy';
+    if (days === 1) return 'Ayer';
+    if (days < 7) return `hace ${days} días`;
+    if (days < 30) return `hace ${Math.floor(days/7)} semanas`;
+    if (days < 365) return `hace ${Math.floor(days/30)} meses`;
+    return `hace ${Math.floor(days/365)} años`;
+  }
+  
+  // Conteo de filas en una tabla (con manejo de error)
+  async function countTable(tableName) {
+    if (!sb) return 0;
+    try {
+      const { count, error } = await sb.from(tableName).select('*', { count: 'exact', head: true });
+      if (error) {
+        console.warn(`No se pudo contar ${tableName}:`, error.message);
+        return 0;
+      }
+      return count || 0;
+    } catch (e) {
+      return 0;
+    }
+  }
+  
+  // Conteo con filtro de fecha
+  async function countSince(tableName, dateField, sinceISO) {
+    if (!sb) return 0;
+    try {
+      const { count, error } = await sb
+        .from(tableName)
+        .select('*', { count: 'exact', head: true })
+        .gte(dateField, sinceISO);
+      if (error) return 0;
+      return count || 0;
+    } catch (e) {
+      return 0;
+    }
+  }
+  
+  // Función principal que carga todas las métricas
+  async function loadDashboard() {
+    if (!sb) {
+      console.warn('Supabase no disponible');
+      return;
+    }
+    
+    const dashLoading = document.getElementById('dashLoading');
+    const dashContent = document.getElementById('dashContent');
+    
+    dashLoading.style.display = 'block';
+    dashContent.style.display = 'none';
+    
+    try {
+      // Fechas de referencia
+      const now = new Date();
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+      const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
+      const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59).toISOString();
+      const last7Days = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      
+      // Ejecutar todas las queries en paralelo para mayor velocidad
+      const [
+        totalUsers, totalSubs, newThisMonth, newLastMonth,
+        totalReminders, totalAppointments, totalDebts, 
+        totalPayable, totalNotes, totalShopping,
+        recentReminders, recentAppointments, recentNotes
+      ] = await Promise.all([
+        countTable('profiles'),
+        countTable('user_subscriptions'),
+        countSince('profiles', 'updated_at', startOfMonth),
+        (async () => {
+          if (!sb) return 0;
+          try {
+            const { count } = await sb.from('profiles').select('*', { count: 'exact', head: true })
+              .gte('updated_at', startOfLastMonth).lte('updated_at', endOfLastMonth);
+            return count || 0;
+          } catch(e) { return 0; }
+        })(),
+        countTable('reminders'),
+        countTable('appointments'),
+        countTable('debts'),
+        countTable('accounts_payable'),
+        countTable('personal_notes'),
+        countTable('shopping_items'),
+        countSince('reminders', 'updated_at', last7Days),
+        countSince('appointments', 'updated_at', last7Days),
+        countSince('personal_notes', 'updated_at', last7Days)
+      ]);
+      
+      // Estimar usuarios activos (los que crearon algo en últimos 7 días)
+      const activeEstimate = Math.max(recentReminders, recentAppointments, recentNotes);
+      
+      // ========== KPIs ==========
+      document.getElementById('kpiSubs').textContent = fmt(totalSubs);
+      document.getElementById('kpiSubsMeta').textContent = totalSubs === 0 ? 'Sin suscripciones aún' : 'Pagando actualmente';
+      
+      document.getElementById('kpiUsers').textContent = fmt(totalUsers);
+      document.getElementById('kpiUsersMeta').textContent = `${totalUsers === 1 ? '1 usuario' : totalUsers + ' usuarios'} registrados`;
+      
+      document.getElementById('kpiNew').textContent = fmt(newThisMonth);
+      const newMeta = document.getElementById('kpiNewMeta');
+      if (newLastMonth > 0) {
+        const change = ((newThisMonth - newLastMonth) / newLastMonth) * 100;
+        const arrow = change >= 0 ? '▲' : '▼';
+        const cls = change >= 0 ? 'up' : 'down';
+        newMeta.innerHTML = `<span class="${cls}">${arrow} ${Math.abs(change).toFixed(0)}% vs mes anterior</span>`;
+      } else {
+        newMeta.textContent = newThisMonth > 0 ? `vs ${newLastMonth} el mes pasado` : 'Sin datos previos';
+      }
+      
+      document.getElementById('kpiActive').textContent = fmt(activeEstimate);
+      document.getElementById('kpiActiveMeta').textContent = `crearon contenido en últimos 7 días`;
+      
+      // ========== Actividad del producto ==========
+      document.getElementById('actReminders').textContent = fmt(totalReminders);
+      document.getElementById('actAppointments').textContent = fmt(totalAppointments);
+      document.getElementById('actDebts').textContent = fmt(totalDebts);
+      document.getElementById('actPayable').textContent = fmt(totalPayable);
+      document.getElementById('actNotes').textContent = fmt(totalNotes);
+      document.getElementById('actShopping').textContent = fmt(totalShopping);
+      
+      // ========== Últimos usuarios registrados ==========
+      const usersBody = document.getElementById('recentUsersBody');
+      try {
+        const { data: users, error } = await sb
+          .from('profiles')
+          .select('id, full_name, display_name, email, is_admin, updated_at')
+          .order('updated_at', { ascending: false })
+          .limit(10);
+        
+        if (!error && users && users.length > 0) {
+          document.getElementById('usersTotal').textContent = `Mostrando ${users.length} de ${totalUsers}`;
+          usersBody.innerHTML = users.map(u => {
+            const name = u.display_name || u.full_name || 'Sin nombre';
+            const email = u.email || '—';
+            return `
+              <tr>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-avatar">${initials(name)}</div>
+                    <div>
+                      <div class="user-name">${name}</div>
+                      <div class="user-email">${email}</div>
+                    </div>
+                  </div>
+                </td>
+                <td style="color: var(--tertiary); font-size: 12px;">${timeAgo(u.updated_at)}</td>
+                <td>${u.is_admin ? '<span class="pill-admin">ADMIN</span>' : '<span class="pill-user">Usuario</span>'}</td>
+              </tr>
+            `;
+          }).join('');
+        } else {
+          usersBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--tertiary); padding: 24px;">No hay usuarios todavía</td></tr>';
+        }
+      } catch (e) {
+        usersBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--error); padding: 24px;">Error cargando usuarios</td></tr>';
+      }
+      
+      // ========== Suscripciones por plan ==========
+      const subsBody = document.getElementById('subsBody');
+      try {
+        const { data: subs, error } = await sb
+          .from('user_subscriptions')
+          .select('*');
+        
+        if (!error && subs && subs.length > 0) {
+          // Agrupar por plan
+          const planCounts = {};
+          subs.forEach(s => {
+            const plan = s.plan_name || s.plan || s.plan_type || 'Sin definir';
+            planCounts[plan] = (planCounts[plan] || 0) + 1;
+          });
+          
+          const total = subs.length;
+          document.getElementById('subsTotal').textContent = `${total} total`;
+          
+          const sorted = Object.entries(planCounts).sort((a, b) => b[1] - a[1]);
+          subsBody.innerHTML = sorted.map(([plan, count]) => {
+            const pct = ((count / total) * 100).toFixed(0);
+            return `
+              <tr>
+                <td><strong>${plan}</strong></td>
+                <td>${fmt(count)}</td>
+                <td style="color: var(--tertiary);">${pct}%</td>
+              </tr>
+            `;
+          }).join('');
+        } else {
+          document.getElementById('subsTotal').textContent = '0 total';
+          subsBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--tertiary); padding: 24px;">Sin suscripciones todavía</td></tr>';
+        }
+      } catch (e) {
+        subsBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--error); padding: 24px;">Error cargando suscripciones</td></tr>';
+      }
+      
+      // Mostrar contenido
+      dashLoading.style.display = 'none';
+      dashContent.style.display = 'block';
+      
+      console.log('✅ Dashboard cargado');
+      
+    } catch (err) {
+      console.error('Error cargando dashboard:', err);
+      dashLoading.innerHTML = `<p style="color: var(--error); text-align: center;">Error: ${err.message}</p>`;
+    }
+  }
+  
+  // Botón refrescar
+  document.addEventListener('DOMContentLoaded', () => {
+    const refreshBtn = document.getElementById('dashRefreshBtn');
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', loadDashboard);
+    }
+  });
+
 
   // ============================================
   // === INICIALIZACIÓN ===
