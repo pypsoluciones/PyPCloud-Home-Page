@@ -1511,15 +1511,25 @@
                   <div class="toggle-switch"></div>
                 </label>
                 
-                <div class="field-row">
-                  <label class="field-label">Imagen de fondo <span class="optional">JPG/PNG · se convierte a WebP automáticamente</span></label>
-                  <label class="field-image" id="bannerHeroImageField" for="bannerHeroInput">
-                    <input type="file" accept="image/*" id="bannerHeroInput" style="display: none;">
-                    <div class="field-image-text"><strong>Subir imagen</strong><br>Recomendado: 1920×800px · Será comprimida a WebP</div>
-                  </label>
-                  <div class="field-hint">La imagen se redimensiona y comprime automáticamente (max 1920px ancho, calidad 85%, formato WebP)</div>
-                  <div id="bannerHeroUploadStatus" style="display: none; padding: 10px 14px; border-radius: 8px; margin-top: 10px; font-size: 12px;"></div>
+                <div class="field-row row-2">
+                  <div class="field-row">
+                    <label class="field-label">Imagen Desktop <span class="optional">PC · 1920×800px</span></label>
+                    <label class="field-image" id="bannerHeroImageField" for="bannerHeroInput">
+                      <input type="file" accept="image/*" id="bannerHeroInput" style="display: none;">
+                      <div class="field-image-text"><strong>Subir imagen</strong><br>Horizontal · 1920×800</div>
+                    </label>
+                    <div class="field-hint">Para pantallas grandes</div>
+                  </div>
+                  <div class="field-row">
+                    <label class="field-label">Imagen Móvil <span class="optional">Celular · 800×1000px</span></label>
+                    <label class="field-image" id="bannerHeroMobileField" for="bannerHeroMobileInput">
+                      <input type="file" accept="image/*" id="bannerHeroMobileInput" style="display: none;">
+                      <div class="field-image-text"><strong>Subir imagen</strong><br>Vertical · 800×1000</div>
+                    </label>
+                    <div class="field-hint">Opcional - si no, usa la Desktop</div>
+                  </div>
                 </div>
+                <div id="bannerHeroUploadStatus" style="display: none; padding: 10px 14px; border-radius: 8px; margin-top: 4px; font-size: 12px;"></div>
                 
                 <div class="field-row">
                   <label class="field-label">Titular grande <span class="required">*</span></label>
@@ -2201,6 +2211,7 @@
     // Banner Hero (imagen grande)
     bannerHeroActive: false,
     bannerHeroImage: '',
+    bannerHeroImageMobile: '',
     bannerHeroTitle: 'SOLUCIONES INTEGRALES PARA TU NEGOCIO',
     bannerHeroSubtitle: 'El asistente personal con IA que organiza tu día a día.',
     bannerHeroBtnText: 'Probar 14 días gratis',
@@ -2501,21 +2512,23 @@
         e.stopPropagation();
         const input = wrap.querySelector('input[type="file"]');
         
-        // Caso especial: banner hero usa Supabase Storage
-        if (input && input.id === 'bannerHeroInput') {
+        // Caso especial: banner hero usa Supabase Storage (desktop y móvil)
+        if (input && (input.id === 'bannerHeroInput' || input.id === 'bannerHeroMobileInput')) {
+          const configKey = input.id === 'bannerHeroInput' ? 'bannerHeroImage' : 'bannerHeroImageMobile';
+          const prefix = input.id === 'bannerHeroInput' ? 'banner-hero-' : 'banner-hero-mobile-';
           // Intentar borrar el archivo en Storage
-          if (sb && config.bannerHeroImage && config.bannerHeroImage.includes('site-assets')) {
+          if (sb && config[configKey] && config[configKey].includes('site-assets')) {
             try {
-              const oldFileName = config.bannerHeroImage.split('/').pop().split('?')[0];
-              if (oldFileName && oldFileName.startsWith('banner-hero-')) {
+              const oldFileName = config[configKey].split('/').pop().split('?')[0];
+              if (oldFileName && oldFileName.startsWith(prefix)) {
                 await sb.storage.from('site-assets').remove([oldFileName]);
-                console.log('🗑️ Banner hero borrado de Storage:', oldFileName);
+                console.log('🗑️ Borrado de Storage:', oldFileName);
               }
             } catch (e) {
               console.warn('No se pudo borrar de Storage:', e);
             }
           }
-          config.bannerHeroImage = '';
+          config[configKey] = '';
         } else if (input && input.dataset.config) {
           // Caso general: campos con data-config (logo)
           const key = input.dataset.config;
@@ -2934,7 +2947,7 @@
       scheduleAutoSave();
       updatePreview();
       
-      showBannerStatus(`✅ Imagen subida correctamente (${newKB}KB · ahorro ${compressed.compression}%)`, 'success');
+      showBannerStatus(`✅ Imagen Desktop subida (${newKB}KB · ahorro ${compressed.compression}%)`, 'success');
       setTimeout(() => bannerHeroStatus.style.display = 'none', 5000);
       
     } catch (err) {
@@ -2944,10 +2957,85 @@
     }
   });
 
+  // === LISTENER PARA IMAGEN MÓVIL DEL BANNER HERO ===
+  const bannerHeroMobileInput = document.getElementById('bannerHeroMobileInput');
+  const bannerHeroMobileField = document.getElementById('bannerHeroMobileField');
+
+  bannerHeroMobileInput?.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      showBannerStatus('❌ Solo imágenes (JPG, PNG, WebP, GIF)', 'error');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      showBannerStatus('❌ Imagen muy grande (máx 10MB)', 'error');
+      bannerHeroMobileInput.value = '';
+      return;
+    }
+    if (!sb) {
+      showBannerStatus('❌ Supabase no disponible', 'error');
+      return;
+    }
+    try {
+      showBannerStatus('🔄 Comprimiendo imagen móvil a WebP...', 'info');
+      // Para móvil: max ancho 1000px (las imágenes verticales pueden ser más bajas)
+      const compressed = await compressImageToWebP(file, 1000, 0.85);
+      const originalKB = (compressed.originalSize / 1024).toFixed(0);
+      const newKB = (compressed.newSize / 1024).toFixed(0);
+      showBannerStatus(`📤 Subiendo móvil (${compressed.width}×${compressed.height}, ${originalKB}KB → ${newKB}KB)...`, 'info');
+      
+      const fileName = `banner-hero-mobile-${Date.now()}.webp`;
+      const { data: uploadData, error: uploadError } = await sb.storage
+        .from('site-assets')
+        .upload(fileName, compressed.blob, {
+          contentType: 'image/webp',
+          cacheControl: '3600',
+          upsert: false
+        });
+      
+      if (uploadError) {
+        if (uploadError.message?.includes('bucket')) throw new Error('Bucket "site-assets" no existe');
+        if (uploadError.message?.includes('row-level security') || uploadError.message?.includes('policy')) {
+          throw new Error('Sin permisos. Verifica que seas admin.');
+        }
+        throw uploadError;
+      }
+      
+      const { data: urlData } = sb.storage.from('site-assets').getPublicUrl(fileName);
+      const publicUrl = urlData.publicUrl;
+      
+      // Borrar móvil anterior
+      if (config.bannerHeroImageMobile && config.bannerHeroImageMobile.includes('site-assets')) {
+        try {
+          const oldFileName = config.bannerHeroImageMobile.split('/').pop().split('?')[0];
+          if (oldFileName && oldFileName.startsWith('banner-hero-mobile-')) {
+            await sb.storage.from('site-assets').remove([oldFileName]);
+          }
+        } catch (e) { console.warn('No se pudo borrar móvil anterior:', e); }
+      }
+      
+      config.bannerHeroImageMobile = publicUrl;
+      showImagePreview(bannerHeroMobileField, publicUrl);
+      scheduleAutoSave();
+      updatePreview();
+      
+      showBannerStatus(`✅ Imagen Móvil subida (${newKB}KB · ahorro ${compressed.compression}%)`, 'success');
+      setTimeout(() => bannerHeroStatus.style.display = 'none', 5000);
+    } catch (err) {
+      console.error('Error procesando banner móvil:', err);
+      showBannerStatus(`❌ ${err.message}`, 'error');
+      bannerHeroMobileInput.value = '';
+    }
+  });
+
   // Cargar preview si ya hay imagen
   function initBannerHeroPreview() {
     if (config.bannerHeroImage && bannerHeroField) {
       showImagePreview(bannerHeroField, config.bannerHeroImage);
+    }
+    if (config.bannerHeroImageMobile && bannerHeroMobileField) {
+      showImagePreview(bannerHeroMobileField, config.bannerHeroImageMobile);
     }
   }
 
