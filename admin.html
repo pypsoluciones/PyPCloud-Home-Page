@@ -1513,10 +1513,10 @@
                 
                 <div class="field-row">
                   <label class="field-label">Imagen de fondo <span class="optional">JPG/PNG · se convierte a WebP automáticamente</span></label>
-                  <div class="field-image" id="bannerHeroImageField">
-                    <input type="file" accept="image/*" id="bannerHeroInput">
+                  <label class="field-image" id="bannerHeroImageField" for="bannerHeroInput">
+                    <input type="file" accept="image/*" id="bannerHeroInput" style="display: none;">
                     <div class="field-image-text"><strong>Subir imagen</strong><br>Recomendado: 1920×800px · Será comprimida a WebP</div>
-                  </div>
+                  </label>
                   <div class="field-hint">La imagen se redimensiona y comprime automáticamente (max 1920px ancho, calidad 85%, formato WebP)</div>
                   <div id="bannerHeroUploadStatus" style="display: none; padding: 10px 14px; border-radius: 8px; margin-top: 10px; font-size: 12px;"></div>
                 </div>
@@ -2496,12 +2496,32 @@
       removeBtn.type = 'button';
       removeBtn.className = 'field-image-remove';
       removeBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-      removeBtn.addEventListener('click', (e) => {
+      removeBtn.addEventListener('click', async (e) => {
         e.preventDefault();
         e.stopPropagation();
         const input = wrap.querySelector('input[type="file"]');
-        const key = input.dataset.config;
-        config[key] = '';
+        
+        // Caso especial: banner hero usa Supabase Storage
+        if (input && input.id === 'bannerHeroInput') {
+          // Intentar borrar el archivo en Storage
+          if (sb && config.bannerHeroImage && config.bannerHeroImage.includes('site-assets')) {
+            try {
+              const oldFileName = config.bannerHeroImage.split('/').pop().split('?')[0];
+              if (oldFileName && oldFileName.startsWith('banner-hero-')) {
+                await sb.storage.from('site-assets').remove([oldFileName]);
+                console.log('🗑️ Banner hero borrado de Storage:', oldFileName);
+              }
+            } catch (e) {
+              console.warn('No se pudo borrar de Storage:', e);
+            }
+          }
+          config.bannerHeroImage = '';
+        } else if (input && input.dataset.config) {
+          // Caso general: campos con data-config (logo)
+          const key = input.dataset.config;
+          config[key] = '';
+        }
+        
         input.value = '';
         wrap.classList.remove('has-image');
         img.remove();
