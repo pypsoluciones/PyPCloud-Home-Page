@@ -1439,6 +1439,328 @@
     .kpi-value { font-size: 28px; }
   }
 
+
+  /* === USUARIOS === */
+  .users-toolbar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .users-toolbar > * { flex-shrink: 0; }
+  .users-toolbar .users-search-wrap { flex: 1 1 200px; }
+  .users-toolbar .topbar-btn {
+    background: #fff;
+    color: var(--ink);
+    border: 1.5px solid var(--line-soft);
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .users-toolbar .topbar-btn:hover {
+    background: var(--paper-warm);
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+  .users-toolbar .topbar-btn svg { width: 14px; height: 14px; }
+  .users-search-wrap {
+    flex: 1 1 240px;
+    min-width: 240px;
+    max-width: 500px;
+    position: relative;
+  }
+  .users-search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: var(--tertiary);
+    pointer-events: none;
+  }
+  #usersSearch, #subsSearch {
+    width: 100%;
+    padding: 11px 14px 11px 40px;
+    background: #fff;
+    border: 1.5px solid var(--line-soft);
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--ink);
+    transition: all 0.15s;
+  }
+  #usersSearch:focus, #subsSearch:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(20, 59, 98, 0.08);
+  }
+
+  .users-filter {
+    padding: 11px 36px 11px 14px;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 12px center;
+    border: 1.5px solid var(--line-soft);
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--ink);
+    cursor: pointer;
+    min-width: 180px;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  
+  /* Stats */
+  .users-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .users-stats-item {
+    background: #fff;
+    border: 1px solid var(--line-soft);
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+  }
+  .users-stats-label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--tertiary);
+    margin-bottom: 4px;
+  }
+  .users-stats-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  
+  /* Loading */
+  .users-loading {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  
+  /* Lista */
+  .users-list {
+    background: #fff;
+    border: 1px solid var(--line-soft);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .user-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 20px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--line-soft);
+    align-items: center;
+    transition: background 0.15s;
+  }
+  .user-row:last-child { border-bottom: none; }
+  .user-row:hover { background: rgba(20, 59, 98, 0.02); }
+  .user-row-info {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    min-width: 0;
+  }
+  .user-row-avatar {
+    width: 38px;
+    height: 38px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .user-row-avatar.admin-avatar { background: var(--secondary); }
+  .user-row-meta { min-width: 0; }
+  .user-row-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink);
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .user-row-email {
+    font-size: 12px;
+    color: var(--tertiary);
+    font-family: 'Geist Mono', monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .user-row-company {
+    font-size: 11px;
+    color: var(--tertiary);
+    font-family: 'Geist Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+  .user-row-date {
+    font-size: 11px;
+    color: var(--tertiary);
+    white-space: nowrap;
+  }
+  .user-row-actions {
+    display: flex;
+    gap: 6px;
+  }
+  .user-action-btn {
+    background: var(--paper-warm);
+    border: 1px solid var(--line-soft);
+    color: var(--ink);
+    width: 32px;
+    height: 32px;
+    border-radius: 7px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: all 0.15s;
+  }
+  .user-action-btn:hover {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+  }
+  .user-action-btn svg { width: 14px; height: 14px; }
+  
+  @media (max-width: 768px) {
+    .users-stats { grid-template-columns: repeat(2, 1fr); }
+    .user-row { grid-template-columns: 1fr; gap: 8px; padding: 14px; }
+    .user-row-actions { justify-content: flex-start; }
+  }
+  
+  /* Modal de edición */
+  .user-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 24, 40, 0.5);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+  .user-modal-overlay.show { display: flex; }
+  .user-modal {
+    background: #fff;
+    border-radius: 16px;
+    max-width: 480px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 60px -12px rgba(0,0,0,0.3);
+    animation: modalIn 0.2s ease;
+  }
+  @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(8px); } to { opacity: 1; transform: none; } }
+  .user-modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--line-soft);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .user-modal-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .user-modal-close {
+    background: var(--paper-warm);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    color: var(--tertiary);
+  }
+  .user-modal-close:hover { background: var(--line-soft); color: var(--ink); }
+  .user-modal-body { padding: 24px; }
+  .user-modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--line-soft);
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+  .user-modal .field-row { margin-bottom: 14px; }
+  .user-modal-btn {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .user-modal-btn-primary {
+    background: var(--primary);
+    color: #fff;
+  }
+  .user-modal-btn-primary:hover { background: var(--primary-dark); }
+  .user-modal-btn-secondary {
+    background: var(--paper-warm);
+    color: var(--ink);
+    border: 1px solid var(--line-soft);
+  }
+  .user-modal-btn-secondary:hover { background: var(--line-soft); }
+
+
+  /* === SUSCRIPCIONES === */
+  .subs-table tbody td {
+    vertical-align: middle;
+  }
+  .sub-status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-family: 'Geist Mono', monospace;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .sub-status-trialing { background: rgba(217, 119, 6, 0.12); color: var(--warning); }
+  .sub-status-active { background: rgba(45, 122, 62, 0.12); color: var(--success); }
+  .sub-status-cancelled { background: rgba(100, 116, 139, 0.12); color: var(--tertiary); }
+  .sub-status-expired { background: rgba(220, 38, 38, 0.12); color: var(--error); }
+  .sub-status-other { background: rgba(20, 59, 98, 0.12); color: var(--primary); }
+  
+  .sub-days {
+    font-weight: 600;
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px;
+  }
+  .sub-days.urgent { color: var(--error); }
+  .sub-days.warning { color: var(--warning); }
+  .sub-days.ok { color: var(--success); }
+  .sub-days.expired { color: var(--tertiary); }
+
 </style>
 </head>
 <body>
@@ -1484,15 +1806,13 @@
     <div class="sidebar-section">
       <div class="sidebar-section-label">Gestión</div>
       <nav class="sidebar-nav">
-        <button class="sidebar-link disabled">
+        <button class="sidebar-link" data-view="usuarios">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           Usuarios
-          <span class="badge">Pronto</span>
         </button>
-        <button class="sidebar-link disabled">
+        <button class="sidebar-link" data-view="suscripciones">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
           Suscripciones
-          <span class="badge">Pronto</span>
         </button>
         <button class="sidebar-link disabled">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
@@ -2438,10 +2758,250 @@
         </div>
       </div>
 
+
+      <!-- VIEW: USUARIOS (gestión real) -->
+      <div class="view" id="view-usuarios" style="display: none;">
+        
+        <!-- Toolbar -->
+        <div class="users-toolbar">
+          <div class="users-search-wrap">
+            <svg class="users-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" id="usersSearch" placeholder="Buscar por nombre o email...">
+          </div>
+          <select id="usersFilter" class="users-filter">
+            <option value="all">Todos los usuarios</option>
+            <option value="admin">Solo admins</option>
+            <option value="user">Solo usuarios</option>
+          </select>
+          <button class="topbar-btn" id="usersExportBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Exportar CSV</span>
+          </button>
+          <button class="topbar-btn" id="usersRefreshBtn" style="background: var(--primary); color: #fff; border-color: var(--primary);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          </button>
+        </div>
+        
+        <!-- Stats summary -->
+        <div class="users-stats">
+          <div class="users-stats-item">
+            <span class="users-stats-label">Total</span>
+            <span class="users-stats-value" id="usersStatsTotal">—</span>
+          </div>
+          <div class="users-stats-item">
+            <span class="users-stats-label">Administradores</span>
+            <span class="users-stats-value" id="usersStatsAdmins">—</span>
+          </div>
+          <div class="users-stats-item">
+            <span class="users-stats-label">Usuarios normales</span>
+            <span class="users-stats-value" id="usersStatsRegular">—</span>
+          </div>
+          <div class="users-stats-item">
+            <span class="users-stats-label">Mostrando</span>
+            <span class="users-stats-value" id="usersStatsShowing">—</span>
+          </div>
+        </div>
+        
+        <!-- Loading -->
+        <div class="users-loading" id="usersLoading">
+          <div class="auth-spinner"></div>
+          <p style="color: var(--tertiary); font-size: 14px; margin-top: 12px;">Cargando usuarios...</p>
+        </div>
+        
+        <!-- Lista -->
+        <div class="users-list" id="usersList" style="display: none;"></div>
+        
+        <!-- Empty state -->
+        <div class="users-empty" id="usersEmpty" style="display: none;">
+          <p style="color: var(--tertiary); text-align: center; padding: 40px 20px;">No se encontraron usuarios.</p>
+        </div>
+        
+      </div>
+      
+      <!-- VIEW: SUSCRIPCIONES (gestión real) -->
+      <div class="view" id="view-suscripciones" style="display: none;">
+        
+        <!-- KPIs -->
+        <div class="kpi-grid">
+          <div class="kpi-card kpi-primary">
+            <div class="kpi-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            </div>
+            <div class="kpi-label">TOTAL</div>
+            <div class="kpi-value" id="subKpiTotal">—</div>
+            <div class="kpi-meta">suscripciones registradas</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon" style="background: rgba(217, 119, 6, 0.1); color: var(--warning);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="kpi-label">EN TRIAL</div>
+            <div class="kpi-value" id="subKpiTrial">—</div>
+            <div class="kpi-meta">probando gratis</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon" style="background: rgba(45, 122, 62, 0.1); color: var(--success);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="kpi-label">ACTIVAS</div>
+            <div class="kpi-value" id="subKpiActive">—</div>
+            <div class="kpi-meta">pagando actualmente</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon" style="background: rgba(220, 38, 38, 0.1); color: var(--error);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="kpi-label">POR VENCER</div>
+            <div class="kpi-value" id="subKpiExpiring">—</div>
+            <div class="kpi-meta">próximos 7 días</div>
+          </div>
+        </div>
+        
+        <!-- Toolbar -->
+        <div class="users-toolbar">
+          <div class="users-search-wrap">
+            <svg class="users-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" id="subsSearch" placeholder="Buscar por usuario o email...">
+          </div>
+          <select id="subsFilter" class="users-filter">
+            <option value="all">Todos los estados</option>
+            <option value="trialing">En trial</option>
+            <option value="active">Activas</option>
+            <option value="cancelled">Canceladas</option>
+            <option value="expired">Vencidas</option>
+            <option value="expiring">Por vencer (7 días)</option>
+          </select>
+          <button class="topbar-btn" id="subsExportBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Exportar CSV</span>
+          </button>
+          <button class="topbar-btn" id="subsRefreshBtn" style="background: var(--primary); color: #fff; border-color: var(--primary);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          </button>
+        </div>
+        
+        <!-- Loading -->
+        <div class="users-loading" id="subsLoading">
+          <div class="auth-spinner"></div>
+          <p style="color: var(--tertiary); font-size: 14px; margin-top: 12px;">Cargando suscripciones...</p>
+        </div>
+        
+        <!-- Tabla de suscripciones -->
+        <div class="dash-section" id="subsListSection" style="display: none; padding: 0;">
+          <div class="dash-table-wrap">
+            <table class="dash-table subs-table">
+              <thead>
+                <tr>
+                  <th>Usuario</th>
+                  <th>Estado</th>
+                  <th>Trial vence</th>
+                  <th>Período vence</th>
+                  <th>Días restantes</th>
+                  <th>Creada</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="subsListBody"></tbody>
+            </table>
+          </div>
+        </div>
+        
+        <div class="users-empty" id="subsEmpty" style="display: none;">
+          <p style="color: var(--tertiary); text-align: center; padding: 40px 20px;">No se encontraron suscripciones con esos criterios.</p>
+        </div>
+        
+      </div>
+
     </div>
   </main>
 
 </div>
+
+
+<!-- MODAL: EDITAR USUARIO -->
+<div class="user-modal-overlay" id="userModalOverlay">
+  <div class="user-modal" id="userModal">
+    <div class="user-modal-header">
+      <div class="user-modal-title">Editar usuario</div>
+      <button class="user-modal-close" id="userModalCloseBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="user-modal-body">
+      <div class="field-row">
+        <label class="field-label">Email <span class="optional">No editable desde aquí</span></label>
+        <input type="email" id="userModalEmail" disabled style="background: var(--paper-warm); color: var(--tertiary); cursor: not-allowed;">
+        <div class="field-hint">Para cambiar el email, el usuario debe hacerlo desde su perfil en la app.</div>
+      </div>
+      <div class="field-row">
+        <label class="field-label">Nombre completo</label>
+        <input type="text" id="userModalName" placeholder="Ej: Juan Pérez">
+      </div>
+      <div class="field-row">
+        <label class="field-label">Nombre para mostrar <span class="optional">El que aparece en saludos</span></label>
+        <input type="text" id="userModalDisplayName" placeholder="Ej: Juan">
+      </div>
+      <div class="field-row">
+        <label class="field-label">Empresa <span class="optional">Opcional</span></label>
+        <input type="text" id="userModalCompany" placeholder="Ej: Mi empresa S.A.">
+      </div>
+    </div>
+    <div class="user-modal-footer">
+      <button class="user-modal-btn user-modal-btn-secondary" onclick="closeUserModal()">Cancelar</button>
+      <button class="user-modal-btn user-modal-btn-primary" id="userModalSaveBtn">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- MODAL: EDITAR SUSCRIPCIÓN -->
+<div class="user-modal-overlay" id="subModalOverlay">
+  <div class="user-modal" id="subModal">
+    <div class="user-modal-header">
+      <div class="user-modal-title">Editar suscripción</div>
+      <button class="user-modal-close" id="subModalCloseBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="user-modal-body">
+      <div class="field-row">
+        <label class="field-label">Usuario</label>
+        <div style="background: var(--paper-warm); border: 1px solid var(--line-soft); padding: 12px 14px; border-radius: 8px;">
+          <div style="font-weight: 600; font-size: 14px;" id="subModalUser">—</div>
+          <div style="font-size: 12px; color: var(--tertiary); font-family: 'Geist Mono', monospace;" id="subModalEmail">—</div>
+        </div>
+      </div>
+      <div class="field-row">
+        <label class="field-label">Estado</label>
+        <select id="subModalStatus" class="users-filter" style="width: 100%;">
+          <option value="trialing">trialing — En período de prueba</option>
+          <option value="active">active — Pagando</option>
+          <option value="cancelled">cancelled — Cancelada</option>
+          <option value="expired">expired — Vencida</option>
+        </select>
+      </div>
+      <div class="field-row row-2">
+        <div class="field-row">
+          <label class="field-label">Trial termina</label>
+          <input type="date" id="subModalTrialEnds">
+        </div>
+        <div class="field-row">
+          <label class="field-label">Período termina</label>
+          <input type="date" id="subModalPeriodEnds">
+        </div>
+      </div>
+      <div style="background: rgba(20, 59, 98, 0.06); border-left: 3px solid var(--primary); padding: 10px 14px; border-radius: 6px; font-size: 12px; color: var(--ink); line-height: 1.5;">
+        💡 <strong>Tip:</strong> Si extiendes el "Período termina" sin cambiar estado, equivale a renovar la suscripción manualmente.
+      </div>
+    </div>
+    <div class="user-modal-footer">
+      <button class="user-modal-btn user-modal-btn-secondary" onclick="closeSubModal()">Cancelar</button>
+      <button class="user-modal-btn user-modal-btn-primary" id="subModalSaveBtn">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
 
 <!-- TOAST -->
 <div class="toast" id="toast">
@@ -3164,11 +3724,21 @@
       if (view === 'dashboard' && typeof loadDashboard === 'function') {
         loadDashboard();
       }
+      // Cargar usuarios cuando se activa esa view
+      if (view === 'usuarios' && typeof loadUsers === 'function') {
+        loadUsers();
+      }
+      // Cargar suscripciones cuando se activa esa view
+      if (view === 'suscripciones' && typeof loadSubscriptions === 'function') {
+        loadSubscriptions();
+      }
       
       // Actualizar título
       const titles = {
         dashboard: 'Dashboard',
-        configuracion: 'Configuración del sitio'
+        configuracion: 'Configuración del sitio',
+        usuarios: 'Usuarios',
+        suscripciones: 'Suscripciones'
       };
       document.getElementById('topbarPageTitle').textContent = titles[view] || view;
       document.getElementById('breadcrumbCurrent').textContent = titles[view] || view;
@@ -3669,6 +4239,565 @@
     if (refreshBtn) {
       refreshBtn.addEventListener('click', loadDashboard);
     }
+  });
+
+
+
+  // ============================================
+  // === USUARIOS: GESTIÓN COMPLETA ===
+  // ============================================
+  let allUsers = [];
+  let filteredUsers = [];
+
+  async function loadUsers() {
+    if (!sb) return;
+    
+    const loading = document.getElementById('usersLoading');
+    const list = document.getElementById('usersList');
+    const empty = document.getElementById('usersEmpty');
+    
+    loading.style.display = 'block';
+    list.style.display = 'none';
+    empty.style.display = 'none';
+    
+    try {
+      const { data, error } = await sb
+        .from('profiles')
+        .select('id, full_name, display_name, email, company_name, is_admin, updated_at')
+        .order('updated_at', { ascending: false });
+      
+      if (error) throw error;
+      
+      allUsers = data || [];
+      
+      // Actualizar stats
+      const admins = allUsers.filter(u => u.is_admin).length;
+      const regular = allUsers.length - admins;
+      document.getElementById('usersStatsTotal').textContent = allUsers.length;
+      document.getElementById('usersStatsAdmins').textContent = admins;
+      document.getElementById('usersStatsRegular').textContent = regular;
+      
+      // Aplicar filtros actuales
+      applyUsersFilter();
+      
+      loading.style.display = 'none';
+      console.log('✅ Usuarios cargados:', allUsers.length);
+    } catch (err) {
+      console.error('Error cargando usuarios:', err);
+      loading.innerHTML = `<p style="color: var(--error); text-align: center;">Error: ${err.message}</p>`;
+    }
+  }
+  
+  function applyUsersFilter() {
+    const searchTerm = (document.getElementById('usersSearch')?.value || '').toLowerCase().trim();
+    const filterType = document.getElementById('usersFilter')?.value || 'all';
+    
+    filteredUsers = allUsers.filter(u => {
+      // Filtro por tipo
+      if (filterType === 'admin' && !u.is_admin) return false;
+      if (filterType === 'user' && u.is_admin) return false;
+      
+      // Filtro por búsqueda
+      if (searchTerm) {
+        const name = (u.display_name || u.full_name || '').toLowerCase();
+        const email = (u.email || '').toLowerCase();
+        const company = (u.company_name || '').toLowerCase();
+        if (!name.includes(searchTerm) && !email.includes(searchTerm) && !company.includes(searchTerm)) {
+          return false;
+        }
+      }
+      return true;
+    });
+    
+    document.getElementById('usersStatsShowing').textContent = filteredUsers.length;
+    renderUsersList();
+  }
+  
+  function renderUsersList() {
+    const list = document.getElementById('usersList');
+    const empty = document.getElementById('usersEmpty');
+    
+    if (filteredUsers.length === 0) {
+      list.style.display = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+    
+    list.style.display = 'block';
+    empty.style.display = 'none';
+    
+    list.innerHTML = filteredUsers.map(u => {
+      const name = u.display_name || u.full_name || 'Sin nombre';
+      const email = u.email || '—';
+      const inits = name.split(/\s+/).slice(0, 2).map(p => p[0] || '').join('').toUpperCase() || '?';
+      
+      return `
+        <div class="user-row" data-id="${u.id}">
+          <div class="user-row-info">
+            <div class="user-row-avatar ${u.is_admin ? 'admin-avatar' : ''}">${inits}</div>
+            <div class="user-row-meta">
+              <div class="user-row-name">${escapeHtml(name)}${u.is_admin ? ' <span class="pill-admin" style="margin-left: 6px;">ADMIN</span>' : ''}</div>
+              <div class="user-row-email">${escapeHtml(email)}</div>
+            </div>
+          </div>
+          <div class="user-row-company">${u.company_name ? escapeHtml(u.company_name) : '—'}</div>
+          <div class="user-row-date">${formatDate(u.updated_at)}</div>
+          <div class="user-row-actions">
+            <button class="user-action-btn" onclick="openUserModal('${u.id}')" title="Editar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+            <button class="user-action-btn" onclick="toggleAdmin('${u.id}', ${u.is_admin})" title="${u.is_admin ? 'Quitar admin' : 'Hacer admin'}">
+              ${u.is_admin 
+                ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+                : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>'
+              }
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+  
+  function escapeHtml(s) {
+    if (!s) return '';
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+  
+  function formatDate(s) {
+    if (!s) return '—';
+    const d = new Date(s);
+    const days = Math.floor((Date.now() - d.getTime()) / 86400000);
+    if (days === 0) return 'Hoy';
+    if (days === 1) return 'Ayer';
+    if (days < 30) return `hace ${days} días`;
+    return d.toLocaleDateString('es-VE', { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+  
+  // Toggle admin
+  window.toggleAdmin = async function(userId, currentlyAdmin) {
+    const user = allUsers.find(u => u.id === userId);
+    if (!user) return;
+    
+    const action = currentlyAdmin ? 'QUITAR permisos de admin a' : 'HACER admin a';
+    const userName = user.display_name || user.full_name || user.email;
+    
+    if (!confirm(`¿Confirmas ${action} ${userName}?`)) return;
+    
+    // Protección: no puedes quitarte admin a ti mismo
+    if (userId === currentUser?.id && currentlyAdmin) {
+      alert('⚠️ No puedes quitarte permisos de admin a ti mismo.');
+      return;
+    }
+    
+    try {
+      const { error } = await sb
+        .from('profiles')
+        .update({ is_admin: !currentlyAdmin, updated_at: new Date().toISOString() })
+        .eq('id', userId);
+      
+      if (error) throw error;
+      
+      // Actualizar localmente
+      user.is_admin = !currentlyAdmin;
+      const admins = allUsers.filter(u => u.is_admin).length;
+      document.getElementById('usersStatsAdmins').textContent = admins;
+      document.getElementById('usersStatsRegular').textContent = allUsers.length - admins;
+      applyUsersFilter();
+      
+      showToastMsg(`✓ ${userName} ${currentlyAdmin ? 'ya no es admin' : 'ahora es admin'}`, 'success');
+    } catch (err) {
+      console.error(err);
+      showToastMsg(`Error: ${err.message}`, 'error');
+    }
+  };
+  
+  // Modal de edición
+  window.openUserModal = function(userId) {
+    const user = allUsers.find(u => u.id === userId);
+    if (!user) return;
+    
+    document.getElementById('userModalName').value = user.full_name || '';
+    document.getElementById('userModalDisplayName').value = user.display_name || '';
+    document.getElementById('userModalCompany').value = user.company_name || '';
+    document.getElementById('userModalEmail').value = user.email || '';
+    document.getElementById('userModal').dataset.userId = userId;
+    document.getElementById('userModalOverlay').classList.add('show');
+  };
+  
+  window.closeUserModal = function() {
+    document.getElementById('userModalOverlay').classList.remove('show');
+  };
+  
+  async function saveUserModal() {
+    const userId = document.getElementById('userModal').dataset.userId;
+    if (!userId) return;
+    
+    const updates = {
+      full_name: document.getElementById('userModalName').value.trim() || null,
+      display_name: document.getElementById('userModalDisplayName').value.trim() || null,
+      company_name: document.getElementById('userModalCompany').value.trim() || null,
+      updated_at: new Date().toISOString()
+    };
+    
+    try {
+      const { error } = await sb.from('profiles').update(updates).eq('id', userId);
+      if (error) throw error;
+      
+      // Actualizar localmente
+      const user = allUsers.find(u => u.id === userId);
+      if (user) {
+        Object.assign(user, updates);
+      }
+      applyUsersFilter();
+      closeUserModal();
+      showToastMsg('✓ Usuario actualizado', 'success');
+    } catch (err) {
+      console.error(err);
+      showToastMsg(`Error: ${err.message}`, 'error');
+    }
+  }
+  
+  // Exportar a CSV
+  function exportUsersCSV() {
+    if (filteredUsers.length === 0) {
+      showToastMsg('No hay usuarios para exportar', 'error');
+      return;
+    }
+    
+    const headers = ['Nombre', 'Display Name', 'Email', 'Empresa', 'Admin', 'Última actividad'];
+    const rows = filteredUsers.map(u => [
+      u.full_name || '',
+      u.display_name || '',
+      u.email || '',
+      u.company_name || '',
+      u.is_admin ? 'Sí' : 'No',
+      u.updated_at ? new Date(u.updated_at).toLocaleString('es-VE') : ''
+    ]);
+    
+    const csv = [headers, ...rows]
+      .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+      .join('\n');
+    
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `usuarios-pypcloud-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    showToastMsg(`✓ ${filteredUsers.length} usuarios exportados`, 'success');
+  }
+  
+  // Listeners
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('usersSearch')?.addEventListener('input', applyUsersFilter);
+    document.getElementById('usersFilter')?.addEventListener('change', applyUsersFilter);
+    document.getElementById('usersRefreshBtn')?.addEventListener('click', loadUsers);
+    document.getElementById('usersExportBtn')?.addEventListener('click', exportUsersCSV);
+    document.getElementById('userModalSaveBtn')?.addEventListener('click', saveUserModal);
+    document.getElementById('userModalCloseBtn')?.addEventListener('click', closeUserModal);
+    document.getElementById('userModalOverlay')?.addEventListener('click', (e) => {
+      if (e.target.id === 'userModalOverlay') closeUserModal();
+    });
+  });
+
+
+
+  // ============================================
+  // === SUSCRIPCIONES: GESTIÓN ===
+  // ============================================
+  let allSubs = [];
+  let filteredSubs = [];
+
+  async function loadSubscriptions() {
+    if (!sb) return;
+    
+    const loading = document.getElementById('subsLoading');
+    const section = document.getElementById('subsListSection');
+    const empty = document.getElementById('subsEmpty');
+    
+    loading.style.display = 'block';
+    section.style.display = 'none';
+    empty.style.display = 'none';
+    
+    try {
+      // 1. Cargar suscripciones
+      const { data: subs, error: subsErr } = await sb
+        .from('user_subscriptions')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (subsErr) throw subsErr;
+      
+      // 2. Cargar usuarios para hacer JOIN manual (cliente-side)
+      const userIds = (subs || []).map(s => s.user_id).filter(Boolean);
+      let usersMap = {};
+      if (userIds.length > 0) {
+        const { data: users } = await sb
+          .from('profiles')
+          .select('id, full_name, display_name, email')
+          .in('id', userIds);
+        (users || []).forEach(u => { usersMap[u.id] = u; });
+      }
+      
+      // 3. Enriquecer suscripciones con datos del usuario
+      allSubs = (subs || []).map(s => ({
+        ...s,
+        user: usersMap[s.user_id] || null
+      }));
+      
+      // 4. Calcular KPIs
+      const now = new Date();
+      const in7Days = new Date(now.getTime() + 7 * 86400000);
+      
+      const totalSubs = allSubs.length;
+      const trialCount = allSubs.filter(s => s.status === 'trialing').length;
+      const activeCount = allSubs.filter(s => s.status === 'active').length;
+      const expiringCount = allSubs.filter(s => {
+        if (!['trialing', 'active'].includes(s.status)) return false;
+        const expDate = s.status === 'trialing' ? s.trial_ends_at : s.current_period_ends_at;
+        if (!expDate) return false;
+        const d = new Date(expDate);
+        return d > now && d <= in7Days;
+      }).length;
+      
+      document.getElementById('subKpiTotal').textContent = totalSubs;
+      document.getElementById('subKpiTrial').textContent = trialCount;
+      document.getElementById('subKpiActive').textContent = activeCount;
+      document.getElementById('subKpiExpiring').textContent = expiringCount;
+      
+      // 5. Aplicar filtros y renderizar
+      applySubsFilter();
+      
+      loading.style.display = 'none';
+      console.log('✅ Suscripciones cargadas:', allSubs.length);
+    } catch (err) {
+      console.error('Error cargando suscripciones:', err);
+      loading.innerHTML = `<p style="color: var(--error); text-align: center;">Error: ${err.message}</p>`;
+    }
+  }
+  
+  function applySubsFilter() {
+    const searchTerm = (document.getElementById('subsSearch')?.value || '').toLowerCase().trim();
+    const filter = document.getElementById('subsFilter')?.value || 'all';
+    const now = new Date();
+    const in7Days = new Date(now.getTime() + 7 * 86400000);
+    
+    filteredSubs = allSubs.filter(s => {
+      // Filtro por estado
+      if (filter === 'expiring') {
+        if (!['trialing', 'active'].includes(s.status)) return false;
+        const expDate = s.status === 'trialing' ? s.trial_ends_at : s.current_period_ends_at;
+        if (!expDate) return false;
+        const d = new Date(expDate);
+        if (!(d > now && d <= in7Days)) return false;
+      } else if (filter !== 'all' && s.status !== filter) {
+        return false;
+      }
+      
+      // Filtro por búsqueda
+      if (searchTerm && s.user) {
+        const name = (s.user.display_name || s.user.full_name || '').toLowerCase();
+        const email = (s.user.email || '').toLowerCase();
+        if (!name.includes(searchTerm) && !email.includes(searchTerm)) return false;
+      }
+      
+      return true;
+    });
+    
+    renderSubsList();
+  }
+  
+  function renderSubsList() {
+    const section = document.getElementById('subsListSection');
+    const empty = document.getElementById('subsEmpty');
+    const tbody = document.getElementById('subsListBody');
+    
+    if (filteredSubs.length === 0) {
+      section.style.display = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+    
+    section.style.display = 'block';
+    empty.style.display = 'none';
+    
+    const now = new Date();
+    
+    tbody.innerHTML = filteredSubs.map(s => {
+      const user = s.user;
+      const name = user?.display_name || user?.full_name || 'Usuario desconocido';
+      const email = user?.email || '—';
+      const inits = name.split(/\s+/).slice(0, 2).map(p => p[0] || '').join('').toUpperCase() || '?';
+      
+      // Calcular días restantes (basado en el estado)
+      let daysLeft = null;
+      let activeDate = null;
+      if (s.status === 'trialing' && s.trial_ends_at) {
+        activeDate = new Date(s.trial_ends_at);
+      } else if (['active', 'trialing'].includes(s.status) && s.current_period_ends_at) {
+        activeDate = new Date(s.current_period_ends_at);
+      }
+      
+      if (activeDate) {
+        daysLeft = Math.ceil((activeDate.getTime() - now.getTime()) / 86400000);
+      }
+      
+      let daysHtml = '—';
+      if (daysLeft !== null) {
+        let cls = 'ok';
+        let text;
+        if (daysLeft < 0) {
+          cls = 'expired';
+          text = `Venció hace ${Math.abs(daysLeft)} d`;
+        } else if (daysLeft === 0) {
+          cls = 'urgent';
+          text = 'Vence hoy';
+        } else if (daysLeft <= 3) {
+          cls = 'urgent';
+          text = `${daysLeft} días`;
+        } else if (daysLeft <= 7) {
+          cls = 'warning';
+          text = `${daysLeft} días`;
+        } else {
+          text = `${daysLeft} días`;
+        }
+        daysHtml = `<span class="sub-days ${cls}">${text}</span>`;
+      }
+      
+      const statusClass = ['trialing','active','cancelled','expired'].includes(s.status) 
+        ? `sub-status-${s.status}` 
+        : 'sub-status-other';
+      
+      return `
+        <tr>
+          <td>
+            <div class="user-cell">
+              <div class="user-avatar">${inits}</div>
+              <div>
+                <div class="user-name">${escapeHtml(name)}</div>
+                <div class="user-email">${escapeHtml(email)}</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="sub-status ${statusClass}">${escapeHtml(s.status || 'unknown')}</span></td>
+          <td style="font-size: 12px; color: var(--tertiary);">${s.trial_ends_at ? formatShortDate(s.trial_ends_at) : '—'}</td>
+          <td style="font-size: 12px; color: var(--tertiary);">${s.current_period_ends_at ? formatShortDate(s.current_period_ends_at) : '—'}</td>
+          <td>${daysHtml}</td>
+          <td style="font-size: 12px; color: var(--tertiary);">${s.created_at ? formatShortDate(s.created_at) : '—'}</td>
+          <td>
+            <button class="user-action-btn" onclick="openSubModal('${s.id}')" title="Editar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+  
+  function formatShortDate(s) {
+    if (!s) return '—';
+    return new Date(s).toLocaleDateString('es-VE', { day: '2-digit', month: 'short', year: '2-digit' });
+  }
+  
+  // Modal de edición de suscripción
+  window.openSubModal = function(subId) {
+    const sub = allSubs.find(s => String(s.id) === String(subId));
+    if (!sub) return;
+    
+    const user = sub.user;
+    const userName = user?.display_name || user?.full_name || user?.email || 'Usuario';
+    
+    document.getElementById('subModalUser').textContent = userName;
+    document.getElementById('subModalEmail').textContent = user?.email || '—';
+    document.getElementById('subModalStatus').value = sub.status || 'trialing';
+    document.getElementById('subModalTrialEnds').value = sub.trial_ends_at ? sub.trial_ends_at.split('T')[0] : '';
+    document.getElementById('subModalPeriodEnds').value = sub.current_period_ends_at ? sub.current_period_ends_at.split('T')[0] : '';
+    document.getElementById('subModal').dataset.subId = subId;
+    document.getElementById('subModalOverlay').classList.add('show');
+  };
+  
+  window.closeSubModal = function() {
+    document.getElementById('subModalOverlay').classList.remove('show');
+  };
+  
+  async function saveSubModal() {
+    const subId = document.getElementById('subModal').dataset.subId;
+    if (!subId) return;
+    
+    const trialDateStr = document.getElementById('subModalTrialEnds').value;
+    const periodDateStr = document.getElementById('subModalPeriodEnds').value;
+    
+    const updates = {
+      status: document.getElementById('subModalStatus').value,
+      trial_ends_at: trialDateStr ? new Date(trialDateStr + 'T23:59:59').toISOString() : null,
+      current_period_ends_at: periodDateStr ? new Date(periodDateStr + 'T23:59:59').toISOString() : null
+    };
+    
+    try {
+      const { error } = await sb.from('user_subscriptions').update(updates).eq('id', subId);
+      if (error) throw error;
+      
+      // Actualizar local
+      const sub = allSubs.find(s => String(s.id) === String(subId));
+      if (sub) Object.assign(sub, updates);
+      applySubsFilter();
+      closeSubModal();
+      showToastMsg('✓ Suscripción actualizada', 'success');
+    } catch (err) {
+      console.error(err);
+      showToastMsg(`Error: ${err.message}`, 'error');
+    }
+  }
+  
+  // Exportar CSV
+  function exportSubsCSV() {
+    if (filteredSubs.length === 0) {
+      showToastMsg('No hay suscripciones para exportar', 'error');
+      return;
+    }
+    
+    const headers = ['Usuario', 'Email', 'Estado', 'Trial vence', 'Período vence', 'Creada'];
+    const rows = filteredSubs.map(s => [
+      s.user?.display_name || s.user?.full_name || '',
+      s.user?.email || '',
+      s.status || '',
+      s.trial_ends_at ? new Date(s.trial_ends_at).toLocaleDateString('es-VE') : '',
+      s.current_period_ends_at ? new Date(s.current_period_ends_at).toLocaleDateString('es-VE') : '',
+      s.created_at ? new Date(s.created_at).toLocaleString('es-VE') : ''
+    ]);
+    
+    const csv = [headers, ...rows]
+      .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+      .join('\n');
+    
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `suscripciones-pypcloud-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    showToastMsg(`✓ ${filteredSubs.length} suscripciones exportadas`, 'success');
+  }
+  
+  // Listeners
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('subsSearch')?.addEventListener('input', applySubsFilter);
+    document.getElementById('subsFilter')?.addEventListener('change', applySubsFilter);
+    document.getElementById('subsRefreshBtn')?.addEventListener('click', loadSubscriptions);
+    document.getElementById('subsExportBtn')?.addEventListener('click', exportSubsCSV);
+    document.getElementById('subModalSaveBtn')?.addEventListener('click', saveSubModal);
+    document.getElementById('subModalCloseBtn')?.addEventListener('click', closeSubModal);
+    document.getElementById('subModalOverlay')?.addEventListener('click', (e) => {
+      if (e.target.id === 'subModalOverlay') closeSubModal();
+    });
   });
 
 
