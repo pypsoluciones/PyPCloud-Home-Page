@@ -97,11 +97,12 @@
     border-right: 1px solid rgba(255,255,255,0.05);
   }
   .sidebar-header {
-    padding: 16px 18px;
+    padding: 18px 16px;
     border-bottom: 1px solid rgba(255,255,255,0.06);
     display: flex;
-    align-items: center;
-    gap: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
   .sidebar-logo {
     width: 36px;
@@ -1761,6 +1762,23 @@
   .sub-days.ok { color: var(--success); }
   .sub-days.expired { color: var(--tertiary); }
 
+
+  .sidebar-logo-img {
+    height: 36px;
+    width: auto;
+    max-width: 100%;
+    display: block;
+  }
+  .sidebar-admin-badge {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: var(--secondary);
+    padding: 3px 8px;
+    background: rgba(230, 126, 34, 0.1);
+    border-radius: 4px;
+  }
 </style>
 </head>
 <body>
@@ -1779,12 +1797,8 @@
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <div class="sidebar-logo">
-        <img src="/logo.png" id="sidebarLogo" alt="PyPCloud" style="height: 40px; width: auto;">
-      </div>
-      <div class="sidebar-brand">
-        <div class="sidebar-brand-sub">Admin Panel</div>
-      </div>
+      <img src="/logo.png" id="sidebarLogo" alt="PyPCloud" class="sidebar-logo-img">
+      <div class="sidebar-admin-badge">ADMIN PANEL</div>
     </div>
 
     <div class="sidebar-section">
@@ -3623,15 +3637,11 @@
   }
 
   function updatePreview() {
-    // Logo
+    // Logo - SIDEBAR siempre usa /logo.png (logo oficial PyPCloud)
+    // El logoIcon del config solo se usa en la VISTA PREVIA del sitio
     const logoEl = document.getElementById('pvLogo');
-    const sidebarLogoEl = document.getElementById('sidebarLogo');
     if (config.logoIcon) {
       logoEl.src = config.logoIcon;
-      sidebarLogoEl.src = config.logoIcon;
-    } else {
-      // Fallback al logo horizontal oficial
-      sidebarLogoEl.src = '/logo.png';
     }
     
     // Brand

@@ -1023,6 +1023,16 @@
   }
   .modal-help-link a:hover { color: var(--secondary); }
 
+
+  .brand-logo-img {
+    height: 70px;
+    width: auto;
+    max-width: 320px;
+    display: block;
+  }
+  @media (max-width: 768px) {
+    .brand-logo-img { height: 55px; }
+  }
 </style>
 </head>
 <body>
@@ -1032,13 +1042,7 @@
   <!-- ============ PANEL IZQUIERDO ============ -->
   <aside class="brand-panel">
     <div class="brand-header">
-      <div class="brand-logo">
-        <img src="/logo.png" alt="PyPCloud" style="height: 60px; width: auto;">
-      </div>
-      <div>
-        <div class="brand-name">PyP<span>Cloud</span></div>
-        <div class="brand-sub">by PYP Soluciones</div>
-      </div>
+      <img src="/logo.png" alt="PyPCloud · by PYP Soluciones" class="brand-logo-img">
     </div>
 
     <div class="brand-body">
