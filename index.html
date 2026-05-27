@@ -2165,7 +2165,7 @@
 
   /* Cuando el banner está visible, el hero debe estar más abajo */
   body.has-banner nav { top: 36px; }
-  body.has-banner .hero { padding-top: 90px; }
+  body.has-banner .hero { padding-top: 130px; }
   body.has-banner .announce-banner { top: 0; }
   
   @media (max-width: 768px) {
@@ -2322,6 +2322,9 @@
 
   /* Iconos SVG inline */
   .icon { width: 1em; height: 1em; display: inline-block; vertical-align: -0.125em; fill: currentColor; }
+
+  body.has-banner .hero { padding-top: 170px; }
+  body.has-banner .banner-hero { margin-top: 100px; }
 </style>
 </head>
 <body>
@@ -2392,7 +2395,7 @@
           <strong style="color: var(--ink);">Recuérdame</strong> es el asistente con IA que organiza tu vida y tu negocio. Agenda, finanzas, compras y recordatorios — todo desde una conversación natural. Construido sobre <strong style="color: var(--primary);">PostgreSQL</strong> con encriptación de nivel bancario.
         </p>
         <div class="hero-cta-group">
-          <a href="https://recuerdame.pypcloud.com" class="btn btn-orange" target="_blank" rel="noopener">
+          <a href="https://recuerdame.pypcloud.com" class="btn btn-orange" target="_blank" rel="noopener" data-cta="trial">
             Probar 30 días gratis
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
           </a>
@@ -3069,7 +3072,7 @@
   <div class="container">
     <div class="cta-final-inner">
       <h2>Tu negocio en una <span class="serif">conversación.</span><br>Empieza <span class="accent">hoy.</span></h2>
-      <p>30 días gratis. Sin tarjeta de crédito. Sin compromiso. Solo el tiempo que necesitas para descubrir cómo se siente trabajar con un asistente que de verdad te entiende.</p>
+      <p data-cta-paragraph>30 días gratis. Sin tarjeta de crédito. Sin compromiso. Solo el tiempo que necesitas para descubrir cómo se siente trabajar con un asistente que de verdad te entiende.</p>
       <div class="cta-final-buttons">
         <a href="https://recuerdame.pypcloud.com" class="btn btn-primary" target="_blank" rel="noopener">
           Crear mi cuenta gratis
@@ -3388,14 +3391,51 @@
       }
     }
 
-    // ===== TRIAL DAYS - reemplazar en CTAs =====
+    // ===== TRIAL DAYS - reemplazar en TODOS los lugares =====
     const trialDays = siteConfig.trialDays || '30';
-    document.querySelectorAll('[data-cta="trial"]').forEach(btn => {
-      const text = btn.textContent.trim();
-      const newText = text.replace(/\d+\s*días gratis/i, trialDays + ' días gratis');
-      btn.textContent = newText;
-      applied++;
-    });
+    // Buscar y reemplazar todos los "X días gratis" en todo el documento
+    function replaceTrialText(node) {
+      if (node.nodeType === 3) { // text node
+        // Detectar patrones: "30 días gratis", "30 días de prueba", "30 días"
+        const patterns = [
+          { re: /\d+\s*días\s*gratis/gi, replacement: trialDays + ' días gratis' },
+          { re: /\d+\s*días\s*de\s*prueba/gi, replacement: trialDays + ' días de prueba' }
+        ];
+        let changed = false;
+        let newText = node.textContent;
+        patterns.forEach(p => {
+          if (p.re.test(newText)) {
+            newText = newText.replace(p.re, p.replacement);
+            changed = true;
+          }
+        });
+        if (changed) {
+          node.textContent = newText;
+          applied++;
+        }
+        return;
+      }
+      // Solo recorrer texto de elementos seguros (evitar scripts, styles)
+      if (node.nodeType === 1 && !['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(node.tagName)) {
+        // Iterar sobre los hijos
+        for (let i = 0; i < node.childNodes.length; i++) {
+          replaceTrialText(node.childNodes[i]);
+        }
+      }
+    }
+    
+    // Aplicar reemplazo en hero, CTAs marcados, CTA final, FAQ, y trial notes
+    const trialTargets = [
+      ...document.querySelectorAll('[data-cta="trial"]'),
+      ...document.querySelectorAll('[data-cta-paragraph]'),
+      ...document.querySelectorAll('[data-hero="btn-primary"]'),
+      ...document.querySelectorAll('.cta-final-inner'),
+      ...document.querySelectorAll('.faq-question'),
+      ...document.querySelectorAll('.faq-answer'),
+      ...document.querySelectorAll('[data-pricing="trial-note"]'),
+      ...document.querySelectorAll('[data-pricing="lead"]')
+    ];
+    trialTargets.forEach(el => replaceTrialText(el));
 
     // ===== PRICING LEAD =====
     if (siteConfig.trialDays) {
