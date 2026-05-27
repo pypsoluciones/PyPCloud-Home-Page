@@ -1780,10 +1780,9 @@
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-logo">
-        <img src="" id="sidebarLogo" alt="PyP">
+        <img src="/logo.png" id="sidebarLogo" alt="PyPCloud" style="height: 40px; width: auto;">
       </div>
       <div class="sidebar-brand">
-        <div class="sidebar-brand-name" id="sidebarBrandName">PyP<span>Cloud</span></div>
         <div class="sidebar-brand-sub">Admin Panel</div>
       </div>
     </div>
@@ -2435,27 +2434,55 @@
                 <div class="section-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
               </div>
               <div class="config-section-body">
+                
+                <!-- Título -->
                 <div class="field-row">
                   <label class="field-label">Título del sitio (SEO) <span class="optional">Máx 60 caracteres</span></label>
-                  <input type="text" maxlength="60" data-config="seoTitle" placeholder="PyPCloud — Asistente personal con IA">
+                  <input type="text" maxlength="60" data-config="seoTitle" placeholder="Recuérdame · Asistente personal con IA | PyPCloud">
+                  <div class="field-hint">📌 Lo que aparece en la pestaña del navegador y en resultados de Google. Sé claro y específico.</div>
                 </div>
+                
+                <!-- Descripción -->
                 <div class="field-row">
                   <label class="field-label">Meta descripción <span class="optional">Máx 160 caracteres</span></label>
-                  <textarea maxlength="160" data-config="seoDescription" rows="3" placeholder="Recuérdame es el asistente personal con IA..."></textarea>
+                  <textarea maxlength="160" data-config="seoDescription" rows="3" placeholder="Recuérdame es el asistente personal con IA que organiza tu día a día con tu voz. Agenda, finanzas, recordatorios. 14 días gratis."></textarea>
+                  <div class="field-hint">📌 Lo que aparece debajo del título en Google. Incluye palabras clave y un CTA.</div>
                 </div>
+                
+                <!-- Keywords -->
                 <div class="field-row">
                   <label class="field-label">Palabras clave <span class="optional">Separadas por coma</span></label>
-                  <input type="text" data-config="seoKeywords" placeholder="asistente IA, CRM, PyMEs, finanzas">
+                  <input type="text" data-config="seoKeywords" placeholder="asistente personal IA, recordatorios voz, agenda inteligente, PyPCloud">
                 </div>
+                
+                <!-- IMAGEN OG (para WhatsApp, Facebook, LinkedIn shares) -->
+                <div class="field-row">
+                  <label class="field-label">Imagen al compartir (Open Graph) <span class="optional">1200×630px · JPG/PNG · Se convierte a WebP</span></label>
+                  <label class="field-image" id="seoOgImageField" for="seoOgImageInput">
+                    <input type="file" accept="image/*" id="seoOgImageInput" style="display: none;">
+                    <div class="field-image-text"><strong>Subir imagen OG</strong><br>1200×630 · La que aparece en WhatsApp/FB/LinkedIn</div>
+                  </label>
+                  <div class="field-hint">📌 Cuando alguien comparta el link, esta imagen es la que verá. Recomendado: usa el banner principal.</div>
+                  <div id="seoOgImageStatus" style="display: none; padding: 10px 14px; border-radius: 8px; margin-top: 10px; font-size: 12px;"></div>
+                </div>
+                
+                <!-- Analytics -->
                 <div class="field-row row-2">
                   <div class="field-row">
-                    <label class="field-label">Google Analytics ID <span class="optional">Cuando lo tengas</span></label>
-                    <input type="text" data-config="gaId" placeholder="G-XXXXXXXXXX">
+                    <label class="field-label">Google Analytics ID <span class="optional">G-XXXXXXXXXX</span></label>
+                    <input type="text" data-config="googleAnalyticsId" placeholder="G-XXXXXXXXXX">
+                    <div class="field-hint">📊 Para tracking de visitas. Ve a analytics.google.com</div>
                   </div>
                   <div class="field-row">
                     <label class="field-label">Google Search Console <span class="optional">Token de verificación</span></label>
-                    <input type="text" data-config="gscToken" placeholder="abc123...">
+                    <input type="text" data-config="googleSearchConsoleToken" placeholder="abc123...">
+                    <div class="field-hint">🔍 Para verificar tu sitio en Google y enviar sitemap</div>
                   </div>
+                </div>
+                
+                <!-- Info box -->
+                <div style="background: rgba(20, 59, 98, 0.06); border-left: 3px solid var(--primary); padding: 12px 16px; border-radius: 6px; font-size: 12px; line-height: 1.6; color: var(--ink);">
+                  💡 <strong>Tip SEO:</strong> Después de guardar cambios, prueba tu sitio en <a href="https://www.opengraph.xyz/" target="_blank" style="color: var(--primary);">opengraph.xyz</a> para ver cómo se ve al compartirlo en redes sociales.
                 </div>
               </div>
             </div>
@@ -3161,6 +3188,14 @@
     bannerHeroActive: false,
     bannerHeroImage: '',
     bannerHeroImageMobile: '',
+    
+    // SEO
+    seoTitle: 'Recuérdame · Asistente personal con IA | PyPCloud',
+    seoDescription: 'Recuérdame es el asistente personal con IA que organiza tu día a día con tu voz. Agenda, finanzas, recordatorios.',
+    seoKeywords: 'asistente personal IA, recordatorios voz, agenda inteligente, PyPCloud',
+    seoOgImage: '',
+    googleAnalyticsId: '',
+    googleSearchConsoleToken: '',
     bannerHeroTitle: 'SOLUCIONES INTEGRALES PARA TU NEGOCIO',
     bannerHeroSubtitle: 'El asistente personal con IA que organiza tu día a día.',
     bannerHeroBtnText: 'Probar 14 días gratis',
@@ -3462,9 +3497,11 @@
         const input = wrap.querySelector('input[type="file"]');
         
         // Caso especial: banner hero usa Supabase Storage (desktop y móvil)
-        if (input && (input.id === 'bannerHeroInput' || input.id === 'bannerHeroMobileInput')) {
-          const configKey = input.id === 'bannerHeroInput' ? 'bannerHeroImage' : 'bannerHeroImageMobile';
-          const prefix = input.id === 'bannerHeroInput' ? 'banner-hero-' : 'banner-hero-mobile-';
+        if (input && (input.id === 'bannerHeroInput' || input.id === 'bannerHeroMobileInput' || input.id === 'seoOgImageInput')) {
+          let configKey, prefix;
+          if (input.id === 'bannerHeroInput') { configKey = 'bannerHeroImage'; prefix = 'banner-hero-'; }
+          else if (input.id === 'bannerHeroMobileInput') { configKey = 'bannerHeroImageMobile'; prefix = 'banner-hero-mobile-'; }
+          else { configKey = 'seoOgImage'; prefix = 'og-image-'; }
           // Intentar borrar el archivo en Storage
           if (sb && config[configKey] && config[configKey].includes('site-assets')) {
             try {
@@ -3592,6 +3629,9 @@
     if (config.logoIcon) {
       logoEl.src = config.logoIcon;
       sidebarLogoEl.src = config.logoIcon;
+    } else {
+      // Fallback al logo horizontal oficial
+      sidebarLogoEl.src = '/logo.png';
     }
     
     // Brand
@@ -3920,6 +3960,99 @@
       bannerHeroInput.value = '';
     }
   });
+
+  // === LISTENER PARA OG IMAGE (SEO) ===
+  const seoOgImageInput = document.getElementById('seoOgImageInput');
+  const seoOgImageField = document.getElementById('seoOgImageField');
+  const seoOgImageStatus = document.getElementById('seoOgImageStatus');
+
+  function showOgStatus(text, type = 'info') {
+    if (!seoOgImageStatus) return;
+    seoOgImageStatus.style.display = 'block';
+    seoOgImageStatus.textContent = text;
+    const colors = {
+      info: { bg: 'rgba(20, 59, 98, 0.08)', color: 'var(--primary)' },
+      success: { bg: 'rgba(45, 122, 62, 0.1)', color: 'var(--success)' },
+      error: { bg: 'rgba(220, 38, 38, 0.08)', color: 'var(--error)' }
+    };
+    const c = colors[type] || colors.info;
+    seoOgImageStatus.style.background = c.bg;
+    seoOgImageStatus.style.color = c.color;
+    seoOgImageStatus.style.borderLeft = '3px solid ' + c.color;
+  }
+
+  seoOgImageInput?.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      showOgStatus('❌ Solo imágenes (JPG, PNG, WebP, GIF)', 'error');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      showOgStatus('❌ Imagen muy grande (máx 10MB)', 'error');
+      seoOgImageInput.value = '';
+      return;
+    }
+    if (!sb) {
+      showOgStatus('❌ Supabase no disponible', 'error');
+      return;
+    }
+    try {
+      showOgStatus('🔄 Comprimiendo a WebP...', 'info');
+      // OG Image recomendado: 1200×630, comprimimos a max 1200px ancho
+      const compressed = await compressImageToWebP(file, 1200, 0.85);
+      const originalKB = (compressed.originalSize / 1024).toFixed(0);
+      const newKB = (compressed.newSize / 1024).toFixed(0);
+      showOgStatus(`📤 Subiendo (${compressed.width}×${compressed.height}, ${originalKB}KB → ${newKB}KB)...`, 'info');
+
+      const fileName = `og-image-${Date.now()}.webp`;
+      const { data: uploadData, error: uploadError } = await sb.storage
+        .from('site-assets')
+        .upload(fileName, compressed.blob, {
+          contentType: 'image/webp',
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (uploadError) {
+        if (uploadError.message?.includes('bucket')) throw new Error('Bucket "site-assets" no existe');
+        if (uploadError.message?.includes('row-level security') || uploadError.message?.includes('policy')) {
+          throw new Error('Sin permisos. Verifica que seas admin.');
+        }
+        throw uploadError;
+      }
+
+      const { data: urlData } = sb.storage.from('site-assets').getPublicUrl(fileName);
+      const publicUrl = urlData.publicUrl;
+
+      // Borrar OG anterior
+      if (config.seoOgImage && config.seoOgImage.includes('site-assets')) {
+        try {
+          const oldFileName = config.seoOgImage.split('/').pop().split('?')[0];
+          if (oldFileName && oldFileName.startsWith('og-image-')) {
+            await sb.storage.from('site-assets').remove([oldFileName]);
+          }
+        } catch (e) { console.warn('No se pudo borrar OG anterior:', e); }
+      }
+
+      config.seoOgImage = publicUrl;
+      showImagePreview(seoOgImageField, publicUrl);
+      scheduleAutoSave();
+
+      showOgStatus(`✅ OG Image subida (${newKB}KB · ahorro ${compressed.compression}%)`, 'success');
+      setTimeout(() => seoOgImageStatus.style.display = 'none', 5000);
+    } catch (err) {
+      console.error('Error OG Image:', err);
+      showOgStatus(`❌ ${err.message}`, 'error');
+      seoOgImageInput.value = '';
+    }
+  });
+
+  function initOgImagePreview() {
+    if (config.seoOgImage && seoOgImageField) {
+      showImagePreview(seoOgImageField, config.seoOgImage);
+    }
+  }
 
   // === LISTENER PARA IMAGEN MÓVIL DEL BANNER HERO ===
   const bannerHeroMobileInput = document.getElementById('bannerHeroMobileInput');
@@ -4816,6 +4949,7 @@
     bindFormToConfig();
     renderSocials();
     initBannerHeroPreview();
+    initOgImagePreview();
     updatePreview();
     
     // Ctrl+S para guardar manual
