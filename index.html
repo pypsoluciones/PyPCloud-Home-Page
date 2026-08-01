@@ -30,8 +30,9 @@
         }
     </script>
 
-    <style>
-        body { font-family: 'Geist', sans-serif; background-color: theme('colors.ink'); color: #fff; overflow-x: hidden; }
+    <!-- AQUÍ ESTÁ EL FIX CRÍTICO: type="text/tailwindcss" -->
+    <style type="text/tailwindcss">
+        body { font-family: 'Geist', sans-serif; overflow-x: hidden; }
         
         /* Brillo neón para INTUITIVO */
         .texto-brillo {
@@ -76,18 +77,18 @@
             background-size: 60px 60px;
         }
 
-        /* Ocultar scrollbar visualmente pero permitir scroll */
         ::-webkit-scrollbar { width: 0px; background: transparent; }
     </style>
 </head>
-<body class="bg-grid selection:bg-secondary selection:text-white">
+<!-- FIX CRÍTICO: bg-ink text-white forzados -->
+<body class="bg-ink text-white bg-grid selection:bg-secondary selection:text-white">
 
     <!-- NAVBAR OSCURO -->
     <nav class="fixed w-full bg-[#0A1828]/80 backdrop-blur-xl border-b border-white/10 z-50 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="flex justify-between items-center h-24">
                 <div class="flex items-center gap-4 cursor-pointer" onclick="window.scrollTo(0,0)">
-                    <img src="public/P Plano.png" alt="Isotipo PyP" class="h-14 w-auto drop-shadow-[0_0_15px_rgba(255,102,0,0.3)] hover:scale-105 transition-transform duration-300">
+                    <img src="./public/P Plano.png" alt="Isotipo PyP" class="h-14 w-auto drop-shadow-[0_0_15px_rgba(255,102,0,0.3)] hover:scale-105 transition-transform duration-300">
                     <span class="text-3xl font-black tracking-tighter text-white">PyP<span class="text-secondary">Cloud</span></span>
                 </div>
                 <div class="hidden md:flex space-x-8 items-center">
@@ -109,7 +110,7 @@
         <div class="absolute top-1/3 left-1/3 w-[400px] h-[400px] bg-primary/40 blur-[100px] rounded-full pointer-events-none z-0"></div>
         
         <div class="relative z-10 text-center max-w-5xl mx-auto flex flex-col items-center">
-            <img src="public/P Plano.png" alt="PyP Logo Grande" class="h-32 md:h-48 mb-8 drop-shadow-[0_0_40px_rgba(255,102,0,0.5)] animate-pulse" style="animation-duration: 4s;">
+            <img src="./public/P Plano.png" alt="PyP Logo Grande" class="h-32 md:h-48 mb-8 drop-shadow-[0_0_40px_rgba(255,102,0,0.5)] animate-pulse" style="animation-duration: 4s;">
             
             <h1 class="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-none mb-6">
                 El control matemático <br><span class="text-slate-400">de tu negocio.</span>
@@ -188,7 +189,7 @@
         </div>
     </section>
 
-    <!-- MOTOR TERMINAL (Full Width Break) -->
+    <!-- MOTOR TERMINAL -->
     <section class="py-20 border-y border-white/10 bg-[#050B14] relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-12">
             <div class="md:w-1/2">
@@ -196,7 +197,6 @@
                 <p class="text-slate-400">Si sobra dinero flotante en caja, el sistema rastrea y liquida automáticamente los avisos pendientes en cascada. Sin intervención humana.</p>
             </div>
             <div class="md:w-1/2 w-full h-[300px] bg-black border border-white/10 rounded-2xl p-6 relative overflow-hidden font-mono text-[11px] lg:text-xs">
-                <!-- Efecto de gradiente para ocultar los bordes del scroll -->
                 <div class="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black z-10 pointer-events-none"></div>
                 <div class="terminal-scroll text-green-400/80 space-y-2">
                     <p>> [API] Webhook received: payment_confirmed</p>
@@ -211,10 +211,6 @@
                     <p>> Executing auto-allocation...</p>
                     <p class="text-secondary">> SUCCESS: Invoice #1025 marked as PAID.</p>
                     <p>> Floating balance depleted. Engine sleep.</p>
-                    <br>
-                    <p>> [API] Webhook received: payment_confirmed</p>
-                    <p>> Checking floating balance for Unit: B-12...</p>
-                    <p>> Floating balance: $45.00 detected.</p>
                 </div>
             </div>
         </div>
@@ -240,7 +236,6 @@
             </div>
 
             <div class="lg:w-7/12 flex flex-col gap-12 pb-32 order-2 lg:order-1">
-                
                 <div class="glass-card p-8">
                     <h3 class="text-2xl font-black mb-2 text-white">Transparencia Radical</h3>
                     <p class="text-slate-400 mb-8">Estado de cuenta individual, histórico y reportes PDF al instante para cada residente.</p>
@@ -267,14 +262,12 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
 
     <!-- CIANA IA (B2C) -->
     <section id="ciana" class="py-32 bg-primary relative overflow-hidden">
-        <div class="absolute inset-0 bg-[url('public/P Plano.png')] bg-no-repeat bg-center bg-cover opacity-5 mix-blend-overlay"></div>
         <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
             <h2 class="text-5xl lg:text-7xl font-black tracking-tight mb-8">
                 Cian<span class="text-secondary text-[1.1em]">a</span>. Inteligencia Artificial.
@@ -304,22 +297,10 @@
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="flex flex-col items-center md:items-start gap-4">
                 <div class="flex items-center gap-3">
-                    <img src="public/logo-pyp.png" alt="Logo PyPCloud" class="h-8 w-auto drop-shadow-md">
+                    <img src="./public/logo-pyp.png" alt="Logo PyPCloud" class="h-8 w-auto drop-shadow-md">
                     <span class="text-xl font-bold tracking-tighter text-white">PyP<span class="text-secondary">Cloud</span></span>
                 </div>
                 <p class="text-xs font-medium">© 2026 PYP Soluciones. División de Desarrollo de Software.</p>
-                <div class="flex gap-5 text-xs font-bold text-slate-400">
-                    <a href="#" class="hover:text-white transition-colors">Términos</a>
-                    <a href="#" class="hover:text-white transition-colors">Privacidad</a>
-                    <a href="#" class="hover:text-white transition-colors">Soporte</a>
-                </div>
-            </div>
-            
-            <div class="text-center md:text-right">
-                <div class="inline-flex items-center gap-2 font-mono text-[9px] font-bold uppercase tracking-widest border border-white/10 bg-white/5 px-4 py-2 rounded-lg">
-                    <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]"></span>
-                    SSL/TLS 1.3 · Supabase & Cloudflare
-                </div>
             </div>
         </div>
     </footer>
