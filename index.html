@@ -19,12 +19,14 @@
                     colors: {
                         primary: '#143B62',
                         primaryDark: '#0d2942',
-                        secondary: '#E67E22',
+                        secondary: '#FF6600',
+                        secondaryDark: '#cc5200',
                         tertiary: '#64748b',
                         ink: '#0a1828',
                         paper: '#fafaf7',
                         paperWarm: '#f5f3ed',
-                        line: '#d4cfc1'
+                        line: '#d4cfc1',
+                        darkNav: '#0A1828'
                     },
                     fontFamily: {
                         sans: ['Geist', 'sans-serif'],
@@ -38,17 +40,18 @@
     <style>
         body { font-family: 'Geist', sans-serif; background-color: theme('colors.paper'); color: theme('colors.ink'); }
         
-        /* Animación de brillo para la palabra INTUITIVO */
+        /* Efecto de alto contraste y brillo para la palabra INTUITIVO */
         .texto-brillo {
-            background: linear-gradient(to right, #E67E22 20%, #FFEaa7 40%, #E67E22 60%);
+            background: linear-gradient(to right, #FF6600 20%, #FFF 40%, #FF6600 60%);
             background-size: 200% auto;
-            color: #000;
+            color: #FF6600;
             background-clip: text;
             text-fill-color: transparent;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: shine 3s linear infinite;
             display: inline-block;
+            text-shadow: 0px 0px 15px rgba(255, 102, 0, 0.4);
         }
         @keyframes shine {
             to { background-position: 200% center; }
@@ -66,33 +69,31 @@
             position: absolute;
             inset: 0;
             background-image:
-              linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
+              linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+            background-size: 50px 50px;
             pointer-events: none;
         }
     </style>
 </head>
 <body class="antialiased selection:bg-secondary selection:text-white">
 
-    <!-- NAVBAR -->
-    <nav class="fixed w-full bg-white/90 backdrop-blur-md border-b border-line z-50 transition-all duration-300">
+    <!-- NAVBAR OSCURO (Alto Contraste) -->
+    <nav class="fixed w-full bg-darkNav/95 backdrop-blur-md border-b border-white/10 z-50 transition-all duration-300 shadow-xl">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <!-- Logo Matriz -->
-                <div class="flex items-center gap-3">
-                    <svg viewBox="0 0 100 100" width="36" height="36" class="shrink-0">
-                        <rect x="25" y="15" width="16" height="70" rx="3" fill="#143B62" />
-                        <path d="M 48 23 L 56 23 C 82 23 82 51 56 51 L 48 51" fill="none" stroke="#E67E22" stroke-width="16" stroke-linecap="round" />
-                    </svg>
-                    <span class="text-2xl font-bold tracking-tighter text-primary">PyP<span class="text-secondary">Cloud</span></span>
+            <div class="flex justify-between items-center h-24">
+                <!-- Logo Matriz Protagonista -->
+                <div class="flex items-center gap-4">
+                    <!-- Se invoca el PNG real con sombra para integrarlo al fondo oscuro -->
+                    <img src="P Plano.png" alt="Logo PyPCloud" class="h-16 w-auto drop-shadow-2xl">
+                    <span class="text-3xl font-black tracking-tighter text-white">PyP<span class="text-secondary">Cloud</span></span>
                 </div>
                 <!-- Menú Desktop -->
                 <div class="hidden md:flex space-x-8 items-center">
-                    <a href="#condominios" class="text-sm font-semibold text-tertiary hover:text-primary transition-colors">Condominios</a>
-                    <a href="#erp" class="text-sm font-semibold text-tertiary hover:text-primary transition-colors">Gestión Empresarial</a>
-                    <a href="#ciana" class="text-sm font-semibold text-tertiary hover:text-primary transition-colors">Ciana IA</a>
-                    <a href="/admin/login.html" class="bg-primary hover:bg-primaryDark text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md btn-press transition-colors">
+                    <a href="#erp" class="text-sm font-bold text-slate-300 hover:text-white transition-colors">Gestión Empresarial</a>
+                    <a href="#condominios" class="text-sm font-bold text-slate-300 hover:text-white transition-colors">Condominios</a>
+                    <a href="#ciana" class="text-sm font-bold text-slate-300 hover:text-white transition-colors">Ciana IA</a>
+                    <a href="/admin/login.html" class="bg-secondary hover:bg-secondaryDark text-white px-6 py-2.5 rounded-xl text-sm font-black shadow-[0_0_15px_rgba(255,102,0,0.3)] btn-press transition-all uppercase tracking-wide">
                         Acceso Admin
                     </a>
                 </div>
@@ -101,193 +102,209 @@
     </nav>
 
     <!-- HERO SECTION -->
-    <section class="hero-bg text-white pt-32 pb-24 lg:pt-48 lg:pb-32 px-6 relative">
+    <section class="hero-bg text-white pt-36 pb-24 lg:pt-48 lg:pb-32 px-6 relative">
         <div class="max-w-4xl mx-auto text-center relative z-10">
-            <div class="inline-flex items-center gap-2 font-mono text-xs font-semibold text-secondary uppercase tracking-[0.15em] mb-6 border border-secondary/30 bg-secondary/10 px-4 py-1.5 rounded-full">
+            <div class="inline-flex items-center gap-2 font-mono text-[11px] font-black text-secondary uppercase tracking-[0.2em] mb-6 border border-secondary/40 bg-secondary/10 px-5 py-2 rounded-full">
                 <span>Hub Corporativo B2B</span>
             </div>
-            <h1 class="text-4xl lg:text-6xl font-black tracking-tight leading-tight mb-6">
+            <h1 class="text-5xl lg:text-7xl font-black tracking-tight leading-tight mb-8">
                 Infraestructura SaaS para la <br/>Gestión Inmobiliaria y Comercial.
             </h1>
-            <p class="text-lg text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+            <p class="text-lg lg:text-xl text-slate-300 mb-12 max-w-3xl mx-auto leading-relaxed font-medium">
                 Ecosistemas administrativos en la nube con conciliación matemática estricta y sincronización multi-moneda en tiempo real. Herramientas diseñadas bajo una arquitectura de autogestión y cero fricciones operativas.
             </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="#condominios" class="bg-secondary hover:bg-[#c66818] text-white px-8 py-3.5 rounded-xl font-bold shadow-lg transition-all btn-press text-sm uppercase tracking-wide">
+            <div class="flex flex-col sm:flex-row gap-5 justify-center">
+                <a href="#erp" class="bg-secondary hover:bg-secondaryDark text-white px-10 py-4 rounded-xl font-black shadow-[0_0_20px_rgba(255,102,0,0.4)] transition-all btn-press text-sm uppercase tracking-widest">
                     Explorar Soluciones
                 </a>
-                <a href="/admin/login.html" class="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-8 py-3.5 rounded-xl font-bold transition-all btn-press text-sm uppercase tracking-wide">
+                <a href="/admin/login.html" class="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-10 py-4 rounded-xl font-bold transition-all btn-press text-sm uppercase tracking-widest">
                     Panel de Administración
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- PYP CONDOMINIOS -->
-    <section id="condominios" class="py-24 bg-paper px-6 border-b border-line">
-        <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-                <span class="font-mono text-xs font-bold text-primary uppercase tracking-widest mb-3 block">Módulo Activo</span>
-                <h2 class="text-3xl lg:text-4xl font-black tracking-tight text-ink mb-4">PyP Condominios.<br>Administración sin margen de error.</h2>
-                <p class="text-tertiary leading-relaxed mb-8">
-                    Una plataforma integral que conecta a administradores y residentes en tiempo real, automatizando la conciliación de pagos y el control estricto de la morosidad.
-                </p>
-                
-                <div class="space-y-6">
-                    <div class="flex gap-4">
-                        <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                            <span class="text-primary font-bold">1</span>
+    <!-- PYP ERP COMERCIAL -->
+    <section id="erp" class="py-24 bg-ink px-6 border-b border-gray-800">
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+            <div class="order-2 lg:order-1">
+                <!-- Mockup Interfaz ERP -->
+                <div class="bg-[#0A1828] border border-gray-700 rounded-2xl p-6 shadow-2xl relative aspect-square lg:aspect-auto h-full flex flex-col justify-center items-center">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent rounded-2xl pointer-events-none"></div>
+                    <div class="w-full max-w-sm space-y-4 relative z-10">
+                        <!-- Card 1 -->
+                        <div class="bg-[#143B62] border border-gray-600 p-5 rounded-xl shadow-lg flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-secondary flex items-center justify-center text-white font-bold">$</div>
+                            <div class="flex-1">
+                                <div class="h-3 w-1/2 bg-white/20 rounded mb-2"></div>
+                                <div class="h-2 w-1/3 bg-white/10 rounded"></div>
+                            </div>
                         </div>
-                        <div>
-                            <h4 class="text-sm font-bold text-ink mb-1">Conciliación Inteligente Multi-moneda</h4>
-                            <p class="text-xs text-tertiary leading-relaxed">Sincronización diaria con la tasa BCV. Emita avisos en USD y permita reportar pagos en Bolívares sin cálculos manuales.</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-4">
-                        <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                            <span class="text-primary font-bold">2</span>
-                        </div>
-                        <div>
-                            <h4 class="text-sm font-bold text-ink mb-1">Motor de Auto-Conciliación</h4>
-                            <p class="text-xs text-tertiary leading-relaxed">Si un administrador aprueba un pago y sobra dinero flotante, el sistema asigna el saldo automáticamente a los avisos pendientes en cascada.</p>
+                        <!-- Card 2 -->
+                        <div class="bg-[#143B62] border border-gray-600 p-5 rounded-xl shadow-lg flex items-center gap-4 opacity-70">
+                            <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center"></div>
+                            <div class="flex-1">
+                                <div class="h-3 w-3/4 bg-white/20 rounded mb-2"></div>
+                                <div class="h-2 w-1/2 bg-white/10 rounded"></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="flex gap-4">
-                        <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                            <span class="text-primary font-bold">3</span>
-                        </div>
-                        <div>
-                            <h4 class="text-sm font-bold text-ink mb-1">Transparencia Radical</h4>
-                            <p class="text-xs text-tertiary leading-relaxed">Cada residente accede a su estado de cuenta, histórico de pagos, comprobantes PDF descargables y gráficas de tesorería.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="mt-10">
-                    <a href="mailto:ventas@pypcloud.com" class="text-sm font-bold text-primary hover:text-secondary flex items-center gap-2 transition-colors uppercase tracking-wide">
-                        Contactar a Ventas B2B &rarr;
-                    </a>
+                    <span class="mt-8 text-xs font-mono text-slate-400 uppercase tracking-widest bg-black/40 px-4 py-2 rounded-full">Dashboard Administrativo</span>
                 </div>
             </div>
-            <!-- Mockup Placeholder -->
-            <div class="bg-paperWarm border border-line rounded-2xl p-6 shadow-xl relative aspect-square lg:aspect-auto h-full flex flex-col justify-center items-center">
-                <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-white/10 rounded-2xl pointer-events-none"></div>
-                <div class="bg-white border border-line p-4 rounded-xl shadow-sm w-3/4 mb-4">
-                    <div class="h-2 w-1/3 bg-slate-200 rounded mb-2"></div>
-                    <div class="h-6 w-1/2 bg-red-100 rounded"></div>
+            <div class="order-1 lg:order-2 text-white">
+                <div class="inline-flex items-center gap-2 font-mono text-[10px] font-bold text-yellow-400 uppercase tracking-[0.1em] mb-4 border border-yellow-500/30 bg-yellow-500/10 px-3 py-1 rounded-full">
+                    <span>🚧 Beta Cerrada</span>
                 </div>
-                <div class="bg-white border border-line p-4 rounded-xl shadow-sm w-3/4">
-                    <div class="h-2 w-1/4 bg-slate-200 rounded mb-2"></div>
-                    <div class="h-6 w-2/3 bg-green-100 rounded"></div>
+                <h2 class="text-4xl lg:text-5xl font-black tracking-tight mb-6">
+                    PyP Gestión Empresarial.<br>Control absoluto, sin la complejidad de siempre.
+                </h2>
+                <p class="text-slate-300 text-lg leading-relaxed mb-10">
+                    Un ecosistema administrativo de alto nivel con un diseño radicalmente <span class="texto-brillo font-black tracking-widest">INTUITIVO</span>. Gestiona tu negocio sin fricciones: desde el punto de venta hasta la tesorería multi-moneda, con una curva de aprendizaje casi nula para tu equipo.
+                </p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
+                    <div class="bg-white/5 border border-white/10 rounded-xl p-5 hover:bg-white/10 transition-colors">
+                        <h4 class="text-base font-bold text-white mb-2">Tesorería Blindada</h4>
+                        <p class="text-sm text-slate-400 leading-relaxed">Gestión de liquidez, cierres de caja inteligentes (Reporte Z) y transferencias internas supervisadas mediante PIN.</p>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 rounded-xl p-5 hover:bg-white/10 transition-colors">
+                        <h4 class="text-base font-bold text-white mb-2">Inventario Ágil</h4>
+                        <p class="text-sm text-slate-400 leading-relaxed">Ingreso de mercancía utilizando la cámara de tu dispositivo móvil como escáner de códigos de barras en tiempo real.</p>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 rounded-xl p-5 hover:bg-white/10 transition-colors">
+                        <h4 class="text-base font-bold text-white mb-2">Semáforo CxC</h4>
+                        <p class="text-sm text-slate-400 leading-relaxed">Monitoreo visual de deuda sana, por vencer y vencida con registro de abonos y emisión automática de recibos.</p>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 rounded-xl p-5 hover:bg-white/10 transition-colors">
+                        <h4 class="text-base font-bold text-white mb-2">Sincronización BCV</h4>
+                        <p class="text-sm text-slate-400 leading-relaxed">Tasas del dólar y euro actualizadas automáticamente para mantener el flujo de caja exacto, respaldadas por Inteligencia Artificial.</p>
+                    </div>
                 </div>
-                <span class="mt-6 text-xs font-mono text-tertiary uppercase tracking-widest">Dashboard Condominios</span>
+                
+                <a href="mailto:ventas@pypcloud.com" class="inline-block bg-secondary hover:bg-secondaryDark text-white px-8 py-3.5 rounded-xl font-black shadow-[0_0_15px_rgba(255,102,0,0.3)] transition-all btn-press text-sm uppercase tracking-wide">
+                    Solicitar Acceso Anticipado
+                </a>
             </div>
         </div>
     </section>
 
-    <!-- PYP ERP COMERCIAL -->
-    <section id="erp" class="py-24 bg-ink px-6 border-b border-gray-800">
-        <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
-            <div class="order-2 lg:order-1">
-                <!-- Mockup Placeholder Dark -->
-                <div class="bg-[#142336] border border-gray-700 rounded-2xl p-6 shadow-2xl relative aspect-square lg:aspect-auto h-full flex flex-col justify-center items-center">
-                    <div class="bg-[#0f1b29] border border-gray-700 p-4 rounded-xl shadow-inner w-3/4 mb-4 flex gap-4 items-center">
-                        <div class="w-10 h-10 bg-slate-700 rounded-lg"></div>
-                        <div class="flex-1">
-                            <div class="h-2 w-full bg-slate-700 rounded mb-2"></div>
-                            <div class="h-2 w-1/2 bg-slate-600 rounded"></div>
-                        </div>
-                    </div>
-                    <span class="mt-6 text-xs font-mono text-slate-400 uppercase tracking-widest">Punto de Venta / Caja</span>
-                </div>
-            </div>
-            <div class="order-1 lg:order-2 text-white">
-                <div class="inline-flex items-center gap-2 font-mono text-[10px] font-bold text-warn-300 uppercase tracking-[0.1em] mb-4 border border-yellow-500/30 bg-yellow-500/10 px-3 py-1 rounded-full text-yellow-500">
-                    <span>🚧 Beta Cerrada</span>
-                </div>
-                <h2 class="text-3xl lg:text-4xl font-black tracking-tight mb-4">
-                    PyP Gestión Empresarial.<br>Control absoluto, sin la complejidad de siempre.
-                </h2>
-                <p class="text-slate-400 leading-relaxed mb-8">
-                    Un ecosistema administrativo de alto nivel con un diseño radicalmente <span class="texto-brillo text-lg uppercase tracking-wider">INTUITIVO</span>. Gestiona tu negocio sin fricciones: desde el punto de venta hasta la tesorería multi-moneda, con una curva de aprendizaje casi nula para tu equipo.
+    <!-- PYP CONDOMINIOS -->
+    <section id="condominios" class="py-24 bg-paper px-6">
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+            <div>
+                <span class="font-mono text-[11px] font-black text-primary uppercase tracking-widest mb-4 block border border-primary/20 bg-primary/5 w-max px-4 py-1.5 rounded-full">Módulo Activo</span>
+                <h2 class="text-4xl lg:text-5xl font-black tracking-tight text-ink mb-6">PyP Condominios.<br>Administración sin margen de error.</h2>
+                <p class="text-tertiary text-lg leading-relaxed mb-10">
+                    Una plataforma integral que conecta a administradores y residentes en tiempo real, automatizando la conciliación de pagos y el control estricto de la morosidad bajo arquitectura de alta disponibilidad.
                 </p>
                 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
-                    <div class="bg-white/5 border border-white/10 rounded-xl p-4">
-                        <h4 class="text-sm font-bold text-white mb-1">Tesorería Blindada</h4>
-                        <p class="text-xs text-slate-400">Gestión de liquidez, cierres de caja inteligentes (Reporte Z) y transferencias internas supervisadas mediante PIN.</p>
+                <div class="space-y-8">
+                    <div class="flex gap-5">
+                        <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
+                            <span class="text-primary font-black text-lg">1</span>
+                        </div>
+                        <div>
+                            <h4 class="text-base font-bold text-ink mb-2">Conciliación Inteligente Multi-moneda</h4>
+                            <p class="text-sm text-tertiary leading-relaxed">Sincronización diaria con la tasa BCV. Emita avisos en USD y permita reportar pagos en Bolívares sin cálculos manuales.</p>
+                        </div>
                     </div>
-                    <div class="bg-white/5 border border-white/10 rounded-xl p-4">
-                        <h4 class="text-sm font-bold text-white mb-1">Inventario Ágil</h4>
-                        <p class="text-xs text-slate-400">Ingreso de mercancía utilizando la cámara de tu dispositivo móvil como escáner de códigos de barras (QuaggaJS).</p>
+                    <div class="flex gap-5">
+                        <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
+                            <span class="text-primary font-black text-lg">2</span>
+                        </div>
+                        <div>
+                            <h4 class="text-base font-bold text-ink mb-2">Motor de Auto-Conciliación</h4>
+                            <p class="text-sm text-tertiary leading-relaxed">Si un administrador aprueba un pago y sobra dinero flotante, el sistema asigna el saldo automáticamente a los avisos pendientes en cascada.</p>
+                        </div>
                     </div>
-                    <div class="bg-white/5 border border-white/10 rounded-xl p-4">
-                        <h4 class="text-sm font-bold text-white mb-1">Semáforo CxC</h4>
-                        <p class="text-xs text-slate-400">Monitoreo visual en tiempo real de deuda sana, por vencer y vencida con emisión automática de recibos.</p>
-                    </div>
-                    <div class="bg-white/5 border border-white/10 rounded-xl p-4">
-                        <h4 class="text-sm font-bold text-white mb-1">Nómina Integrada</h4>
-                        <p class="text-xs text-slate-400">Control de empleados, sueldos base, comisiones y deducciones conectadas directamente al flujo financiero.</p>
+                    <div class="flex gap-5">
+                        <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
+                            <span class="text-primary font-black text-lg">3</span>
+                        </div>
+                        <div>
+                            <h4 class="text-base font-bold text-ink mb-2">Transparencia Radical</h4>
+                            <p class="text-sm text-tertiary leading-relaxed">Cada residente accede a su estado de cuenta, histórico de pagos, comprobantes PDF descargables y gráficas de tesorería.</p>
+                        </div>
                     </div>
                 </div>
-                
-                <button class="bg-secondary hover:bg-[#c66818] text-white px-8 py-3 rounded-xl font-bold shadow-lg transition-all btn-press text-sm uppercase tracking-wide">
-                    Solicitar Acceso Anticipado
-                </button>
+                <div class="mt-12">
+                    <a href="mailto:ventas@pypcloud.com" class="text-sm font-black text-primary hover:text-secondary flex items-center gap-2 transition-colors uppercase tracking-widest border border-primary/20 w-max px-6 py-3 rounded-xl hover:border-secondary">
+                        Contactar a Ventas B2B &rarr;
+                    </a>
+                </div>
+            </div>
+            
+            <div class="bg-paperWarm border border-line rounded-2xl p-8 shadow-xl relative aspect-square lg:aspect-auto h-full flex flex-col justify-center items-center">
+                <div class="w-full max-w-sm space-y-4">
+                    <div class="bg-white border border-line p-5 rounded-xl shadow-sm">
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="h-3 w-1/3 bg-slate-200 rounded"></div>
+                            <div class="h-3 w-8 bg-red-200 rounded"></div>
+                        </div>
+                        <div class="h-8 w-2/3 bg-slate-100 rounded"></div>
+                    </div>
+                    <div class="bg-white border border-line p-5 rounded-xl shadow-sm">
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="h-3 w-1/4 bg-slate-200 rounded"></div>
+                            <div class="h-3 w-8 bg-green-200 rounded"></div>
+                        </div>
+                        <div class="h-8 w-1/2 bg-slate-100 rounded"></div>
+                    </div>
+                </div>
+                <span class="mt-8 text-xs font-mono text-tertiary uppercase tracking-widest">Vista Residente</span>
             </div>
         </div>
     </section>
 
     <!-- CIANA IA -->
     <section id="ciana" class="py-24 bg-primary text-white px-6">
-        <div class="max-w-4xl mx-auto text-center">
-            <div class="inline-flex items-center gap-2 font-mono text-[10px] font-bold text-blue-200 uppercase tracking-[0.1em] mb-6 border border-blue-400/30 bg-blue-500/10 px-3 py-1 rounded-full">
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 font-mono text-[11px] font-black text-blue-200 uppercase tracking-[0.15em] mb-6 border border-blue-400/30 bg-blue-500/20 px-4 py-1.5 rounded-full">
                 <span>🌍 Preparando lanzamiento global</span>
             </div>
-            <h2 class="text-3xl lg:text-5xl font-black tracking-tight mb-4">
+            <h2 class="text-4xl lg:text-6xl font-black tracking-tight mb-6">
                 Cian<span class="text-secondary">a</span>. Inteligencia Artificial para tu día a día.
             </h2>
-            <p class="text-blue-100 text-lg leading-relaxed mb-10 max-w-2xl mx-auto">
-                Un agente virtual en la nube (PWA) que organiza tu agenda, finanzas y recordatorios mediante comandos de lenguaje natural.
+            <p class="text-blue-100 text-lg lg:text-xl leading-relaxed mb-12 max-w-3xl mx-auto">
+                Un agente virtual inteligente (PWA) que organiza tu agenda, finanzas y recordatorios mediante comandos de lenguaje natural.
             </p>
             
-            <div class="bg-white/10 border border-white/20 rounded-2xl p-8 text-left max-w-2xl mx-auto mb-10 backdrop-blur-sm">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="text-2xl">🔒</span>
-                    <h3 class="text-xl font-bold text-white">Bóveda E2EE Nivel Bancario</h3>
+            <div class="bg-white/10 border border-white/20 rounded-2xl p-8 lg:p-10 text-left max-w-3xl mx-auto mb-12 backdrop-blur-sm shadow-2xl">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 bg-secondary rounded-full flex items-center justify-center text-2xl shadow-lg">🔒</div>
+                    <h3 class="text-2xl font-black text-white">Bóveda E2EE Nivel Bancario</h3>
                 </div>
-                <p class="text-sm text-blue-100 leading-relaxed">
-                    Cifrado de extremo a extremo (AES-256) directo en tu dispositivo. Tus contraseñas, documentos, tarjetas y claves protegidas con biometría nativa. La arquitectura de conocimiento cero garantiza que ni siquiera nosotros podemos leer tu información.
+                <p class="text-base text-blue-50 leading-relaxed font-medium">
+                    Cifrado de extremo a extremo (AES-256) directo en tu dispositivo. Tus contraseñas, documentos, tarjetas y claves están protegidas con biometría nativa. La arquitectura de conocimiento cero garantiza que ni siquiera nosotros podemos leer tu información.
                 </p>
             </div>
 
-            <a href="mailto:soporte@pypcloud.com" class="inline-block bg-white text-primary hover:bg-gray-100 px-8 py-3.5 rounded-xl font-bold shadow-lg transition-all btn-press text-sm uppercase tracking-wide">
+            <a href="mailto:soporte@pypcloud.com" class="inline-block bg-white text-primary hover:bg-gray-100 px-10 py-4 rounded-xl font-black shadow-xl transition-all btn-press text-sm uppercase tracking-widest">
                 Conocer el Proyecto Ciana
             </a>
         </div>
     </section>
 
-    <!-- FOOTER -->
-    <footer class="bg-ink border-t border-gray-800 text-slate-400 py-12 px-6">
-        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-8 items-center">
-            <div>
-                <div class="flex items-center gap-3 mb-4">
-                    <svg viewBox="0 0 100 100" width="24" height="24" class="opacity-50">
-                        <rect x="25" y="15" width="16" height="70" rx="3" fill="#ffffff" />
-                        <path d="M 48 23 L 56 23 C 82 23 82 51 56 51 L 48 51" fill="none" stroke="#ffffff" stroke-width="16" stroke-linecap="round" />
-                    </svg>
-                    <span class="text-lg font-bold tracking-tighter text-white/50">PyP<span class="text-white/30">Cloud</span></span>
+    <!-- FOOTER CORPORATIVO AISLADO -->
+    <footer class="bg-darkNav border-t border-white/10 text-slate-400 py-12 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex flex-col items-center md:items-start gap-4">
+                <div class="flex items-center gap-3">
+                    <img src="P Plano.png" alt="Logo PyPCloud" class="h-8 w-auto opacity-50 grayscale">
+                    <span class="text-xl font-bold tracking-tighter text-white/50">PyP<span class="text-white/30">Cloud</span></span>
                 </div>
-                <p class="text-xs mb-2">© 2026 PYP Soluciones. División de Desarrollo de Software.</p>
-                <div class="flex gap-4 text-xs font-semibold">
+                <p class="text-xs font-medium">© 2026 PYP Soluciones. División de Desarrollo de Software.</p>
+                <div class="flex gap-5 text-xs font-bold">
                     <a href="#" class="hover:text-white transition-colors">Términos de Servicio</a>
                     <a href="#" class="hover:text-white transition-colors">Privacidad</a>
                     <a href="#" class="hover:text-white transition-colors">Soporte Técnico</a>
                 </div>
             </div>
             
-            <div class="md:text-right">
-                <div class="inline-flex items-center gap-2 font-mono text-[9px] uppercase tracking-widest border border-gray-700 bg-gray-800/50 px-3 py-1.5 rounded mb-4">
-                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+            <div class="text-center md:text-right">
+                <div class="inline-flex items-center gap-2 font-mono text-[9px] font-bold uppercase tracking-widest border border-gray-700 bg-gray-800/80 px-4 py-2 rounded-lg shadow-inner">
+                    <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]"></span>
                     Conexión Segura SSL/TLS 1.3 · Powered by Supabase & Cloudflare
                 </div>
             </div>
