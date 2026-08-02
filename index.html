@@ -80,13 +80,16 @@
 <body class="bg-ink text-white bg-grid selection:bg-secondary selection:text-white">
 
     <!-- NAVBAR -->
-    <nav class="fixed w-full bg-[#0A1828]/90 backdrop-blur-xl border-b border-white/10 z-50 transition-all duration-300 shadow-xl">
+    <nav class="fixed w-full bg-[#0A1828]/95 backdrop-blur-xl border-b border-white/10 z-50 transition-all duration-300 shadow-xl">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20 md:h-24">
+            <div class="flex justify-between items-center h-20 md:h-24 relative">
+                <!-- Logo -->
                 <div class="flex items-center gap-1 cursor-pointer" onclick="window.scrollTo(0,0)">
                     <img src="./public/iso-pyp.png" alt="Isotipo PyP" class="h-8 md:h-12 w-auto drop-shadow-[0_0_15px_rgba(255,102,0,0.4)] hover:scale-105 transition-transform duration-300">
                     <span class="text-xl md:text-3xl font-black tracking-tighter text-white">PyP<span class="text-secondary">Cloud</span></span>
                 </div>
+                
+                <!-- Opciones de PC -->
                 <div class="hidden md:flex space-x-8 items-center">
                     <a href="#ciana" class="text-sm font-bold text-slate-300 hover:text-white transition-colors">Ciana IA</a>
                     <a href="#condominios" class="text-sm font-bold text-slate-300 hover:text-white transition-colors">Condominios</a>
@@ -95,16 +98,31 @@
                         Acceso Admin
                     </a>
                 </div>
+
+                <!-- Botón Menú Hamburguesa Móvil -->
+                <button id="mobile-btn" class="md:hidden text-white focus:outline-none hover:text-secondary transition-colors">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
             </div>
+        </div>
+
+        <!-- Menú Desplegable Móvil -->
+        <div id="mobile-menu" class="hidden absolute top-full left-0 w-full bg-[#0A1828]/95 backdrop-blur-xl border-b border-white/10 flex-col items-center py-6 gap-6 shadow-2xl md:hidden">
+            <a href="#ciana" class="mobile-link text-lg font-bold text-slate-300 hover:text-white transition-colors">Ciana IA</a>
+            <a href="#condominios" class="mobile-link text-lg font-bold text-slate-300 hover:text-white transition-colors">Condominios</a>
+            <a href="#erp" class="mobile-link text-lg font-bold text-slate-300 hover:text-white transition-colors">Gestión Empresarial</a>
+            <a href="/admin/login.html" class="mobile-link bg-secondary hover:bg-[#cc5200] text-white px-8 py-3 rounded-xl text-base font-black shadow-[0_0_20px_rgba(255,102,0,0.4)] transition-all uppercase tracking-wide mt-2">
+                Acceso Admin
+            </a>
         </div>
     </nav>
 
-    <!-- HERO SECTION (ESPACIOS REDUCIDOS) -->
-    <section class="flex flex-col justify-center items-center relative pt-28 pb-10 md:pt-36 md:pb-12 px-6">
+    <!-- HERO SECTION (ESPACIOS MÓVILES REDUCIDOS) -->
+    <section class="flex flex-col justify-center items-center relative pt-24 pb-8 md:pt-36 md:pb-12 px-6">
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] md:w-[600px] md:h-[600px] bg-secondary/20 blur-[120px] rounded-full pointer-events-none z-0"></div>
         <div class="absolute top-1/3 left-1/3 w-[300px] h-[300px] md:w-[400px] md:h-[400px] bg-primary/40 blur-[100px] rounded-full pointer-events-none z-0"></div>
         
-        <div class="relative z-10 text-center max-w-5xl mx-auto flex flex-col items-center">
+        <div class="relative z-10 text-center max-w-5xl mx-auto flex flex-col items-center mt-6 md:mt-0">
             <div class="inline-flex items-center gap-2 font-mono text-[9px] md:text-[11px] font-black text-secondary uppercase tracking-[0.2em] mb-4 md:mb-8 border border-secondary/40 bg-secondary/10 px-4 md:px-5 py-2 rounded-full">
                 <span>Plataforma SaaS Unificada</span>
             </div>
@@ -113,7 +131,7 @@
                 El motor tecnológico <br><span class="text-slate-400">de tu vida y tu negocio.</span>
             </h1>
             
-            <p class="text-base md:text-xl text-slate-300 mb-6 md:mb-10 max-w-4xl font-medium leading-relaxed px-2">
+            <p class="text-sm md:text-xl text-slate-300 mb-6 md:mb-10 max-w-4xl font-medium leading-relaxed px-2">
                 Infraestructura en la nube de alto rendimiento. Automatiza tu empresa, gestiona condominios sin margen de error y organiza tu agenda y finanzas personales con un asistente virtual predictivo por voz.
             </p>
             <div class="flex gap-4">
@@ -125,11 +143,11 @@
     </section>
 
     <!-- SECCIÓN 1: CIANA IA (B2C) -->
-    <section id="ciana" class="relative max-w-7xl mx-auto px-6 py-12 md:py-16 border-b border-white/10">
-        <div class="flex flex-col lg:flex-row gap-10 md:gap-16 relative items-center">
+    <section id="ciana" class="relative max-w-7xl mx-auto px-6 py-10 md:py-16 border-b border-white/10">
+        <div class="flex flex-col lg:flex-row gap-8 md:gap-16 relative items-center">
             
             <div class="lg:w-5/12 relative text-left flex flex-col items-center lg:items-start w-full">
-                <div class="sticky top-32 flex flex-col items-start w-full max-w-sm mx-auto lg:mx-0">
+                <div class="sticky top-24 md:top-32 flex flex-col items-start w-full max-w-sm mx-auto lg:mx-0">
                     <div class="inline-flex items-center gap-2 font-mono text-[9px] md:text-[10px] font-bold text-cianaBlue uppercase tracking-[0.1em] mb-4 md:mb-6 border border-cianaBlue/30 bg-cianaBlue/10 px-3 py-1 rounded-full self-center lg:self-start">
                         <span>🌍 Preparando lanzamiento global</span>
                     </div>
@@ -137,7 +155,7 @@
                     <div class="mb-4 flex flex-col items-center w-full">
                         <div class="w-full flex justify-center relative z-10 -mb-10 md:-mb-14">
                             <div class="relative inline-block">
-                                <img src="./public/ciana-avatar.png" alt="Ciana Oficial" class="w-72 h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 object-contain drop-shadow-[0_0_25px_rgba(59,130,246,0.35)]">
+                                <img src="./public/ciana-avatar.png" alt="Ciana Oficial" class="w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 object-contain drop-shadow-[0_0_25px_rgba(59,130,246,0.35)]">
                             </div>
                         </div>
                         
@@ -152,7 +170,7 @@
                         </div>
                     </div>
 
-                    <p class="text-slate-300 text-base md:text-lg leading-relaxed mb-6 w-full text-center lg:text-left mt-2">
+                    <p class="text-slate-300 text-sm md:text-lg leading-relaxed mb-6 w-full text-center lg:text-left mt-2">
                         Tu agente virtual inteligente (PWA). Organiza tu agenda, finanzas y recordatorios mediante lenguaje natural.
                     </p>
                     <a href="mailto:soporte@pypcloud.com" class="inline-flex items-center gap-2 text-cianaBlue font-bold hover:text-white transition-colors uppercase tracking-widest text-xs md:text-sm self-center lg:self-start">
@@ -161,7 +179,7 @@
                 </div>
             </div>
 
-            <div class="lg:w-7/12 flex flex-col gap-6 md:gap-8 w-full mt-4 lg:mt-0">
+            <div class="lg:w-7/12 flex flex-col gap-5 md:gap-8 w-full mt-4 lg:mt-0">
                 <div class="glass-card p-6 md:p-8 border-l-4 border-l-cianaBlue">
                     <div class="flex items-center gap-4 mb-3 md:mb-4">
                         <div class="w-10 h-10 md:w-12 md:h-12 bg-cianaBlue/20 rounded-full flex items-center justify-center text-cianaBlue text-lg md:text-xl shrink-0">🔒</div>
@@ -191,15 +209,14 @@
         </div>
     </section>
 
-    <!-- SECCIÓN 2: PYP CONDOMINIOS (DISEÑO INVERTIDO) -->
-    <section id="condominios" class="relative max-w-7xl mx-auto px-6 py-12 md:py-16 border-b border-white/10">
-        <div class="flex flex-col lg:flex-row gap-10 md:gap-16 relative">
+    <!-- SECCIÓN 2: PYP CONDOMINIOS -->
+    <section id="condominios" class="relative max-w-7xl mx-auto px-6 py-10 md:py-16 border-b border-white/10">
+        <div class="flex flex-col lg:flex-row gap-8 md:gap-16 relative">
             
-            <!-- Derecha en código, Izquierda en visual (lg:order-1). En móvil sigue bajando natural. -->
-            <div class="lg:w-7/12 flex flex-col gap-6 md:gap-8 order-2 lg:order-1 mt-4 lg:mt-0">
+            <div class="lg:w-7/12 flex flex-col gap-5 md:gap-8 order-2 lg:order-1 mt-4 lg:mt-0">
                 <div class="glass-card p-6 md:p-8">
                     <h3 class="text-xl md:text-2xl font-black mb-2 text-white">Transparencia Radical</h3>
-                    <p class="text-sm md:text-base text-slate-400 mb-6 md:mb-8">Estado de cuenta individual, histórico y reportes PDF al instante para cada residente.</p>
+                    <p class="text-sm md:text-base text-slate-400 mb-5 md:mb-8">Estado de cuenta individual, histórico y reportes PDF al instante para cada residente.</p>
                     <div class="bg-[#050C14] border border-white/5 rounded-xl md:rounded-2xl p-5 md:p-6 flex justify-between items-center">
                         <div>
                             <span class="block text-[9px] md:text-[10px] text-slate-500 uppercase tracking-widest mb-1">Apto. 4-A</span>
@@ -211,7 +228,7 @@
 
                 <div class="glass-card p-6 md:p-8">
                     <h3 class="text-xl md:text-2xl font-black mb-2 text-white">Gestión Dinámica</h3>
-                    <p class="text-sm md:text-base text-slate-400 mb-6 md:mb-8">Cálculos por cuota fija, alícuotas o derramas extraordinarias en segundos.</p>
+                    <p class="text-sm md:text-base text-slate-400 mb-5 md:mb-8">Cálculos por cuota fija, alícuotas o derramas extraordinarias en segundos.</p>
                     <div class="grid grid-cols-2 gap-3 md:gap-4">
                         <div class="bg-[#050C14] border border-white/5 rounded-xl md:rounded-2xl p-4 md:p-5 text-center hover:bg-white/5 transition-colors">
                             <span class="text-xl md:text-2xl mb-2 block">🏢</span>
@@ -225,18 +242,17 @@
                 </div>
             </div>
 
-            <!-- Izquierda en código, Derecha en visual (lg:order-2) -->
             <div class="lg:w-5/12 relative order-1 lg:order-2">
-                <div class="sticky top-32 flex flex-col items-center lg:items-start text-center lg:text-left w-full max-w-sm mx-auto lg:mx-0 lg:ml-auto">
+                <div class="sticky top-24 md:top-32 flex flex-col items-center lg:items-start text-center lg:text-left w-full max-w-sm mx-auto lg:mx-0 lg:ml-auto">
                     <div class="inline-flex items-center gap-2 font-mono text-[9px] md:text-[10px] font-bold text-white uppercase tracking-[0.1em] mb-4 md:mb-6 border border-white/30 bg-white/10 px-3 py-1 rounded-full self-center lg:self-start">
                         <span>Módulo Activo</span>
                     </div>
                     
                     <div class="w-full flex justify-center lg:justify-start mb-4 md:mb-6">
-                        <img src="./public/logo-condominios.png" alt="Logo PyP Condominios" class="h-28 md:h-40 lg:h-48 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+                        <img src="./public/logo-condominios.png" alt="Logo PyP Condominios" class="h-24 md:h-40 lg:h-48 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.05)]">
                     </div>
 
-                    <p class="text-slate-300 text-base md:text-lg leading-relaxed mb-6 w-full text-center lg:text-left">
+                    <p class="text-slate-300 text-sm md:text-lg leading-relaxed mb-6 w-full text-center lg:text-left">
                         Administración sin margen de error. Conecta a residentes en tiempo real bajo una arquitectura de alta disponibilidad.
                     </p>
                     <a href="mailto:ventas@pypcloud.com" class="inline-flex items-center gap-2 text-white font-bold hover:text-secondary transition-colors uppercase tracking-widest text-xs md:text-sm self-center lg:self-start">
@@ -249,20 +265,20 @@
     </section>
 
     <!-- SECCIÓN 3: ERP COMERCIAL -->
-    <section id="erp" class="relative max-w-7xl mx-auto px-6 py-12 md:py-16">
-        <div class="flex flex-col lg:flex-row gap-10 md:gap-16 relative">
+    <section id="erp" class="relative max-w-7xl mx-auto px-6 py-10 md:py-16">
+        <div class="flex flex-col lg:flex-row gap-8 md:gap-16 relative">
             
             <div class="lg:w-5/12 relative">
-                <div class="sticky top-32 flex flex-col items-center lg:items-start text-center lg:text-left w-full max-w-sm mx-auto lg:mx-0">
+                <div class="sticky top-24 md:top-32 flex flex-col items-center lg:items-start text-center lg:text-left w-full max-w-sm mx-auto lg:mx-0">
                     <div class="inline-flex items-center gap-2 font-mono text-[9px] md:text-[10px] font-bold text-yellow-400 uppercase tracking-[0.1em] mb-4 md:mb-6 border border-yellow-500/30 bg-yellow-500/10 px-3 py-1 rounded-full self-center lg:self-start">
                         <span>🚧 Beta Cerrada</span>
                     </div>
                     
                     <div class="w-full flex justify-center lg:justify-start mb-4 md:mb-6">
-                        <img src="./public/logo-erp.png" alt="Logo PyP Gestión Empresarial" class="h-28 md:h-40 lg:h-48 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+                        <img src="./public/logo-erp.png" alt="Logo PyP Gestión Empresarial" class="h-24 md:h-40 lg:h-48 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.05)]">
                     </div>
 
-                    <p class="text-slate-300 text-base md:text-lg leading-relaxed mb-6 w-full text-center lg:text-left">
+                    <p class="text-slate-300 text-sm md:text-lg leading-relaxed mb-6 w-full text-center lg:text-left">
                         Diseño radicalmente <span class="texto-brillo font-black tracking-widest md:text-xl">INTUITIVO</span>. Opera inventario, nómina y tesorería con una curva de aprendizaje casi nula para tu equipo.
                     </p>
                     <a href="mailto:ventas@pypcloud.com" class="inline-flex items-center gap-2 text-secondary font-bold hover:text-white transition-colors uppercase tracking-widest text-xs md:text-sm self-center lg:self-start">
@@ -271,11 +287,11 @@
                 </div>
             </div>
 
-            <div class="lg:w-7/12 flex flex-col gap-6 md:gap-8 mt-4 lg:mt-0 pb-6 md:pb-12">
+            <div class="lg:w-7/12 flex flex-col gap-5 md:gap-8 mt-4 lg:mt-0 pb-6 md:pb-12">
                 
                 <div class="glass-card p-6 md:p-8">
                     <h3 class="text-xl md:text-2xl font-black mb-2 text-white">Semáforo CxC</h3>
-                    <p class="text-sm md:text-base text-slate-400 mb-6 md:mb-8">Monitoreo visual en tiempo real de deuda sana, por vencer y vencida.</p>
+                    <p class="text-sm md:text-base text-slate-400 mb-5 md:mb-8">Monitoreo visual en tiempo real de deuda sana, por vencer y vencida.</p>
                     <div class="bg-[#050C14] border border-white/5 p-5 md:p-6 rounded-xl md:rounded-2xl space-y-4 md:space-y-5">
                         <div class="flex justify-between items-center">
                             <span class="text-[10px] md:text-xs font-bold text-red-500 uppercase tracking-wider">Vencida</span>
@@ -293,7 +309,7 @@
 
                 <div class="glass-card p-6 md:p-8">
                     <h3 class="text-xl md:text-2xl font-black mb-2 text-white">Sincronización BCV</h3>
-                    <p class="text-sm md:text-base text-slate-400 mb-6 md:mb-8">Tasas actualizadas en tiempo real para evitar descuadres en caja.</p>
+                    <p class="text-sm md:text-base text-slate-400 mb-5 md:mb-8">Tasas actualizadas en tiempo real para evitar descuadres en caja.</p>
                     <div class="flex gap-3 md:gap-4">
                         <div class="flex-1 bg-[#050C14] border border-white/5 rounded-xl md:rounded-2xl p-4 md:p-6 text-center">
                             <span class="text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-widest">USD Oficial</span>
@@ -311,13 +327,13 @@
     </section>
 
     <!-- MOTOR TERMINAL -->
-    <section class="py-12 md:py-16 border-y border-white/10 bg-[#050B14] relative overflow-hidden">
-        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-8 md:gap-12">
+    <section class="py-10 md:py-16 border-y border-white/10 bg-[#050B14] relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-6 md:gap-12">
             <div class="md:w-1/2 text-center md:text-left">
-                <h3 class="text-2xl md:text-3xl font-black text-white mb-3 md:mb-4">Motor de Auto-Conciliación.</h3>
-                <p class="text-sm md:text-base text-slate-400">Si sobra dinero flotante en caja, el sistema rastrea y liquida automáticamente los avisos pendientes en cascada. Sin intervención humana.</p>
+                <h3 class="text-2xl md:text-3xl font-black text-white mb-2 md:mb-4">Motor de Auto-Conciliación.</h3>
+                <p class="text-xs md:text-base text-slate-400">Si sobra dinero flotante en caja, el sistema rastrea y liquida automáticamente los avisos pendientes en cascada. Sin intervención humana.</p>
             </div>
-            <div class="md:w-1/2 w-full h-[250px] md:h-[300px] bg-black border border-white/10 rounded-xl md:rounded-2xl p-4 md:p-6 relative overflow-hidden font-mono text-[10px] md:text-xs lg:text-sm">
+            <div class="md:w-1/2 w-full h-[200px] md:h-[300px] bg-black border border-white/10 rounded-xl md:rounded-2xl p-4 md:p-6 relative overflow-hidden font-mono text-[9px] md:text-xs lg:text-sm">
                 <div class="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black z-10 pointer-events-none"></div>
                 <div class="terminal-scroll text-green-400/80 space-y-1.5 md:space-y-2">
                     <p>> [API] Webhook received: payment_confirmed</p>
@@ -337,36 +353,36 @@
         </div>
     </section>
 
-    <!-- FOOTER LIMPIO ORIENTADO A SAAS -->
-    <footer class="bg-[#050C14] border-t border-white/5 pt-12 md:pt-16 pb-6 md:pb-8 px-6 relative z-20">
+    <!-- FOOTER -->
+    <footer class="bg-[#050C14] border-t border-white/5 pt-10 md:pt-16 pb-6 md:pb-8 px-6 relative z-20">
         <div class="max-w-7xl mx-auto">
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 mb-8 md:mb-12 text-center md:text-left">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 mb-8 md:mb-12 text-center md:text-left">
                 
                 <div id="footer-col-1" class="flex flex-col items-center md:items-start">
-                    <h4 class="text-base md:text-lg font-black text-white mb-4 md:mb-6 uppercase tracking-wider inline-block border-b-2 border-secondary pb-1">P&P Soluciones</h4>
-                    <p class="text-xs md:text-sm text-slate-400 mb-6 flex items-start gap-2 max-w-xs">
+                    <h4 class="text-base md:text-lg font-black text-white mb-3 md:mb-6 uppercase tracking-wider inline-block border-b-2 border-secondary pb-1">P&P Soluciones</h4>
+                    <p class="text-xs md:text-sm text-slate-400 mb-5 flex items-start gap-2 max-w-xs">
                         <span>💡</span> <span id="footer-slogan">Creamos Soluciones y las Ponemos a tu Disposición</span>
                     </p>
                     
                     <div class="flex gap-3" id="footer-socials">
-                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 hover:bg-secondary flex items-center justify-center transition-colors text-white">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.76-6.98 6.22-.058 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 1.76 6.78 6.22 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.76 6.979-6.22.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-1.778-6.78-6.221-6.979-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        <a href="#" class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/5 hover:bg-secondary flex items-center justify-center transition-colors text-white">
+                            <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.76-6.98 6.22-.058 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 1.76 6.78 6.22 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.76 6.979-6.22.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-1.778-6.78-6.221-6.979-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                         </a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 hover:bg-secondary flex items-center justify-center transition-colors text-white">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
+                        <a href="#" class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/5 hover:bg-secondary flex items-center justify-center transition-colors text-white">
+                            <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
                         </a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 hover:bg-secondary flex items-center justify-center transition-colors text-white">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+                        <a href="#" class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/5 hover:bg-secondary flex items-center justify-center transition-colors text-white">
+                            <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
                         </a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 hover:bg-secondary flex items-center justify-center transition-colors text-white">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M0 3v18h24v-18h-24zm6.623 7.929l-4.623 5.712v-9.458l4.623 3.746zm-4.141-5.929h19.035l-9.517 7.713-9.518-7.713zm5.694 7.188l3.824 3.099 3.83-3.104 5.612 6.817h-18.89l5.624-6.812zm9.208-1.264l4.616-3.741v9.348l-4.616-5.607z"/></svg>
+                        <a href="#" class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/5 hover:bg-secondary flex items-center justify-center transition-colors text-white">
+                            <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M0 3v18h24v-18h-24zm6.623 7.929l-4.623 5.712v-9.458l4.623 3.746zm-4.141-5.929h19.035l-9.517 7.713-9.518-7.713zm5.694 7.188l3.824 3.099 3.83-3.104 5.612 6.817h-18.89l5.624-6.812zm9.208-1.264l4.616-3.741v9.348l-4.616-5.607z"/></svg>
                         </a>
                     </div>
                 </div>
 
                 <div id="footer-col-2" class="flex flex-col items-center md:items-start">
-                    <h4 class="text-base md:text-lg font-black text-white mb-4 md:mb-6 uppercase tracking-wider inline-block border-b-2 border-secondary pb-1">Contacto Corporativo</h4>
+                    <h4 class="text-base md:text-lg font-black text-white mb-3 md:mb-6 uppercase tracking-wider inline-block border-b-2 border-secondary pb-1">Contacto Corporativo</h4>
                     <ul class="space-y-3 md:space-y-4 text-xs md:text-sm text-slate-400 max-w-xs">
                         <li class="flex items-center justify-center md:justify-start gap-3">
                             <span>📞</span> <span id="footer-phone">+58-412-615-6961</span>
@@ -374,14 +390,14 @@
                         <li class="flex items-start justify-center md:justify-start gap-3">
                             <span class="mt-0.5 md:mt-1">✉️</span> <a href="mailto:soporte@pypcloud.com" class="hover:text-white transition-colors">soporte@pypcloud.com</a>
                         </li>
-                        <li class="flex items-start justify-center md:justify-start gap-3 mt-4">
+                        <li class="flex items-start justify-center md:justify-start gap-3 mt-2 md:mt-4">
                             <span class="mt-0.5 md:mt-1">📍</span> <span id="footer-address" class="leading-relaxed">Caracas, Venezuela</span>
                         </li>
                     </ul>
                 </div>
 
                 <div id="footer-col-3" class="flex flex-col items-center md:items-start">
-                    <h4 class="text-base md:text-lg font-black text-white mb-4 md:mb-6 uppercase tracking-wider inline-block border-b-2 border-secondary pb-1">Legal y Soporte</h4>
+                    <h4 class="text-base md:text-lg font-black text-white mb-3 md:mb-6 uppercase tracking-wider inline-block border-b-2 border-secondary pb-1">Legal y Soporte</h4>
                     <ul class="space-y-2 md:space-y-3 text-xs md:text-sm text-slate-400 mb-6 md:mb-8" id="footer-links">
                         <li><a href="#" class="hover:text-secondary flex items-center justify-center md:justify-start gap-2 transition-colors"><span>›</span> Centro de Ayuda</a></li>
                         <li><a href="#" class="hover:text-secondary flex items-center justify-center md:justify-start gap-2 transition-colors"><span>›</span> Términos de Servicio</a></li>
@@ -396,18 +412,37 @@
                     © 2026 P&P Soluciones - Todos los derechos reservados. <br>
                     P&P Soluciones, C.A. RIF: J-50704307-0
                 </p>
-                <div class="inline-flex items-center gap-2 font-mono text-[9px] font-bold text-slate-400 uppercase tracking-widest border border-white/10 bg-white/5 px-4 py-2 rounded-lg">
+                <div class="inline-flex items-center gap-2 font-mono text-[8px] md:text-[9px] font-bold text-slate-400 uppercase tracking-widest border border-white/10 bg-white/5 px-3 md:px-4 py-2 rounded-lg">
                     <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]"></span>
-                    SSL/TLS 1.3 · Supabase & Cloudflare
+                    SSL/TLS 1.3 · Supabase
                 </div>
             </div>
         </div>
     </footer>
 
     <!-- BOTÓN FLOTANTE WHATSAPP -->
-    <a href="https://wa.me/584126156961" target="_blank" id="whatsapp-float" class="fixed bottom-4 right-4 md:bottom-6 md:right-6 bg-[#25D366] text-white w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shadow-[0_4px_15px_rgba(37,211,102,0.4)] hover:scale-110 transition-transform z-50">
+    <a href="https://wa.me/584126156961" target="_blank" id="whatsapp-float" class="fixed bottom-4 right-4 md:bottom-6 md:right-6 bg-[#25D366] text-white w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shadow-[0_4px_15px_rgba(37,211,102,0.4)] hover:scale-110 transition-transform z-40">
         <svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.327.101.144.447.705.955 1.15.65.574 1.255.753 1.401.839.146.086.231.072.318-.029l.366-.432c.115-.145.231-.116.361-.072.13.043.823.391.967.463.145.072.241.108.275.166.035.058.035.334-.109.739zM12.012 2.013c5.518 0 9.998 4.479 9.998 9.996s-4.48 9.997-9.998 9.997c-1.766 0-3.417-.461-4.856-1.257L2 22l1.284-5.06A9.953 9.953 0 0 1 2.014 12.01C2.014 6.492 6.494 2.013 12.012 2.013zm0 1.836A8.16 8.16 0 0 0 3.85 12.009c0 1.401.353 2.747 1.026 3.931l-1.016 3.999 4.088-1.071c1.139.605 2.428.924 3.764.924 4.512 0 8.162-3.65 8.162-8.163 0-4.512-3.65-8.162-8.162-8.162z"/></svg>
     </a>
+
+    <!-- SCRIPT MENÚ MÓVIL -->
+    <script>
+        const btn = document.getElementById('mobile-btn');
+        const menu = document.getElementById('mobile-menu');
+        const links = document.querySelectorAll('.mobile-link');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+            menu.classList.toggle('flex');
+        });
+
+        links.forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('hidden');
+                menu.classList.remove('flex');
+            });
+        });
+    </script>
 
 </body>
 </html>
