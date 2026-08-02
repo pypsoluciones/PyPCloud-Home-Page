@@ -84,9 +84,9 @@
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="flex justify-between items-center h-24">
                 <div class="flex items-center gap-4 cursor-pointer" onclick="window.scrollTo(0,0)">
-                    <!-- LOGO MAXIMIZADO -->
-                    <img src="./public/iso-pyp.png" alt="Isotipo PyP" class="h-16 md:h-20 w-auto drop-shadow-[0_0_15px_rgba(255,102,0,0.4)] hover:scale-105 transition-transform duration-300">
-                    <span class="text-3xl md:text-5xl font-black tracking-tighter text-white">PyP<span class="text-secondary">Cloud</span></span>
+                    <!-- LOGO NAVBAR MÁS ELEGANTE Y PROPORCIONADO -->
+                    <img src="./public/iso-pyp.png" alt="Isotipo PyP" class="h-10 md:h-12 w-auto drop-shadow-[0_0_15px_rgba(255,102,0,0.4)] hover:scale-105 transition-transform duration-300">
+                    <span class="text-2xl md:text-3xl font-black tracking-tighter text-white">PyP<span class="text-secondary">Cloud</span></span>
                 </div>
                 <div class="hidden md:flex space-x-8 items-center">
                     <a href="#ciana" class="text-sm font-bold text-slate-300 hover:text-white transition-colors">Ciana IA</a>
@@ -128,30 +128,34 @@
     <section id="ciana" class="relative max-w-7xl mx-auto px-6 py-32 border-b border-white/10">
         <div class="flex flex-col lg:flex-row gap-12 lg:gap-24 relative items-center">
             
+            <!-- Izquierda: Identidad Ciana -->
             <div class="lg:w-5/12 relative text-left flex flex-col items-start w-full">
                 <div class="sticky top-40 w-full flex flex-col items-start">
                     <div class="inline-flex items-center gap-2 font-mono text-[10px] font-bold text-cianaBlue uppercase tracking-[0.1em] mb-8 border border-cianaBlue/30 bg-cianaBlue/10 px-3 py-1 rounded-full self-start">
                         <span>🌍 Preparando lanzamiento global</span>
                     </div>
                     
-                    <div class="mb-8 flex flex-col items-start text-left w-full">
-                        <div class="relative inline-block mb-4 self-start">
-                            <!-- AVATAR TRANSPARENTE PNG -->
-                            <div class="w-32 h-32 relative z-10">
-                                <img src="./public/ciana-avatar.png" alt="Ciana Oficial" class="w-full h-full object-contain drop-shadow-[0_0_20px_rgba(59,130,246,0.3)]">
+                    <!-- IDENTIDAD CIANA: MAXIMIZADA Y CENTRADA SOBRE EL TEXTO -->
+                    <div class="mb-5 flex flex-col items-start text-left w-full max-w-sm">
+                        <!-- Avatar Centrado en relación al bloque de texto -->
+                        <div class="w-full flex justify-center mb-4">
+                            <div class="relative inline-block">
+                                <img src="./public/ciana-avatar.png" alt="Ciana Oficial" class="w-48 h-48 md:w-56 md:h-56 object-contain drop-shadow-[0_0_20px_rgba(59,130,246,0.3)]">
+                                <div class="absolute bottom-4 right-4 z-20 w-6 h-6 bg-[#10b981] rounded-full border-[3px] border-ink"></div>
                             </div>
-                            <div class="absolute bottom-1 right-2 z-20 w-5 h-5 bg-[#10b981] rounded-full border-[3px] border-ink"></div>
                         </div>
-                        <h2 class="text-6xl lg:text-7xl font-black tracking-tight text-white leading-none self-start">
+                        
+                        <!-- Textos alineados a la izquierda -->
+                        <h2 class="text-6xl lg:text-7xl font-black tracking-tight text-white leading-none">
                             Cian<span class="text-cianaBlue">a</span>
                         </h2>
-                        <p class="text-[11px] font-black tracking-[0.15em] mt-1 uppercase flex items-center gap-1.5 self-start">
+                        <p class="text-[11px] font-black tracking-[0.15em] mt-2 uppercase flex items-center gap-1.5">
                             <span class="text-slate-400">BY</span> 
                             <span><span class="text-cianaBlue">PYP</span><span class="text-secondary">CLOUD</span></span>
                         </p>
                     </div>
 
-                    <p class="text-slate-300 text-lg leading-relaxed mb-8 max-w-sm self-start text-left">
+                    <p class="text-slate-300 text-lg leading-relaxed mb-6 max-w-sm self-start text-left">
                         Tu agente virtual inteligente (PWA). Organiza tu agenda, finanzas y recordatorios mediante lenguaje natural.
                     </p>
                     <a href="mailto:soporte@pypcloud.com" class="inline-flex items-center gap-2 text-cianaBlue font-bold hover:text-white transition-colors uppercase tracking-widest text-sm self-start">
@@ -160,6 +164,7 @@
                 </div>
             </div>
 
+            <!-- Derecha: Tarjetas Ciana -->
             <div class="lg:w-7/12 flex flex-col gap-12 w-full">
                 <div class="glass-card p-8 border-l-4 border-l-cianaBlue">
                     <div class="flex items-center gap-4 mb-4">
@@ -194,16 +199,19 @@
     <section id="condominios" class="relative max-w-7xl mx-auto px-6 py-32 border-b border-white/10">
         <div class="flex flex-col lg:flex-row gap-12 lg:gap-24 relative">
             
+            <!-- Izquierda: Texto -->
             <div class="lg:w-5/12 relative order-1">
-                <div class="sticky top-40 flex flex-col items-start text-left">
+                <div class="sticky top-40 flex flex-col items-start text-left w-full">
                     <div class="inline-flex items-center gap-2 font-mono text-[10px] font-bold text-white uppercase tracking-[0.1em] mb-6 border border-white/30 bg-white/10 px-3 py-1 rounded-full">
                         <span>Módulo Activo</span>
                     </div>
                     
-                    <!-- LOGO CONDOMINIOS MAXIMIZADO -->
-                    <img src="./public/logo-condominios.png" alt="Logo PyP Condominios" class="h-32 md:h-40 lg:h-48 mb-8 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.05)] self-start">
+                    <!-- LOGO CONDOMINIOS CENTRADO -->
+                    <div class="w-full max-w-sm flex justify-center mb-4">
+                        <img src="./public/logo-condominios.png" alt="Logo PyP Condominios" class="h-32 md:h-48 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+                    </div>
 
-                    <p class="text-slate-300 text-lg leading-relaxed mb-8 max-w-sm">
+                    <p class="text-slate-300 text-lg leading-relaxed mb-6 max-w-sm">
                         Administración sin margen de error. Conecta a residentes en tiempo real bajo una arquitectura de alta disponibilidad.
                     </p>
                     <a href="mailto:ventas@pypcloud.com" class="inline-flex items-center gap-2 text-white font-bold hover:text-secondary transition-colors uppercase tracking-widest text-sm">
@@ -212,6 +220,7 @@
                 </div>
             </div>
 
+            <!-- Derecha: Tarjetas -->
             <div class="lg:w-7/12 flex flex-col gap-12 order-2">
                 <div class="glass-card p-8">
                     <h3 class="text-2xl font-black mb-2 text-white">Transparencia Radical</h3>
@@ -247,16 +256,19 @@
     <section id="erp" class="relative max-w-7xl mx-auto px-6 py-32">
         <div class="flex flex-col lg:flex-row gap-12 lg:gap-24 relative">
             
+            <!-- Izquierda: Texto Fijo -->
             <div class="lg:w-5/12 relative">
-                <div class="sticky top-40 flex flex-col items-start text-left">
+                <div class="sticky top-40 flex flex-col items-start text-left w-full">
                     <div class="inline-flex items-center gap-2 font-mono text-[10px] font-bold text-yellow-400 uppercase tracking-[0.1em] mb-6 border border-yellow-500/30 bg-yellow-500/10 px-3 py-1 rounded-full">
                         <span>🚧 Beta Cerrada</span>
                     </div>
                     
-                    <!-- LOGO ERP MAXIMIZADO -->
-                    <img src="./public/logo-erp.png" alt="Logo PyP Gestión Empresarial" class="h-32 md:h-40 lg:h-48 mb-8 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.05)] self-start">
+                    <!-- LOGO ERP CENTRADO -->
+                    <div class="w-full max-w-sm flex justify-center mb-4">
+                        <img src="./public/logo-erp.png" alt="Logo PyP Gestión Empresarial" class="h-32 md:h-48 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+                    </div>
 
-                    <p class="text-slate-300 text-lg leading-relaxed mb-8 max-w-sm">
+                    <p class="text-slate-300 text-lg leading-relaxed mb-6 max-w-sm">
                         Diseño radicalmente <span class="texto-brillo font-black tracking-widest text-xl">INTUITIVO</span>. Opera inventario, nómina y tesorería con una curva de aprendizaje casi nula para tu equipo.
                     </p>
                     <a href="mailto:ventas@pypcloud.com" class="inline-flex items-center gap-2 text-secondary font-bold hover:text-white transition-colors uppercase tracking-widest text-sm">
@@ -265,6 +277,7 @@
                 </div>
             </div>
 
+            <!-- Derecha: Tarjetas Deslizables -->
             <div class="lg:w-7/12 flex flex-col gap-12 pb-12">
                 
                 <div class="glass-card p-8">
@@ -332,18 +345,20 @@
     </section>
 
     <!-- FOOTER -->
-    <footer class="bg-[#050C14] border-t border-white/5 text-slate-500 py-12 px-6 relative z-20">
+    <footer class="bg-[#050C14] border-t border-white/5 py-12 px-6 relative z-20">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="flex flex-col items-center md:items-start gap-4">
-                <div class="flex items-center gap-3">
-                    <img src="./public/iso-pyp.png" alt="Logo PyPCloud" class="h-6 w-auto opacity-50 grayscale hover:grayscale-0 transition-all">
-                    <span class="text-lg font-bold tracking-tighter text-white/50">PyP<span class="text-white/30">Cloud</span></span>
+                <!-- LOGO FOOTER VISIBLE -->
+                <div class="flex items-center gap-3 mb-1">
+                    <img src="./public/iso-pyp.png" alt="Logo PyPCloud" class="h-8 w-auto opacity-80 transition-all">
+                    <span class="text-2xl font-black tracking-tighter text-slate-200">PyP<span class="text-slate-400">Cloud</span></span>
                 </div>
-                <p class="text-xs font-medium">© 2026 PYP Soluciones. División de Desarrollo de Software.</p>
+                <!-- TEXTO FOOTER CLARO -->
+                <p class="text-sm font-medium text-slate-400">© 2026 PYP Soluciones. División de Desarrollo de Software.</p>
             </div>
             
             <div class="text-center md:text-right">
-                <div class="inline-flex items-center gap-2 font-mono text-[9px] font-bold uppercase tracking-widest border border-white/10 bg-white/5 px-4 py-2 rounded-lg">
+                <div class="inline-flex items-center gap-2 font-mono text-[9px] font-bold text-slate-400 uppercase tracking-widest border border-white/10 bg-white/5 px-4 py-2 rounded-lg">
                     <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]"></span>
                     SSL/TLS 1.3 · Supabase & Cloudflare
                 </div>
