@@ -82,10 +82,10 @@
     <!-- NAVBAR -->
     <nav class="fixed w-full bg-[#0A1828]/90 backdrop-blur-xl border-b border-white/10 z-50 transition-all duration-300 shadow-xl">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="flex justify-between items-center h-24">
+            <div class="flex justify-between items-center h-20 md:h-24">
                 <div class="flex items-center gap-1 cursor-pointer" onclick="window.scrollTo(0,0)">
-                    <img src="./public/iso-pyp.png" alt="Isotipo PyP" class="h-10 md:h-12 w-auto drop-shadow-[0_0_15px_rgba(255,102,0,0.4)] hover:scale-105 transition-transform duration-300">
-                    <span class="text-2xl md:text-3xl font-black tracking-tighter text-white">PyP<span class="text-secondary">Cloud</span></span>
+                    <img src="./public/iso-pyp.png" alt="Isotipo PyP" class="h-8 md:h-12 w-auto drop-shadow-[0_0_15px_rgba(255,102,0,0.4)] hover:scale-105 transition-transform duration-300">
+                    <span class="text-xl md:text-3xl font-black tracking-tighter text-white">PyP<span class="text-secondary">Cloud</span></span>
                 </div>
                 <div class="hidden md:flex space-x-8 items-center">
                     <a href="#ciana" class="text-sm font-bold text-slate-300 hover:text-white transition-colors">Ciana IA</a>
@@ -99,24 +99,26 @@
         </div>
     </nav>
 
-    <!-- HERO IMMERSIVO RESTAURADO (SIN BANNER) -->
-    <section class="min-h-screen flex flex-col justify-center items-center relative pt-20 px-6">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-secondary/20 blur-[120px] rounded-full pointer-events-none z-0"></div>
-        <div class="absolute top-1/3 left-1/3 w-[400px] h-[400px] bg-primary/40 blur-[100px] rounded-full pointer-events-none z-0"></div>
+    <!-- HERO SECTION -->
+    <section class="flex flex-col justify-center items-center relative pt-32 pb-16 md:pt-40 md:pb-24 px-6">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] md:w-[600px] md:h-[600px] bg-secondary/20 blur-[120px] rounded-full pointer-events-none z-0"></div>
+        <div class="absolute top-1/3 left-1/3 w-[300px] h-[300px] md:w-[400px] md:h-[400px] bg-primary/40 blur-[100px] rounded-full pointer-events-none z-0"></div>
         
-        <div class="relative z-10 text-center max-w-5xl mx-auto flex flex-col items-center mt-12">
-            <div class="inline-flex items-center gap-2 font-mono text-[11px] font-black text-secondary uppercase tracking-[0.2em] mb-10 border border-secondary/40 bg-secondary/10 px-5 py-2 rounded-full">
+        <div class="relative z-10 text-center max-w-5xl mx-auto flex flex-col items-center">
+            <div class="inline-flex items-center gap-2 font-mono text-[9px] md:text-[11px] font-black text-secondary uppercase tracking-[0.2em] mb-6 md:mb-10 border border-secondary/40 bg-secondary/10 px-4 md:px-5 py-2 rounded-full">
                 <span>Plataforma SaaS Unificada</span>
             </div>
             
-            <h1 class="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-tight mb-6">
+            <h1 class="text-4xl md:text-6xl lg:text-8xl font-black tracking-tighter leading-tight mb-4 md:mb-6">
                 El motor tecnológico <br><span class="text-slate-400">de tu vida y tu negocio.</span>
             </h1>
-            <p class="text-xl md:text-2xl text-slate-300 mb-12 max-w-4xl font-medium leading-relaxed">
-                Infraestructura en la nube de alto rendimiento. Automatiza tu empresa, gestiona condominios sin margen de error y organiza tu día a día con Inteligencia Artificial.
+            
+            <!-- TEXTO SEO ACTUALIZADO -->
+            <p class="text-base md:text-xl text-slate-300 mb-8 md:mb-12 max-w-4xl font-medium leading-relaxed px-2">
+                Infraestructura en la nube de alto rendimiento. Automatiza tu empresa, gestiona condominios sin margen de error y organiza tu agenda y finanzas personales con un asistente virtual predictivo por voz.
             </p>
             <div class="flex gap-4">
-                <a href="#ciana" class="bg-white text-ink px-10 py-4 rounded-xl font-black hover:bg-slate-200 transition-colors uppercase tracking-widest text-sm active:scale-95 shadow-xl">
+                <a href="#ciana" class="bg-white text-ink px-8 md:px-10 py-3 md:py-4 rounded-xl font-black hover:bg-slate-200 transition-colors uppercase tracking-widest text-xs md:text-sm active:scale-95 shadow-xl">
                     Descubrir Ecosistema
                 </a>
             </div>
@@ -124,64 +126,67 @@
     </section>
 
     <!-- SECCIÓN 1: CIANA IA (B2C) -->
-    <section id="ciana" class="relative max-w-7xl mx-auto px-6 py-32 border-b border-white/10">
-        <div class="flex flex-col lg:flex-row gap-12 lg:gap-24 relative items-center">
+    <section id="ciana" class="relative max-w-7xl mx-auto px-6 py-16 md:py-24 border-b border-white/10">
+        <div class="flex flex-col lg:flex-row gap-10 md:gap-16 relative items-center">
             
-            <div class="lg:w-5/12 relative text-left flex flex-col items-start w-full">
-                <div class="sticky top-40 flex flex-col items-start w-full max-w-sm mx-auto lg:mx-0">
-                    <div class="inline-flex items-center gap-2 font-mono text-[10px] font-bold text-cianaBlue uppercase tracking-[0.1em] mb-8 border border-cianaBlue/30 bg-cianaBlue/10 px-3 py-1 rounded-full self-start">
+            <div class="lg:w-5/12 relative text-left flex flex-col items-center lg:items-start w-full">
+                <div class="sticky top-32 flex flex-col items-start w-full max-w-sm mx-auto lg:mx-0">
+                    <div class="inline-flex items-center gap-2 font-mono text-[9px] md:text-[10px] font-bold text-cianaBlue uppercase tracking-[0.1em] mb-6 border border-cianaBlue/30 bg-cianaBlue/10 px-3 py-1 rounded-full self-center lg:self-start">
                         <span>🌍 Preparando lanzamiento global</span>
                     </div>
                     
-                    <div class="mb-6 flex flex-col items-center w-full">
-                        <div class="w-full flex justify-center relative z-10 -mb-6">
+                    <!-- IDENTIDAD CIANA: MAXIMIZADA Y ESPACIOS COMPRIMIDOS -->
+                    <div class="mb-4 flex flex-col items-center w-full">
+                        <!-- Avatar mucho más grande y con margen negativo profundo -->
+                        <div class="w-full flex justify-center relative z-10 -mb-10 md:-mb-14">
                             <div class="relative inline-block">
-                                <img src="./public/ciana-avatar.png" alt="Ciana Oficial" class="w-64 h-64 md:w-72 md:h-72 object-contain drop-shadow-[0_0_20px_rgba(59,130,246,0.3)]">
+                                <img src="./public/ciana-avatar.png" alt="Ciana Oficial" class="w-72 h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 object-contain drop-shadow-[0_0_25px_rgba(59,130,246,0.35)]">
                             </div>
                         </div>
                         
-                        <div class="flex flex-col items-start w-full pl-8 md:pl-12 relative z-20">
-                            <h2 class="text-5xl lg:text-6xl font-black tracking-tight text-white leading-none">
+                        <!-- Contenedor del texto, ajustado para subir debajo de la imagen -->
+                        <div class="flex flex-col items-start w-full pl-6 md:pl-10 lg:pl-12 relative z-20">
+                            <h2 class="text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-white leading-none">
                                 Cian<span class="text-cianaBlue">a</span>
                             </h2>
-                            <p class="text-[11px] font-black tracking-[0.15em] mt-1 uppercase flex items-center gap-1.5 self-start">
+                            <p class="text-[10px] md:text-[11px] font-black tracking-[0.15em] uppercase flex items-center gap-1.5 self-start mt-0.5">
                                 <span class="text-slate-400">BY</span> 
                                 <span><span class="text-cianaBlue">PYP</span><span class="text-secondary">CLOUD</span></span>
                             </p>
                         </div>
                     </div>
 
-                    <p class="text-slate-300 text-lg leading-relaxed mb-6 w-full text-left">
+                    <p class="text-slate-300 text-base md:text-lg leading-relaxed mb-6 w-full text-center lg:text-left mt-2">
                         Tu agente virtual inteligente (PWA). Organiza tu agenda, finanzas y recordatorios mediante lenguaje natural.
                     </p>
-                    <a href="mailto:soporte@pypcloud.com" class="inline-flex items-center gap-2 text-cianaBlue font-bold hover:text-white transition-colors uppercase tracking-widest text-sm self-start">
+                    <a href="mailto:soporte@pypcloud.com" class="inline-flex items-center gap-2 text-cianaBlue font-bold hover:text-white transition-colors uppercase tracking-widest text-xs md:text-sm self-center lg:self-start">
                         Conocer Proyecto <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                     </a>
                 </div>
             </div>
 
-            <div class="lg:w-7/12 flex flex-col gap-12 w-full">
-                <div class="glass-card p-8 border-l-4 border-l-cianaBlue">
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="w-12 h-12 bg-cianaBlue/20 rounded-full flex items-center justify-center text-cianaBlue text-xl">🔒</div>
-                        <h3 class="text-2xl font-black text-white">Bóveda E2EE Bancaria</h3>
+            <div class="lg:w-7/12 flex flex-col gap-6 md:gap-8 w-full mt-4 lg:mt-0">
+                <div class="glass-card p-6 md:p-8 border-l-4 border-l-cianaBlue">
+                    <div class="flex items-center gap-4 mb-3 md:mb-4">
+                        <div class="w-10 h-10 md:w-12 md:h-12 bg-cianaBlue/20 rounded-full flex items-center justify-center text-cianaBlue text-lg md:text-xl shrink-0">🔒</div>
+                        <h3 class="text-xl md:text-2xl font-black text-white">Bóveda E2EE Bancaria</h3>
                     </div>
-                    <p class="text-slate-400 leading-relaxed">
+                    <p class="text-sm md:text-base text-slate-400 leading-relaxed">
                         Cifrado AES-256 en dispositivo. Tarjetas, documentos y claves protegidas por biometría nativa con arquitectura de conocimiento cero. Ni siquiera nosotros podemos leer tu información.
                     </p>
                 </div>
 
-                <div class="glass-card p-8 border-l-4 border-l-secondary">
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="w-12 h-12 bg-secondary/20 rounded-full flex items-center justify-center text-secondary text-xl">🎙️</div>
-                        <h3 class="text-2xl font-black text-white">Gestión por Voz</h3>
+                <div class="glass-card p-6 md:p-8 border-l-4 border-l-secondary">
+                    <div class="flex items-center gap-4 mb-3 md:mb-4">
+                        <div class="w-10 h-10 md:w-12 md:h-12 bg-secondary/20 rounded-full flex items-center justify-center text-secondary text-lg md:text-xl shrink-0">🎙️</div>
+                        <h3 class="text-xl md:text-2xl font-black text-white">Gestión por Voz</h3>
                     </div>
-                    <p class="text-slate-400 leading-relaxed mb-6">
+                    <p class="text-sm md:text-base text-slate-400 leading-relaxed mb-4 md:mb-6">
                         "Ciana, anota que gasté $45 en el supermercado". El motor de IA categoriza el gasto, actualiza tu flujo de caja y ajusta la moneda automáticamente.
                     </p>
-                    <div class="bg-[#050C14] border border-white/5 p-4 rounded-2xl flex items-center gap-4">
+                    <div class="bg-[#050C14] border border-white/5 p-3 md:p-4 rounded-xl md:rounded-2xl flex items-center gap-3 md:gap-4">
                         <div class="w-8 h-8 rounded-full bg-cianaBlue flex items-center justify-center text-xs font-bold text-white shrink-0">C</div>
-                        <div class="flex-1 bg-white/10 rounded-xl p-3 text-sm text-slate-200">
+                        <div class="flex-1 bg-white/10 rounded-lg md:rounded-xl p-2 md:p-3 text-xs md:text-sm text-slate-200">
                             ¡Listo! He registrado un gasto de $45.00 en la categoría 📦 Víveres.
                         </div>
                     </div>
@@ -191,52 +196,52 @@
     </section>
 
     <!-- SECCIÓN 2: PYP CONDOMINIOS -->
-    <section id="condominios" class="relative max-w-7xl mx-auto px-6 py-32 border-b border-white/10">
-        <div class="flex flex-col lg:flex-row gap-12 lg:gap-24 relative">
+    <section id="condominios" class="relative max-w-7xl mx-auto px-6 py-16 md:py-24 border-b border-white/10">
+        <div class="flex flex-col lg:flex-row gap-10 md:gap-16 relative">
             
             <div class="lg:w-5/12 relative order-1">
-                <div class="sticky top-40 flex flex-col items-start text-left w-full max-w-sm mx-auto lg:mx-0">
-                    <div class="inline-flex items-center gap-2 font-mono text-[10px] font-bold text-white uppercase tracking-[0.1em] mb-6 border border-white/30 bg-white/10 px-3 py-1 rounded-full self-start">
+                <div class="sticky top-32 flex flex-col items-center lg:items-start text-center lg:text-left w-full max-w-sm mx-auto lg:mx-0">
+                    <div class="inline-flex items-center gap-2 font-mono text-[9px] md:text-[10px] font-bold text-white uppercase tracking-[0.1em] mb-4 md:mb-6 border border-white/30 bg-white/10 px-3 py-1 rounded-full self-center lg:self-start">
                         <span>Módulo Activo</span>
                     </div>
                     
-                    <div class="w-full flex justify-center mb-6">
-                        <img src="./public/logo-condominios.png" alt="Logo PyP Condominios" class="h-32 md:h-48 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+                    <div class="w-full flex justify-center lg:justify-start mb-4 md:mb-6">
+                        <img src="./public/logo-condominios.png" alt="Logo PyP Condominios" class="h-28 md:h-40 lg:h-48 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.05)]">
                     </div>
 
-                    <p class="text-slate-300 text-lg leading-relaxed mb-6 w-full text-left">
+                    <p class="text-slate-300 text-base md:text-lg leading-relaxed mb-6 w-full text-center lg:text-left">
                         Administración sin margen de error. Conecta a residentes en tiempo real bajo una arquitectura de alta disponibilidad.
                     </p>
-                    <a href="mailto:ventas@pypcloud.com" class="inline-flex items-center gap-2 text-white font-bold hover:text-secondary transition-colors uppercase tracking-widest text-sm self-start">
+                    <a href="mailto:ventas@pypcloud.com" class="inline-flex items-center gap-2 text-white font-bold hover:text-secondary transition-colors uppercase tracking-widest text-xs md:text-sm self-center lg:self-start">
                         Contactar Ventas <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                     </a>
                 </div>
             </div>
 
-            <div class="lg:w-7/12 flex flex-col gap-12 order-2">
-                <div class="glass-card p-8">
-                    <h3 class="text-2xl font-black mb-2 text-white">Transparencia Radical</h3>
-                    <p class="text-slate-400 mb-8">Estado de cuenta individual, histórico y reportes PDF al instante para cada residente.</p>
-                    <div class="bg-[#050C14] border border-white/5 rounded-2xl p-6 flex justify-between items-center">
+            <div class="lg:w-7/12 flex flex-col gap-6 md:gap-8 order-2 mt-4 lg:mt-0">
+                <div class="glass-card p-6 md:p-8">
+                    <h3 class="text-xl md:text-2xl font-black mb-2 text-white">Transparencia Radical</h3>
+                    <p class="text-sm md:text-base text-slate-400 mb-6 md:mb-8">Estado de cuenta individual, histórico y reportes PDF al instante para cada residente.</p>
+                    <div class="bg-[#050C14] border border-white/5 rounded-xl md:rounded-2xl p-5 md:p-6 flex justify-between items-center">
                         <div>
-                            <span class="block text-[10px] text-slate-500 uppercase tracking-widest mb-1">Apto. 4-A</span>
-                            <span class="block text-sm font-bold text-white">Saldo Pendiente</span>
+                            <span class="block text-[9px] md:text-[10px] text-slate-500 uppercase tracking-widest mb-1">Apto. 4-A</span>
+                            <span class="block text-xs md:text-sm font-bold text-white">Saldo Pendiente</span>
                         </div>
-                        <div class="text-3xl font-black text-white font-mono">$ 150.00</div>
+                        <div class="text-2xl md:text-3xl font-black text-white font-mono">$ 150.00</div>
                     </div>
                 </div>
 
-                <div class="glass-card p-8">
-                    <h3 class="text-2xl font-black mb-2 text-white">Gestión Dinámica</h3>
-                    <p class="text-slate-400 mb-8">Cálculos por cuota fija, alícuotas o derramas extraordinarias en segundos.</p>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-[#050C14] border border-white/5 rounded-2xl p-5 text-center hover:bg-white/5 transition-colors">
-                            <span class="text-2xl mb-2 block">🏢</span>
-                            <span class="text-xs font-bold text-white uppercase tracking-wider">Alícuotas</span>
+                <div class="glass-card p-6 md:p-8">
+                    <h3 class="text-xl md:text-2xl font-black mb-2 text-white">Gestión Dinámica</h3>
+                    <p class="text-sm md:text-base text-slate-400 mb-6 md:mb-8">Cálculos por cuota fija, alícuotas o derramas extraordinarias en segundos.</p>
+                    <div class="grid grid-cols-2 gap-3 md:gap-4">
+                        <div class="bg-[#050C14] border border-white/5 rounded-xl md:rounded-2xl p-4 md:p-5 text-center hover:bg-white/5 transition-colors">
+                            <span class="text-xl md:text-2xl mb-2 block">🏢</span>
+                            <span class="text-[10px] md:text-xs font-bold text-white uppercase tracking-wider">Alícuotas</span>
                         </div>
-                        <div class="bg-[#050C14] border border-white/5 rounded-2xl p-5 text-center hover:bg-white/5 transition-colors">
-                            <span class="text-2xl mb-2 block">⚡</span>
-                            <span class="text-xs font-bold text-white uppercase tracking-wider">Derramas</span>
+                        <div class="bg-[#050C14] border border-white/5 rounded-xl md:rounded-2xl p-4 md:p-5 text-center hover:bg-white/5 transition-colors">
+                            <span class="text-xl md:text-2xl mb-2 block">⚡</span>
+                            <span class="text-[10px] md:text-xs font-bold text-white uppercase tracking-wider">Derramas</span>
                         </div>
                     </div>
                 </div>
@@ -245,59 +250,59 @@
     </section>
 
     <!-- SECCIÓN 3: ERP COMERCIAL -->
-    <section id="erp" class="relative max-w-7xl mx-auto px-6 py-32">
-        <div class="flex flex-col lg:flex-row gap-12 lg:gap-24 relative">
+    <section id="erp" class="relative max-w-7xl mx-auto px-6 py-16 md:py-24">
+        <div class="flex flex-col lg:flex-row gap-10 md:gap-16 relative">
             
             <div class="lg:w-5/12 relative">
-                <div class="sticky top-40 flex flex-col items-start text-left w-full max-w-sm mx-auto lg:mx-0">
-                    <div class="inline-flex items-center gap-2 font-mono text-[10px] font-bold text-yellow-400 uppercase tracking-[0.1em] mb-6 border border-yellow-500/30 bg-yellow-500/10 px-3 py-1 rounded-full self-start">
+                <div class="sticky top-32 flex flex-col items-center lg:items-start text-center lg:text-left w-full max-w-sm mx-auto lg:mx-0">
+                    <div class="inline-flex items-center gap-2 font-mono text-[9px] md:text-[10px] font-bold text-yellow-400 uppercase tracking-[0.1em] mb-4 md:mb-6 border border-yellow-500/30 bg-yellow-500/10 px-3 py-1 rounded-full self-center lg:self-start">
                         <span>🚧 Beta Cerrada</span>
                     </div>
                     
-                    <div class="w-full flex justify-center mb-6">
-                        <img src="./public/logo-erp.png" alt="Logo PyP Gestión Empresarial" class="h-32 md:h-48 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+                    <div class="w-full flex justify-center lg:justify-start mb-4 md:mb-6">
+                        <img src="./public/logo-erp.png" alt="Logo PyP Gestión Empresarial" class="h-28 md:h-40 lg:h-48 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.05)]">
                     </div>
 
-                    <p class="text-slate-300 text-lg leading-relaxed mb-6 w-full text-left">
-                        Diseño radicalmente <span class="texto-brillo font-black tracking-widest text-xl">INTUITIVO</span>. Opera inventario, nómina y tesorería con una curva de aprendizaje casi nula para tu equipo.
+                    <p class="text-slate-300 text-base md:text-lg leading-relaxed mb-6 w-full text-center lg:text-left">
+                        Diseño radicalmente <span class="texto-brillo font-black tracking-widest md:text-xl">INTUITIVO</span>. Opera inventario, nómina y tesorería con una curva de aprendizaje casi nula para tu equipo.
                     </p>
-                    <a href="mailto:ventas@pypcloud.com" class="inline-flex items-center gap-2 text-secondary font-bold hover:text-white transition-colors uppercase tracking-widest text-sm self-start">
+                    <a href="mailto:ventas@pypcloud.com" class="inline-flex items-center gap-2 text-secondary font-bold hover:text-white transition-colors uppercase tracking-widest text-xs md:text-sm self-center lg:self-start">
                         Solicitar Acceso <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                     </a>
                 </div>
             </div>
 
-            <div class="lg:w-7/12 flex flex-col gap-12 pb-12">
+            <div class="lg:w-7/12 flex flex-col gap-6 md:gap-8 mt-4 lg:mt-0 pb-6 md:pb-12">
                 
-                <div class="glass-card p-8">
-                    <h3 class="text-2xl font-black mb-2 text-white">Semáforo CxC</h3>
-                    <p class="text-slate-400 mb-8">Monitoreo visual en tiempo real de deuda sana, por vencer y vencida.</p>
-                    <div class="bg-[#050C14] border border-white/5 p-6 rounded-2xl space-y-5">
+                <div class="glass-card p-6 md:p-8">
+                    <h3 class="text-xl md:text-2xl font-black mb-2 text-white">Semáforo CxC</h3>
+                    <p class="text-sm md:text-base text-slate-400 mb-6 md:mb-8">Monitoreo visual en tiempo real de deuda sana, por vencer y vencida.</p>
+                    <div class="bg-[#050C14] border border-white/5 p-5 md:p-6 rounded-xl md:rounded-2xl space-y-4 md:space-y-5">
                         <div class="flex justify-between items-center">
-                            <span class="text-xs font-bold text-red-500 uppercase tracking-wider">Vencida</span>
-                            <span class="font-mono font-bold text-red-500">$ 4,250.00</span>
+                            <span class="text-[10px] md:text-xs font-bold text-red-500 uppercase tracking-wider">Vencida</span>
+                            <span class="font-mono font-bold text-red-500 text-sm md:text-base">$ 4,250.00</span>
                         </div>
                         <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-red-500 shadow-[0_0_10px_#ef4444]" style="width: 25%"></div></div>
                         
                         <div class="flex justify-between items-center pt-2">
-                            <span class="text-xs font-bold text-green-500 uppercase tracking-wider">Sana</span>
-                            <span class="font-mono font-bold text-green-500">$ 12,400.00</span>
+                            <span class="text-[10px] md:text-xs font-bold text-green-500 uppercase tracking-wider">Sana</span>
+                            <span class="font-mono font-bold text-green-500 text-sm md:text-base">$ 12,400.00</span>
                         </div>
                         <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-green-500 shadow-[0_0_10px_#22c55e]" style="width: 60%"></div></div>
                     </div>
                 </div>
 
-                <div class="glass-card p-8">
-                    <h3 class="text-2xl font-black mb-2 text-white">Sincronización BCV</h3>
-                    <p class="text-slate-400 mb-8">Tasas actualizadas en tiempo real para evitar descuadres en caja.</p>
-                    <div class="flex gap-4">
-                        <div class="flex-1 bg-[#050C14] border border-white/5 rounded-2xl p-6 text-center">
-                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">USD Oficial</span>
-                            <div class="text-2xl font-mono font-bold text-white mt-2">Bs. 45.23</div>
+                <div class="glass-card p-6 md:p-8">
+                    <h3 class="text-xl md:text-2xl font-black mb-2 text-white">Sincronización BCV</h3>
+                    <p class="text-sm md:text-base text-slate-400 mb-6 md:mb-8">Tasas actualizadas en tiempo real para evitar descuadres en caja.</p>
+                    <div class="flex gap-3 md:gap-4">
+                        <div class="flex-1 bg-[#050C14] border border-white/5 rounded-xl md:rounded-2xl p-4 md:p-6 text-center">
+                            <span class="text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-widest">USD Oficial</span>
+                            <div class="text-lg md:text-2xl font-mono font-bold text-white mt-1 md:mt-2">Bs. 45.23</div>
                         </div>
-                        <div class="flex-1 bg-[#050C14] border border-white/5 rounded-2xl p-6 text-center">
-                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">EUR Oficial</span>
-                            <div class="text-2xl font-mono font-bold text-white mt-2">Bs. 48.91</div>
+                        <div class="flex-1 bg-[#050C14] border border-white/5 rounded-xl md:rounded-2xl p-4 md:p-6 text-center">
+                            <span class="text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-widest">EUR Oficial</span>
+                            <div class="text-lg md:text-2xl font-mono font-bold text-white mt-1 md:mt-2">Bs. 48.91</div>
                         </div>
                     </div>
                 </div>
@@ -307,15 +312,15 @@
     </section>
 
     <!-- MOTOR TERMINAL -->
-    <section class="py-20 border-y border-white/10 bg-[#050B14] relative overflow-hidden">
-        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-12">
-            <div class="md:w-1/2">
-                <h3 class="text-3xl font-black text-white mb-4">Motor de Auto-Conciliación.</h3>
-                <p class="text-slate-400">Si sobra dinero flotante en caja, el sistema rastrea y liquida automáticamente los avisos pendientes en cascada. Sin intervención humana.</p>
+    <section class="py-12 md:py-20 border-y border-white/10 bg-[#050B14] relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-8 md:gap-12">
+            <div class="md:w-1/2 text-center md:text-left">
+                <h3 class="text-2xl md:text-3xl font-black text-white mb-3 md:mb-4">Motor de Auto-Conciliación.</h3>
+                <p class="text-sm md:text-base text-slate-400">Si sobra dinero flotante en caja, el sistema rastrea y liquida automáticamente los avisos pendientes en cascada. Sin intervención humana.</p>
             </div>
-            <div class="md:w-1/2 w-full h-[300px] bg-black border border-white/10 rounded-2xl p-6 relative overflow-hidden font-mono text-[11px] lg:text-xs">
+            <div class="md:w-1/2 w-full h-[250px] md:h-[300px] bg-black border border-white/10 rounded-xl md:rounded-2xl p-4 md:p-6 relative overflow-hidden font-mono text-[10px] md:text-xs lg:text-sm">
                 <div class="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black z-10 pointer-events-none"></div>
-                <div class="terminal-scroll text-green-400/80 space-y-2">
+                <div class="terminal-scroll text-green-400/80 space-y-1.5 md:space-y-2">
                     <p>> [API] Webhook received: payment_confirmed</p>
                     <p>> Checking floating balance for Unit: A-42...</p>
                     <p>> Floating balance: $150.00 detected.</p>
@@ -334,19 +339,19 @@
     </section>
 
     <!-- FOOTER -->
-    <footer class="bg-[#050C14] border-t border-white/5 pt-16 pb-8 px-6 relative z-20">
+    <footer class="bg-[#050C14] border-t border-white/5 pt-12 md:pt-16 pb-6 md:pb-8 px-6 relative z-20">
         <div class="max-w-7xl mx-auto">
             
-            <div class="flex items-center gap-2 mb-12 border-b border-white/10 pb-8">
-                <img src="./public/iso-pyp.png" alt="Logo PyPCloud" class="h-16 md:h-20 w-auto drop-shadow-[0_0_15px_rgba(255,102,0,0.4)] transition-all">
-                <span class="text-4xl md:text-5xl font-black tracking-tighter text-white">PyP<span class="text-secondary">Cloud</span></span>
+            <div class="flex items-center justify-center md:justify-start gap-2 mb-8 md:mb-12 border-b border-white/10 pb-6 md:pb-8">
+                <img src="./public/iso-pyp.png" alt="Logo PyPCloud" class="h-12 md:h-16 lg:h-20 w-auto drop-shadow-[0_0_15px_rgba(255,102,0,0.4)] transition-all">
+                <span class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tighter text-white">PyP<span class="text-secondary">Cloud</span></span>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 mb-8 md:mb-12 text-center md:text-left">
                 
-                <div id="footer-col-1">
-                    <h4 class="text-lg font-black text-white mb-6 uppercase tracking-wider inline-block border-b-2 border-secondary pb-1">P&P Soluciones</h4>
-                    <p class="text-sm text-slate-400 mb-6 flex items-start gap-2">
+                <div id="footer-col-1" class="flex flex-col items-center md:items-start">
+                    <h4 class="text-base md:text-lg font-black text-white mb-4 md:mb-6 uppercase tracking-wider inline-block border-b-2 border-secondary pb-1">P&P Soluciones</h4>
+                    <p class="text-xs md:text-sm text-slate-400 mb-6 flex items-start gap-2 max-w-xs">
                         <span>💡</span> <span id="footer-slogan">Creamos Soluciones y las Ponemos a tu Disposición</span>
                     </p>
                     
@@ -365,39 +370,39 @@
                         </a>
                     </div>
                     
-                    <p class="text-[13px] text-slate-400 flex items-start gap-2 leading-relaxed" id="footer-hours">
+                    <p class="text-[11px] md:text-[13px] text-slate-400 flex items-start justify-center md:justify-start gap-2 leading-relaxed" id="footer-hours">
                         <span class="mt-0.5">🕒</span> Lunes a Viernes De: 8:30 AM - 12:00 PM - 3:00 PM - 6:00 PM
                     </p>
                 </div>
 
-                <div id="footer-col-2">
-                    <h4 class="text-lg font-black text-white mb-6 uppercase tracking-wider inline-block border-b-2 border-secondary pb-1">Contacto</h4>
-                    <ul class="space-y-4 text-sm text-slate-400">
-                        <li class="flex items-center gap-3">
+                <div id="footer-col-2" class="flex flex-col items-center md:items-start">
+                    <h4 class="text-base md:text-lg font-black text-white mb-4 md:mb-6 uppercase tracking-wider inline-block border-b-2 border-secondary pb-1">Contacto</h4>
+                    <ul class="space-y-3 md:space-y-4 text-xs md:text-sm text-slate-400 max-w-xs">
+                        <li class="flex items-center justify-center md:justify-start gap-3">
                             <span>📞</span> <span id="footer-phone">582124439871</span>
                         </li>
-                        <li class="flex items-start gap-3">
-                            <span class="mt-1">📍</span> <span id="footer-address" class="leading-relaxed">Calle 9 Mini Centro Comercial Vecinal Local 4D Urb. Juan Pablo II Montalban, 1020. Caracas Venezuela</span>
+                        <li class="flex items-start justify-center md:justify-start gap-3">
+                            <span class="mt-0.5 md:mt-1">📍</span> <span id="footer-address" class="leading-relaxed">Calle 9 Mini Centro Comercial Vecinal Local 4D Urb. Juan Pablo II Montalban, 1020. Caracas Venezuela</span>
                         </li>
                     </ul>
-                    <div class="mt-6">
-                        <a href="#" id="footer-map-btn" class="inline-flex items-center gap-2 border border-slate-600 hover:border-secondary hover:text-white transition-colors px-4 py-2 rounded-full text-sm">
+                    <div class="mt-4 md:mt-6">
+                        <a href="#" id="footer-map-btn" class="inline-flex items-center justify-center gap-2 border border-slate-600 hover:border-secondary hover:text-white transition-colors px-4 py-2 rounded-full text-xs md:text-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
                             Ver en Mapa
                         </a>
                     </div>
                 </div>
 
-                <div id="footer-col-3">
-                    <h4 class="text-lg font-black text-white mb-6 uppercase tracking-wider inline-block border-b-2 border-secondary pb-1">Información</h4>
-                    <ul class="space-y-3 text-sm text-slate-400 mb-8" id="footer-links">
-                        <li><a href="#" class="hover:text-secondary flex items-center gap-2 transition-colors"><span>›</span> Políticas de Envío</a></li>
-                        <li><a href="#" class="hover:text-secondary flex items-center gap-2 transition-colors"><span>›</span> Términos de Garantía</a></li>
-                        <li><a href="#" class="hover:text-secondary flex items-center gap-2 transition-colors"><span>›</span> Métodos de Pago</a></li>
+                <div id="footer-col-3" class="flex flex-col items-center md:items-start">
+                    <h4 class="text-base md:text-lg font-black text-white mb-4 md:mb-6 uppercase tracking-wider inline-block border-b-2 border-secondary pb-1">Información</h4>
+                    <ul class="space-y-2 md:space-y-3 text-xs md:text-sm text-slate-400 mb-6 md:mb-8" id="footer-links">
+                        <li><a href="#" class="hover:text-secondary flex items-center justify-center md:justify-start gap-2 transition-colors"><span>›</span> Políticas de Envío</a></li>
+                        <li><a href="#" class="hover:text-secondary flex items-center justify-center md:justify-start gap-2 transition-colors"><span>›</span> Términos de Garantía</a></li>
+                        <li><a href="#" class="hover:text-secondary flex items-center justify-center md:justify-start gap-2 transition-colors"><span>›</span> Métodos de Pago</a></li>
                     </ul>
                     
-                    <div class="border-t border-white/10 pt-4" id="footer-copyright">
-                        <p class="text-[11px] text-slate-500 leading-relaxed">
+                    <div class="border-t border-white/10 pt-4 w-full md:w-auto" id="footer-copyright">
+                        <p class="text-[10px] md:text-[11px] text-slate-500 leading-relaxed">
                             © 2026 P&P Soluciones - Todos los derechos Reservados <br>
                             P&P Soluciones, C.A. RIF: J-50704307-0
                         </p>
@@ -409,8 +414,8 @@
     </footer>
 
     <!-- BOTÓN FLOTANTE WHATSAPP -->
-    <a href="https://wa.me/582124439871" target="_blank" id="whatsapp-float" class="fixed bottom-6 right-6 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-[0_4px_15px_rgba(37,211,102,0.4)] hover:scale-110 transition-transform z-50">
-        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.327.101.144.447.705.955 1.15.65.574 1.255.753 1.401.839.146.086.231.072.318-.029l.366-.432c.115-.145.231-.116.361-.072.13.043.823.391.967.463.145.072.241.108.275.166.035.058.035.334-.109.739zM12.012 2.013c5.518 0 9.998 4.479 9.998 9.996s-4.48 9.997-9.998 9.997c-1.766 0-3.417-.461-4.856-1.257L2 22l1.284-5.06A9.953 9.953 0 0 1 2.014 12.01C2.014 6.492 6.494 2.013 12.012 2.013zm0 1.836A8.16 8.16 0 0 0 3.85 12.009c0 1.401.353 2.747 1.026 3.931l-1.016 3.999 4.088-1.071c1.139.605 2.428.924 3.764.924 4.512 0 8.162-3.65 8.162-8.163 0-4.512-3.65-8.162-8.162-8.162z"/></svg>
+    <a href="https://wa.me/582124439871" target="_blank" id="whatsapp-float" class="fixed bottom-4 right-4 md:bottom-6 md:right-6 bg-[#25D366] text-white w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shadow-[0_4px_15px_rgba(37,211,102,0.4)] hover:scale-110 transition-transform z-50">
+        <svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.327.101.144.447.705.955 1.15.65.574 1.255.753 1.401.839.146.086.231.072.318-.029l.366-.432c.115-.145.231-.116.361-.072.13.043.823.391.967.463.145.072.241.108.275.166.035.058.035.334-.109.739zM12.012 2.013c5.518 0 9.998 4.479 9.998 9.996s-4.48 9.997-9.998 9.997c-1.766 0-3.417-.461-4.856-1.257L2 22l1.284-5.06A9.953 9.953 0 0 1 2.014 12.01C2.014 6.492 6.494 2.013 12.012 2.013zm0 1.836A8.16 8.16 0 0 0 3.85 12.009c0 1.401.353 2.747 1.026 3.931l-1.016 3.999 4.088-1.071c1.139.605 2.428.924 3.764.924 4.512 0 8.162-3.65 8.162-8.163 0-4.512-3.65-8.162-8.162-8.162z"/></svg>
     </a>
 
 </body>
