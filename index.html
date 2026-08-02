@@ -99,19 +99,25 @@
         </div>
     </nav>
 
-    <!-- HERO SECTION MODERNO (TEXTO ARRIBA, BANNER LIMPIO ABAJO) -->
+    <!-- HERO SECTION MODERNO (BANNER ARRIBA, TEXTO ABAJO) -->
     <section class="relative pt-36 pb-20 px-6 max-w-7xl mx-auto">
         <!-- Luces de fondo -->
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-secondary/10 blur-[120px] rounded-full pointer-events-none z-0"></div>
         <div class="absolute top-20 left-1/3 w-[400px] h-[400px] bg-primary/30 blur-[100px] rounded-full pointer-events-none z-0"></div>
         
-        <!-- Bloque de Texto -->
+        <!-- Bloque de Imagen Libre (Banner sin recortes) -->
+        <div class="relative z-20 w-full rounded-[2rem] overflow-hidden border border-white/10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.7)] mb-12">
+            <!-- h-auto asegura que la imagen se muestre completa sin importar el ancho de la pantalla -->
+            <img src="./public/banner-hero.jpg" alt="Organización y Tranquilidad" class="w-full h-auto block">
+        </div>
+
+        <!-- Bloque de Texto Abajo -->
         <div class="relative z-20 text-center flex flex-col items-center mb-16">
             <div class="inline-flex items-center gap-2 font-mono text-[11px] font-black text-secondary uppercase tracking-[0.2em] mb-6 border border-secondary/40 bg-ink/60 backdrop-blur-md px-5 py-2 rounded-full shadow-lg">
                 <span>Plataforma SaaS Unificada</span>
             </div>
             
-            <h1 class="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-tight mb-6">
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-tight mb-6 mt-4">
                 El motor tecnológico <br><span class="text-slate-300">de tu vida y tu negocio.</span>
             </h1>
             <p class="text-lg md:text-xl text-slate-300 mb-10 max-w-3xl font-medium leading-relaxed">
@@ -122,11 +128,6 @@
                     Descubrir Ecosistema
                 </a>
             </div>
-        </div>
-
-        <!-- Bloque de Imagen Libre (Banner 100% visible) -->
-        <div class="relative z-20 w-full rounded-[2rem] overflow-hidden border border-white/10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.7)] h-[300px] md:h-[500px]">
-            <img src="./public/banner-hero.jpg" alt="Organización y Tranquilidad" class="w-full h-full object-cover">
         </div>
     </section>
 
