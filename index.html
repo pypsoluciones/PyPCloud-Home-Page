@@ -83,7 +83,8 @@
     <nav class="fixed w-full bg-[#0A1828]/90 backdrop-blur-xl border-b border-white/10 z-50 transition-all duration-300 shadow-xl">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="flex justify-between items-center h-24">
-                <div class="flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
+                <!-- GAP REDUCIDO PARA PEGAR LOGO Y TEXTO -->
+                <div class="flex items-center gap-1 cursor-pointer" onclick="window.scrollTo(0,0)">
                     <img src="./public/iso-pyp.png" alt="Isotipo PyP" class="h-10 md:h-12 w-auto drop-shadow-[0_0_15px_rgba(255,102,0,0.4)] hover:scale-105 transition-transform duration-300">
                     <span class="text-2xl md:text-3xl font-black tracking-tighter text-white">PyP<span class="text-secondary">Cloud</span></span>
                 </div>
@@ -99,24 +100,33 @@
         </div>
     </nav>
 
-    <!-- HERO IMMERSIVO -->
-    <section class="min-h-screen flex flex-col justify-center items-center relative pt-20 px-6">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-secondary/20 blur-[120px] rounded-full pointer-events-none z-0"></div>
-        <div class="absolute top-1/3 left-1/3 w-[400px] h-[400px] bg-primary/40 blur-[100px] rounded-full pointer-events-none z-0"></div>
+    <!-- HERO IMMERSIVO CON BANNER FOTOGRÁFICO -->
+    <section class="min-h-screen flex flex-col justify-center items-center relative pt-24 px-6">
         
-        <div class="relative z-10 text-center max-w-5xl mx-auto flex flex-col items-center mt-12">
-            <div class="inline-flex items-center gap-2 font-mono text-[11px] font-black text-secondary uppercase tracking-[0.2em] mb-10 border border-secondary/40 bg-secondary/10 px-5 py-2 rounded-full">
+        <!-- CONTENEDOR DEL BANNER -->
+        <div class="absolute inset-0 z-0 px-4 md:px-8 pb-8 pt-32">
+            <div class="w-full h-full rounded-[2.5rem] overflow-hidden relative border border-white/10 shadow-2xl">
+                <!-- Overlay oscuro para asegurar contraste con el texto -->
+                <div class="absolute inset-0 bg-ink/75 z-10 backdrop-blur-[2px]"></div>
+                <!-- Imagen de fondo que debes agregar -->
+                <img src="./public/banner-hero.jpg" alt="Organización y Tranquilidad" class="w-full h-full object-cover relative z-0">
+            </div>
+        </div>
+        
+        <div class="relative z-20 text-center max-w-4xl mx-auto flex flex-col items-center mt-8">
+            <div class="inline-flex items-center gap-2 font-mono text-[11px] font-black text-secondary uppercase tracking-[0.2em] mb-8 border border-secondary/40 bg-ink/60 backdrop-blur-md px-5 py-2 rounded-full shadow-lg">
                 <span>Plataforma SaaS Unificada</span>
             </div>
             
-            <h1 class="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-none mb-6">
-                El motor tecnológico <br><span class="text-slate-400">de tu vida y tu negocio.</span>
+            <!-- Texto ligeramente más pequeño para destacar la imagen de fondo -->
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-tight mb-6">
+                El motor tecnológico <br><span class="text-slate-300">de tu vida y tu negocio.</span>
             </h1>
-            <p class="text-xl md:text-2xl text-slate-300 mb-12 max-w-4xl font-medium leading-relaxed">
+            <p class="text-lg md:text-xl text-slate-300 mb-10 max-w-3xl font-medium leading-relaxed drop-shadow-md">
                 Infraestructura en la nube de alto rendimiento. Automatiza tu empresa, gestiona condominios sin margen de error y organiza tu día a día con Inteligencia Artificial.
             </p>
             <div class="flex gap-4">
-                <a href="#ciana" class="bg-white text-ink px-10 py-4 rounded-xl font-black hover:bg-slate-200 transition-colors uppercase tracking-widest text-sm active:scale-95">
+                <a href="#ciana" class="bg-white text-ink px-10 py-4 rounded-xl font-black hover:bg-slate-200 transition-colors uppercase tracking-widest text-sm active:scale-95 shadow-xl">
                     Descubrir Ecosistema
                 </a>
             </div>
@@ -127,26 +137,24 @@
     <section id="ciana" class="relative max-w-7xl mx-auto px-6 py-32 border-b border-white/10">
         <div class="flex flex-col lg:flex-row gap-12 lg:gap-24 relative items-center">
             
-            <!-- Izquierda: Identidad Ciana -->
-            <div class="lg:w-5/12 relative text-left flex flex-col items-start w-full">
-                <div class="sticky top-40 w-full flex flex-col items-start">
+            <div class="lg:w-5/12 relative text-left flex flex-col items-center lg:items-start w-full">
+                <div class="sticky top-40 w-full flex flex-col items-center lg:items-start">
                     <div class="inline-flex items-center gap-2 font-mono text-[10px] font-bold text-cianaBlue uppercase tracking-[0.1em] mb-8 border border-cianaBlue/30 bg-cianaBlue/10 px-3 py-1 rounded-full self-center lg:self-start">
                         <span>🌍 Preparando lanzamiento global</span>
                     </div>
                     
-                    <!-- IDENTIDAD CIANA: MARGEN NEGATIVO AGRESIVO PARA PEGAR IMAGEN Y TEXTO -->
-                    <div class="mb-5 flex flex-col items-center w-full max-w-sm">
-                        <!-- Avatar con margen negativo inferior (-mb-8) para jalar el texto hacia arriba -->
-                        <div class="w-full flex justify-center -mb-8 relative z-10">
+                    <!-- IDENTIDAD CIANA: REAJUSTADA PARA ALINEACIÓN PERFECTA -->
+                    <div class="mb-6 flex flex-col items-center w-full max-w-sm">
+                        <!-- Avatar más grande con margen negativo para acercar el texto -->
+                        <div class="w-full flex justify-center relative z-10 -mb-6">
                             <div class="relative inline-block">
-                                <img src="./public/ciana-avatar.png" alt="Ciana Oficial" class="w-48 h-48 md:w-56 md:h-56 object-contain drop-shadow-[0_0_20px_rgba(59,130,246,0.3)]">
-                                <div class="absolute bottom-4 right-4 z-20 w-6 h-6 bg-[#10b981] rounded-full border-[3px] border-ink"></div>
+                                <img src="./public/ciana-avatar.png" alt="Ciana Oficial" class="w-64 h-64 md:w-72 md:h-72 object-contain drop-shadow-[0_0_20px_rgba(59,130,246,0.3)]">
                             </div>
                         </div>
                         
-                        <!-- Textos superpuestos alineados a la izquierda -->
-                        <div class="flex flex-col items-start relative z-20 w-full lg:w-auto">
-                            <h2 class="text-6xl lg:text-7xl font-black tracking-tight text-white leading-none">
+                        <!-- Bloque de texto alineado a la izquierda bajo la "C" -->
+                        <div class="flex flex-col items-start w-full pl-8 md:pl-12 relative z-20">
+                            <h2 class="text-5xl lg:text-6xl font-black tracking-tight text-white leading-none">
                                 Cian<span class="text-cianaBlue">a</span>
                             </h2>
                             <p class="text-[11px] font-black tracking-[0.15em] mt-1 uppercase flex items-center gap-1.5 self-start">
@@ -156,7 +164,7 @@
                         </div>
                     </div>
 
-                    <p class="text-slate-300 text-lg leading-relaxed mb-6 max-w-sm text-center lg:text-left self-center lg:self-start mt-4">
+                    <p class="text-slate-300 text-lg leading-relaxed mb-6 max-w-sm text-center lg:text-left self-center lg:self-start">
                         Tu agente virtual inteligente (PWA). Organiza tu agenda, finanzas y recordatorios mediante lenguaje natural.
                     </p>
                     <a href="mailto:soporte@pypcloud.com" class="inline-flex items-center gap-2 text-cianaBlue font-bold hover:text-white transition-colors uppercase tracking-widest text-sm self-center lg:self-start">
@@ -338,27 +346,25 @@
         </div>
     </section>
 
-    <!-- FOOTER REESTRUCTURADO (DINÁMICO PARA PANEL ADMIN) -->
+    <!-- FOOTER -->
     <footer class="bg-[#050C14] border-t border-white/5 pt-16 pb-8 px-6 relative z-20">
         <div class="max-w-7xl mx-auto">
             
-            <!-- LOGO SUPERIOR DEL FOOTER AUMENTADO Y CON COLORES DEL NAVBAR -->
-            <div class="flex items-center gap-3 mb-12 border-b border-white/10 pb-8">
-                <img src="./public/iso-pyp.png" alt="Logo PyPCloud" class="h-14 md:h-16 w-auto drop-shadow-[0_0_15px_rgba(255,102,0,0.4)] transition-all">
-                <span class="text-3xl md:text-4xl font-black tracking-tighter text-white">PyP<span class="text-secondary">Cloud</span></span>
+            <!-- LOGO SUPERIOR DEL FOOTER -->
+            <div class="flex items-center gap-2 mb-12 border-b border-white/10 pb-8">
+                <img src="./public/iso-pyp.png" alt="Logo PyPCloud" class="h-16 md:h-20 w-auto drop-shadow-[0_0_15px_rgba(255,102,0,0.4)] transition-all">
+                <span class="text-4xl md:text-5xl font-black tracking-tighter text-white">PyP<span class="text-secondary">Cloud</span></span>
             </div>
 
             <!-- GRID 3 COLUMNAS -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
                 
-                <!-- COLUMNA 1: P&P SOLUCIONES -->
                 <div id="footer-col-1">
                     <h4 class="text-lg font-black text-white mb-6 uppercase tracking-wider inline-block border-b-2 border-secondary pb-1">P&P Soluciones</h4>
                     <p class="text-sm text-slate-400 mb-6 flex items-start gap-2">
                         <span>💡</span> <span id="footer-slogan">Creamos Soluciones y las Ponemos a tu Disposición</span>
                     </p>
                     
-                    <!-- Redes Sociales Configurables -->
                     <div class="flex gap-3 mb-6" id="footer-socials">
                         <a href="#" class="w-10 h-10 rounded-full bg-white/5 hover:bg-secondary flex items-center justify-center transition-colors text-white">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.76-6.98 6.22-.058 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 1.76 6.78 6.22 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.76 6.979-6.22.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-1.778-6.78-6.221-6.979-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
@@ -379,7 +385,6 @@
                     </p>
                 </div>
 
-                <!-- COLUMNA 2: CONTACTO -->
                 <div id="footer-col-2">
                     <h4 class="text-lg font-black text-white mb-6 uppercase tracking-wider inline-block border-b-2 border-secondary pb-1">Contacto</h4>
                     <ul class="space-y-4 text-sm text-slate-400">
@@ -398,7 +403,6 @@
                     </div>
                 </div>
 
-                <!-- COLUMNA 3: INFORMACIÓN -->
                 <div id="footer-col-3">
                     <h4 class="text-lg font-black text-white mb-6 uppercase tracking-wider inline-block border-b-2 border-secondary pb-1">Información</h4>
                     <ul class="space-y-3 text-sm text-slate-400 mb-8" id="footer-links">
