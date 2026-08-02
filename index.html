@@ -80,11 +80,12 @@
 <body class="bg-ink text-white bg-grid selection:bg-secondary selection:text-white">
 
     <!-- NAVBAR -->
-    <nav class="fixed w-full bg-[#0A1828]/80 backdrop-blur-xl border-b border-white/10 z-50 transition-all duration-300 shadow-xl">
+    <nav class="fixed w-full bg-[#0A1828]/90 backdrop-blur-xl border-b border-white/10 z-50 transition-all duration-300 shadow-xl">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="flex justify-between items-center h-24">
                 <div class="flex items-center gap-4 cursor-pointer" onclick="window.scrollTo(0,0)">
-                    <img src="./public/logo-pyp.png" alt="Logo PyPCloud" class="h-16 w-auto drop-shadow-[0_0_15px_rgba(255,102,0,0.3)] hover:scale-105 transition-transform duration-300">
+                    <img src="./public/P Plano.png" alt="Isotipo PyP" class="h-14 md:h-16 w-auto drop-shadow-[0_0_15px_rgba(255,102,0,0.3)] hover:scale-105 transition-transform duration-300">
+                    <span class="text-4xl md:text-5xl font-black tracking-tighter text-white">PyP<span class="text-secondary">Cloud</span></span>
                 </div>
                 <div class="hidden md:flex space-x-8 items-center">
                     <a href="#ciana" class="text-sm font-bold text-slate-300 hover:text-white transition-colors">Ciana IA</a>
@@ -103,14 +104,16 @@
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-secondary/20 blur-[120px] rounded-full pointer-events-none z-0"></div>
         <div class="absolute top-1/3 left-1/3 w-[400px] h-[400px] bg-primary/40 blur-[100px] rounded-full pointer-events-none z-0"></div>
         
-        <div class="relative z-10 text-center max-w-5xl mx-auto flex flex-col items-center">
-            <img src="./public/logo-pyp-completo.png" alt="PyP Logo Principal" class="h-40 md:h-56 mb-8 drop-shadow-[0_0_40px_rgba(255,102,0,0.5)] animate-pulse" style="animation-duration: 4s;">
+        <div class="relative z-10 text-center max-w-5xl mx-auto flex flex-col items-center mt-12">
+            <div class="inline-flex items-center gap-2 font-mono text-[11px] font-black text-secondary uppercase tracking-[0.2em] mb-6 border border-secondary/40 bg-secondary/10 px-5 py-2 rounded-full">
+                <span>Plataforma SaaS Unificada</span>
+            </div>
             
             <h1 class="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-none mb-6">
-                El control matemático <br><span class="text-slate-400">de tu negocio.</span>
+                El motor tecnológico <br><span class="text-slate-400">de tu vida y tu negocio.</span>
             </h1>
-            <p class="text-xl md:text-2xl text-slate-300 mb-12 max-w-3xl font-medium">
-                Arquitectura de alta disponibilidad, autogestión financiera y sincronización en tiempo real.
+            <p class="text-xl md:text-2xl text-slate-300 mb-12 max-w-4xl font-medium leading-relaxed">
+                Infraestructura en la nube de alto rendimiento. Automatiza tu empresa, gestiona condominios sin margen de error y organiza tu día a día con Inteligencia Artificial.
             </p>
             <div class="flex gap-4">
                 <a href="#ciana" class="bg-white text-ink px-10 py-4 rounded-xl font-black hover:bg-slate-200 transition-colors uppercase tracking-widest text-sm active:scale-95">
@@ -131,16 +134,16 @@
                         <span>🌍 Preparando lanzamiento global</span>
                     </div>
                     
-                    <!-- REPLICA EXACTA LOGO CIANA Y AVATAR -->
+                    <!-- LOGO CIANA -->
                     <div class="mb-8 flex flex-col items-center lg:items-start">
                         <div class="relative inline-block mb-4">
                             <div class="w-32 h-32 rounded-full border-[3px] border-slate-700 overflow-hidden shadow-[0_0_30px_rgba(59,130,246,0.2)] bg-ink relative">
-                                <img src="./public/ciana-avatar.png" alt="Ciana Oficial" class="w-full h-full object-cover">
+                                <img src="./public/ciana-avatar.jpg" alt="Ciana Oficial" class="w-full h-full object-cover">
                             </div>
                             <div class="absolute bottom-2 right-2 w-6 h-6 bg-[#10b981] rounded-full border-[3px] border-ink"></div>
                         </div>
                         <h2 class="text-5xl lg:text-7xl font-black tracking-tight text-white leading-none">
-                            Cian<span class="text-cianaBlue italic">a</span>
+                            Cian<span class="text-cianaBlue">a</span>
                         </h2>
                         <p class="text-sm font-bold tracking-widest mt-1 uppercase">
                             <span class="text-slate-400">by</span> <span class="text-cianaBlue">PyP</span><span class="text-secondary">Cloud</span>
@@ -176,6 +179,7 @@
                     <p class="text-slate-400 leading-relaxed mb-6">
                         "Ciana, anota que gasté $45 en el supermercado". El motor de IA categoriza el gasto, actualiza tu flujo de caja y ajusta la moneda automáticamente.
                     </p>
+                    <!-- Fake UI Chat -->
                     <div class="bg-[#050C14] border border-white/5 p-4 rounded-2xl flex items-center gap-4">
                         <div class="w-8 h-8 rounded-full bg-cianaBlue flex items-center justify-center text-xs font-bold text-white">C</div>
                         <div class="flex-1 bg-white/10 rounded-xl p-3 text-sm text-slate-200">
@@ -191,7 +195,6 @@
     <section id="condominios" class="relative max-w-7xl mx-auto px-6 py-32 border-b border-white/10">
         <div class="flex flex-col lg:flex-row gap-12 lg:gap-24 relative">
             
-            <!-- Izquierda: Texto -->
             <div class="lg:w-5/12 relative order-1">
                 <div class="sticky top-40">
                     <div class="inline-flex items-center gap-2 font-mono text-[10px] font-bold text-white uppercase tracking-[0.1em] mb-6 border border-white/30 bg-white/10 px-3 py-1 rounded-full">
@@ -207,7 +210,6 @@
                 </div>
             </div>
 
-            <!-- Derecha: Tarjetas -->
             <div class="lg:w-7/12 flex flex-col gap-12 order-2">
                 <div class="glass-card p-8">
                     <h3 class="text-2xl font-black mb-2 text-white">Transparencia Radical</h3>
@@ -243,7 +245,6 @@
     <section id="erp" class="relative max-w-7xl mx-auto px-6 py-32">
         <div class="flex flex-col lg:flex-row gap-12 lg:gap-24 relative">
             
-            <!-- Izquierda: Texto Fijo -->
             <div class="lg:w-5/12 relative">
                 <div class="sticky top-40">
                     <div class="inline-flex items-center gap-2 font-mono text-[10px] font-bold text-yellow-400 uppercase tracking-[0.1em] mb-6 border border-yellow-500/30 bg-yellow-500/10 px-3 py-1 rounded-full">
@@ -259,7 +260,6 @@
                 </div>
             </div>
 
-            <!-- Derecha: Tarjetas Deslizables -->
             <div class="lg:w-7/12 flex flex-col gap-12 pb-12">
                 
                 <div class="glass-card p-8">
@@ -331,7 +331,7 @@
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="flex flex-col items-center md:items-start gap-4">
                 <div class="flex items-center gap-3">
-                    <img src="./public/logo-pyp.png" alt="Logo PyPCloud" class="h-8 w-auto opacity-50 grayscale hover:grayscale-0 transition-all">
+                    <img src="./public/P Plano.png" alt="Logo PyPCloud" class="h-8 w-auto opacity-50 grayscale hover:grayscale-0 transition-all">
                 </div>
                 <p class="text-xs font-medium">© 2026 PYP Soluciones. División de Desarrollo de Software.</p>
                 <div class="flex gap-5 text-xs font-bold text-slate-400">
